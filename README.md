@@ -1,1 +1,1 @@
-# GUI-for-SMIAutoDownloader
+# GUI-for-SMI Auto Downloader
