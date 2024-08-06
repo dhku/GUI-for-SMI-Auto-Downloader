@@ -1,0 +1,8 @@
+anime_list: '[
+
+  { "Anime":"일찍이 마법소녀와 악은 적대하고 있다", "AnimeNo":"2820" },
+
+  { "Anime":"이세계 실격", "AnimeNo":"2451" }
+
+  ]'
+download_path: E:/QTGUI/Modern_GUI_PyDracula_PySide6_or_PyQt6/download
