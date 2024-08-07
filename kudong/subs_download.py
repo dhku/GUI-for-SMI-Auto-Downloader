@@ -4,11 +4,12 @@ import sys
 import re
 import os
 import io
-import gdown
+import time
 import yaml
 import traceback
 import threading
 import natsort
+import gdrive
 from http import client
 from urllib import request
 from urllib.request import urlopen
@@ -17,6 +18,8 @@ from urllib.parse import quote
 from urllib.parse import urlparse
 from datetime import datetime
 from bs4 import BeautifulSoup
+from functools import partial
+
 
 #pip install gdown
 #pip install requests
@@ -83,6 +86,7 @@ def get_new_log_file():
     formatted_date = now.strftime("%Y-%m-%d")
     new_filename = ""
     log_file_list = natsort.natsorted(os.listdir(os.path.abspath('.') + "/log"))
+    log_file_list.remove("error.log")
 
     if(len(log_file_list) != 0):
         latest_file = log_file_list[len(log_file_list) - 1]
@@ -153,6 +157,10 @@ def unlock_Scheduler():
     isRunning = False
     thread_lock.release()
 
+def print_log(log):
+    global console_output
+    console_output += log + "\n"
+
 # 요청함수
 
 def requestAnimeSMI_3(anime,callback):
@@ -166,15 +174,8 @@ def requestAnimeSMI_2(AnimeNo,name,callback):
 def requestAnimeSMI(AnimeNo,callback):
     global smiDir,isDownloadError,download_progress_count,download_progress_length,console_output,isRunning
 
-    # 현재의 sys.stdout을 저장해 두고,
-    # sys.stdout을 string_io로 변경합니다.
-    string_io = io.StringIO()
-    sys.stdout.flush()
-    original_stdout = sys.stdout
-    sys.stdout = string_io
-
-    print("다운경로: "+outpath)
-    print("================================================================")
+    print_log("다운경로: "+outpath)
+    print_log("================================================================")
 
     # 콘솔 출력 결과물 초기화
     console_output = ""
@@ -190,34 +191,28 @@ def requestAnimeSMI(AnimeNo,callback):
 
     response = requests.get("https://api.anissia.net/anime/caption/animeNo/" + str(AnimeNo))
 
-    #print(response.status_code)
+    #print_log(response.status_code)
 
     datas = json.loads(response.text)
     json_data = datas["data"]
 
     #다운로드 사이즈 체크
 
-    print("다운로드 사이즈를 체크 하고 있습니다.....")
+    print_log("다운로드 사이즈를 체크 하고 있습니다.....")
     download_progress_length = get_download_progress_length(json_data);
-    print("================================================================")
+    print_log("================================================================")
 
-    console_output = string_io.getvalue()
     text_to_file(console_output, log_path + new_filename)
     callback(download_progress_count,download_progress_length, "다운로드에 필요한 데이터를 확인 하고 있습니다...")
 
-    _requestAnimeSMI(AnimeNo,callback,string_io,new_filename,json_data)
+    _requestAnimeSMI(AnimeNo,callback,new_filename,json_data)
 
-    print("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
-    print("작업이 종료되었습니다")
+    print_log("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
+    print_log("작업이 종료되었습니다")
 
-    # string_io의 내용을 문자열로 얻습니다.
-    console_output = string_io.getvalue()
     text_to_file(console_output, log_path + new_filename)
 
     callback(download_progress_count,download_progress_length,"다운로드가 완료되었습니다.",True)
-
-    # sys.stdout을 원래대로 돌려놓습니다.
-    sys.stdout = original_stdout
 
     unlock_Scheduler()
 
@@ -230,14 +225,9 @@ def requestMultipleAnimeSMI(callback):
         config = yaml.load(f, Loader=yaml.FullLoader)
 
         animelist = json.loads(config['anime_list'])
-        
-        string_io = io.StringIO()
-        sys.stdout.flush()
-        original_stdout = sys.stdout
-        sys.stdout = string_io
 
-        print("다운경로: "+outpath)
-        print("================================================================")
+        print_log("다운경로: "+outpath)
+        print_log("================================================================")
 
         # 콘솔 출력 결과물 초기화
         console_output = ""
@@ -255,14 +245,14 @@ def requestMultipleAnimeSMI(callback):
         key2 = []
         list = []
 
-        print("다운로드 사이즈를 체크 하고 있습니다.....")
+        print_log("다운로드 사이즈를 체크 하고 있습니다.....")
         
         for k in animelist:
             AnimeName = k['Anime']
             AnimeNO = k['AnimeNo']
 
             response = requests.get("https://api.anissia.net/anime/caption/animeNo/" + str(AnimeNO))
-            #print(response.status_code)
+            #print_log(response.status_code)
             datas = json.loads(response.text)
             json_data = datas["data"]
             
@@ -272,9 +262,8 @@ def requestMultipleAnimeSMI(callback):
             key1.append(AnimeName)
             key2.append(AnimeNO)
 
-        print("================================================================")
+        print_log("================================================================")
         
-        console_output = string_io.getvalue()
         text_to_file(console_output, log_path + new_filename)    
         callback(download_progress_count,download_progress_length, "다운로드에 필요한 데이터를 확인 하고 있습니다...")
 
@@ -282,25 +271,20 @@ def requestMultipleAnimeSMI(callback):
         for json_data in list:
             AnimeName = key1[count]
             AnimeNO = key2[count]
-            _requestAnimeSMI(AnimeNO,callback,string_io,new_filename,json_data)
+            _requestAnimeSMI(AnimeNO,callback,new_filename,json_data)
             count += 1
 
 
-        print("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
-        print("작업이 종료되었습니다")
+        print_log("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
+        print_log("작업이 종료되었습니다")
 
-        # string_io의 내용을 문자열로 얻습니다.
-        console_output = string_io.getvalue()
         text_to_file(console_output, log_path + new_filename)
 
         callback(download_progress_count,download_progress_length,"다운로드가 완료되었습니다.",True)
 
-        # sys.stdout을 원래대로 돌려놓습니다.
-        sys.stdout = original_stdout
-
         unlock_Scheduler()
 
-def _requestAnimeSMI(AnimeNo,callback,string_io,new_filename,json_data):
+def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
     global smiDir,isDownloadError,download_progress_count,download_progress_length,console_output
 
     for k in json_data:
@@ -315,40 +299,39 @@ def _requestAnimeSMI(AnimeNo,callback,string_io,new_filename,json_data):
         smiDir = AnimeName + "/" + episode + "화/" + name + "/"
 
         callback(download_progress_count,download_progress_length,"<"+AnimeName+"> 다운로드중...")
-        print("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
-        print("ANIME SMI AUTO DOWNLOADER - Target => <"+AnimeName+">")    
-        print("================================================================")
-        print("> 제작자: " + name)
-        print("> 회차: " + episode+"화")
-        print("> 업데이트: " + updDt)
-        print("> 주소: " + website)
+        print_log("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
+        print_log("ANIME SMI AUTO DOWNLOADER - Target => <"+AnimeName+">")    
+        print_log("================================================================")
+        print_log("> 제작자: " + name)
+        print_log("> 회차: " + episode+"화")
+        print_log("> 업데이트: " + updDt)
+        print_log("> 주소: " + website)
 
         if os.path.isfile(outpath + smiDir + "finish.txt"):
-            print("[=] 이전에 생성된 finish.txt가 발견되어 과정이 스킵되었습니다.")
-            print("================================================================")
+            print_log("[=] 이전에 생성된 finish.txt가 발견되어 과정이 스킵되었습니다.")
+            print_log("================================================================")
             continue;
 
         if regrex1.match(website):
-            print("[+] naver 검출.")
+            print_log("[+] naver 검출.")
             download_naver(website,callback)
         elif regrex2.match(website):
-            print("[+] blogspot 검출.")
+            print_log("[+] blogspot 검출.")
             download_blogspot(website,callback)
         elif regrex3.match(website):
-            print("[+] tistory 검출.")
+            print_log("[+] tistory 검출.")
             download_tistory(website,callback)
         else:
-            print("[-] 해당 조건에 부합하는 링크가 존재하지 않습니다.")
+            print_log("[-] 해당 조건에 부합하는 링크가 존재하지 않습니다.")
             isDownloadError = 1;
         
         if isDownloadError == 0:
             text_to_file( json.dumps(k) , outpath + smiDir + "finish.txt");
-            print("[+] finish.txt가 생성되었습니다.")
+            print_log("[+] finish.txt가 생성되었습니다.")
         else:
-            print("[-] finish.txt가 생성되지 않았습니다.")
+            print_log("[-] finish.txt가 생성되지 않았습니다.")
 
-        print("================================================================")
-        console_output = string_io.getvalue()
+        print_log("================================================================")
         text_to_file(console_output, log_path + new_filename)
 
 
@@ -365,7 +348,7 @@ def download_naver(url,callback):
     
     # find 't.static.blog.naver.net'
     if url_source.find("t.static.blog/mylog") == -1:
-        print("\n[-] It is not a NAVER Blog")
+        print_log("\n[-] It is not a NAVER Blog")
         isDownloadError = 1;
         return 
 
@@ -381,22 +364,22 @@ def download_naver(url,callback):
 
             for each_file in json_data:       
                 try:
-                    print("* File : %s, Size : %s Bytes" % (each_file["encodedAttachFileName"], each_file["attachFileSize"]))
-                    print("  Link : %s" % each_file["encodedAttachFileUrl"])
+                    print_log("* File : %s, Size : %s Bytes" % (each_file["encodedAttachFileName"], each_file["attachFileSize"]))
+                    print_log("  Link : %s" % each_file["encodedAttachFileUrl"])
                     # File Download
-                    print("[=] 다운로드 시작 => "+each_file["encodedAttachFileName"])
+                    print_log("[=] 다운로드 시작 => "+each_file["encodedAttachFileName"])
 
                     path = outpath + smiDir
                     if not os.path.exists(path):
                         os.makedirs(path)
 
                     download(each_file["encodedAttachFileUrl"], path + each_file["encodedAttachFileName"])
-                    print("[+] 파일 다운로드가 완료 되었습니다. ")
+                    print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                     download_progress_count += 1
                     callback(download_progress_count,download_progress_length)
 
                 except Exception as e:
-                    print("[-] Error : %s" % e)
+                    print_log("[-] Error : %s" % e)
                     isDownloadError = 1;
                     download_progress_count += 1
         else:
@@ -416,7 +399,7 @@ def download_naver(url,callback):
                 if a.get('href') == None:
                     continue;
                 each_file = a.attrs['href']
-                # print("href = "+each_file)
+                # print_log("href = "+each_file)
                 try:
                     each_file = each_file.replace('&amp;','&');
 
@@ -431,29 +414,39 @@ def download_naver(url,callback):
 
                         remotefile = urlopen(each_file)
                         fileName = remotefile.headers.get_filename();
-                        fileName = fileName.encode('ISO-8859-1').decode('UTF-8');
+
+                        if fileName is not None:
+                            fileName = fileName.encode('ISO-8859-1').decode('UTF-8');
+                        else:
+                            parsed_url = urlparse(each_file)
+                            fileName = os.path.basename(parsed_url.path)
+                            fileName = unquote(fileName)
+
+                        path = outpath + smiDir
+
+                        if fileName == "uc":
+                            fileName = gdrive.get_file_name(each_file)
 
                         if(not p_extension.match(fileName)):
                             download_progress_count += 1
                             callback(download_progress_count,download_progress_length)
                             continue;
 
-                        print("[=] 다운로드 시작 => "+fileName)
+                        print_log("[=] 다운로드 시작 => "+ fileName)
 
-                        path = outpath + smiDir
                         if not os.path.exists(path):
                             os.makedirs(path)
 
-                        gdown.download(each_file, path + fileName, quiet=False)
-                        isDownloaded = 1;
+                        gdrive.download(each_file, path + fileName, quiet=False)
+                        print_log("[+] 파일 다운로드가 완료 되었습니다. ")
+
                         file_found = 1;
-                        print("[+] 파일 다운로드가 완료 되었습니다. ")
                         download_progress_count += 1
                         callback(download_progress_count,download_progress_length)
 
                     # 일반 다운로드 주소가 검출되었을때
                     elif bool(p_attach.match(each_file)) == False:
-                        print("  Link : %s" % each_file)
+                        print_log("  Link : %s" % each_file)
                         remotefile = urlopen(each_file)
                         fileName = remotefile.headers.get_filename();
 
@@ -464,7 +457,7 @@ def download_naver(url,callback):
                             fileName = os.path.basename(parsed_url.path)
                             fileName = unquote(fileName)
 
-                        print("[=] 다운로드 시작 => "+fileName)
+                        print_log("[=] 다운로드 시작 => "+fileName)
 
                         path = outpath + smiDir
                         if not os.path.exists(path):
@@ -473,20 +466,20 @@ def download_naver(url,callback):
                         download(each_file, path + fileName);
                         isDownloaded = 1;
                         file_found = 1;
-                        print("[+] 파일 다운로드가 완료 되었습니다. ")
+                        print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                         download_progress_count += 1
                         callback(download_progress_count,download_progress_length)
                     
                 except Exception as e:
-                    print("[-] Error : %s" % e)
+                    print_log("[-] Error : %s" % e)
                     download_progress_count += 1
                     isDownloadError = 1;
             
             if(file_found == 0):
-                print("[-] Attached File not found !!")
+                print_log("[-] Attached File not found !!")
                 isDownloadError = 1;
     except Exception as e:
-        print("[-] Error : %s" % e)
+        print_log("[-] Error : %s" % e)
         isDownloadError = 1;
 
 def download_count_naver(url):
@@ -550,7 +543,7 @@ def get_url_source_naver(url):
 
             # find 'NBlogWlwLayout.nhn'
             if url_source.find("NBlogWlwLayout.naver") == -1:
-                print("\n[-] It is not a NAVER Blog")
+                print_log("\n[-] It is not a NAVER Blog")
                 sys.exit(0)
 
             # get frame src
@@ -564,7 +557,7 @@ def get_url_source_naver(url):
         else:
             last_url = url
 
-        print("   => Last URL : %s\n" % last_url)
+        print_log("   => Last URL : %s\n" % last_url)
         f = request.urlopen(last_url)
         url_info = f.info()
         url_charset = client.HTTPMessage.get_charsets(url_info)[0]
@@ -573,7 +566,7 @@ def get_url_source_naver(url):
         return url_source
 
     except Exception as e:
-        print("[-] Error : %s" % e)
+        print_log("[-] Error : %s" % e)
         isDownloadError = 1;
         return None;
 
@@ -586,7 +579,7 @@ def download_tistory(url,callback):
 
     # find 's1.daumcdn.net/cfs.tistory'
     if url_source.find("t1.daumcdn.net/tistory") == -1:
-        print("[-] It is not a Tistory Blog")
+        print_log("[-] It is not a Tistory Blog")
         isDownloadError = 1;
         return;
 
@@ -605,16 +598,16 @@ def download_tistory(url,callback):
                     file_name = file_url[file_url.rfind('/') + 1:]
                 else:
                     file_name = each_file[1]
-                print("* File : %s" % file_name)
-                print("  Link : %s" % file_url)
-                print("[=] 다운로드 시작 => "+file_name)
+                print_log("* File : %s" % file_name)
+                print_log("  Link : %s" % file_url)
+                print_log("[=] 다운로드 시작 => "+file_name)
 
                 path = outpath + smiDir
                 if not os.path.exists(path):
                     os.makedirs(path)
 
                 download(file_url, path + file_name)
-                print("[+] 파일 다운로드가 완료 되었습니다. ")
+                print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                 download_progress_count += 1
                 callback(download_progress_count,download_progress_length)
         else:
@@ -634,7 +627,7 @@ def download_tistory(url,callback):
                 if a.get('href') == None:
                     continue;
                 each_file = a.attrs['href']
-                # print("href = "+each_file)
+                # print_log("href = "+each_file)
                 try:
                     each_file = each_file.replace('&amp;','&');
 
@@ -649,29 +642,39 @@ def download_tistory(url,callback):
 
                         remotefile = urlopen(each_file)
                         fileName = remotefile.headers.get_filename();
-                        fileName = fileName.encode('ISO-8859-1').decode('UTF-8');
 
+                        if fileName is not None:
+                            fileName = fileName.encode('ISO-8859-1').decode('UTF-8');
+                        else:
+                            parsed_url = urlparse(each_file)
+                            fileName = os.path.basename(parsed_url.path)
+                            fileName = unquote(fileName)
+
+                        path = outpath + smiDir
+
+                        if fileName == "uc":
+                            fileName = gdrive.get_file_name(each_file)
+                    
                         if(not p_extension.match(fileName)):
                             download_progress_count += 1
                             callback(download_progress_count,download_progress_length)
                             continue;
 
-                        print("[=] 다운로드 시작 => "+fileName)
+                        print_log("[=] 다운로드 시작 => "+ fileName)
 
-                        path = outpath + smiDir
                         if not os.path.exists(path):
                             os.makedirs(path)
 
-                        gdown.download(each_file, path + fileName, quiet=False)
-                        isDownloaded = 1;
+                        gdrive.download(each_file, path + fileName, quiet=False)
+                        print_log("[+] 파일 다운로드가 완료 되었습니다. ")
+
                         file_found = 1;
-                        print("[+] 파일 다운로드가 완료 되었습니다. ")
                         download_progress_count += 1
                         callback(download_progress_count,download_progress_length)
 
                     # 일반 다운로드 주소가 검출되었을때
                     elif bool(p_attach.match(each_file)) == False:
-                        print("  Link : %s" % each_file)
+                        print_log("  Link : %s" % each_file)
                         remotefile = urlopen(each_file)
                         fileName = remotefile.headers.get_filename();
 
@@ -682,7 +685,7 @@ def download_tistory(url,callback):
                             fileName = os.path.basename(parsed_url.path)
                             fileName = unquote(fileName)
 
-                        print("[=] 다운로드 시작 => "+fileName)
+                        print_log("[=] 다운로드 시작 => "+fileName)
 
                         path = outpath + smiDir
                         if not os.path.exists(path):
@@ -691,23 +694,23 @@ def download_tistory(url,callback):
                         download(each_file, path + fileName);
                         isDownloaded = 1;
                         file_found = 1;
-                        print("[+] 파일 다운로드가 완료 되었습니다. ")
+                        print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                         download_progress_count += 1
                         callback(download_progress_count,download_progress_length)
                     
                 except Exception as e:
-                    print("[-] Error : %s" % e)
-                    print(traceback.format_exc())
+                    print_log("[-] Error : %s" % e)
+                    print_log(traceback.format_exc())
                     download_progress_count += 1
                     isDownloadError = 1;
             
             if(file_found == 0):
-                print("[-] Attached File not found !!")
+                print_log("[-] Attached File not found !!")
                 isDownloadError = 1;
     
     except Exception as e:
-        print("[-] Error : %s" % e)
-        print(traceback.format_exc())
+        print_log("[-] Error : %s" % e)
+        print_log(traceback.format_exc())
         isDownloadError = 1;   
 
 def download_count_tistory(url):
@@ -772,7 +775,7 @@ def get_url_source_tistory(url):
             last_slash_index = url.rfind('/')
             body = url[:last_slash_index]
             query = quote(url[last_slash_index:])
-            #print("출력=> "+body + query)
+            #print_log("출력=> "+body + query)
             f = request.urlopen(body + query)
 
         url_info = f.info()
@@ -780,8 +783,8 @@ def get_url_source_tistory(url):
         url_source = f.read().decode(url_charset)
         return url_source
     except Exception as e:
-        print("[-] Error : %s" % e)
-        print(traceback.format_exc())
+        print_log("[-] Error : %s" % e)
+        print_log(traceback.format_exc())
         isDownloadError = 1;
         return None;
 
@@ -802,14 +805,26 @@ def download_blogspot(url,callback):
 
     p_attach = re.compile(r"(.*(googleusercontent).*)")
     p_google = re.compile(r"(.*(https://drive.google.com/file/d/).*)")
+    p_google_2 = re.compile(r"(.*(https://docs.google.com/uc).*)")
+    p_google_3 = re.compile(r"(.*(https://drive.usercontent.google.com/download).*)")
 
     isDownloaded = 0;
 
     for a in links:
         each_file = a.attrs['href']
-        # print("href = "+each_file)
+        # print_log("href = "+each_file)
         try:
             each_file = each_file.replace('&amp;','&');
+
+            if bool(p_google_2.match(each_file)):
+                start_index = each_file.find("&id=") + 4;
+                end_index =  each_file.rfind("&confirm");
+                each_file = "https://drive.google.com/file/d/" + each_file[start_index:end_index] + "/view"
+            
+            if bool(p_google_3.match(each_file)):
+                start_index = each_file.find("?id=") + 4;
+                end_index =  each_file.rfind("&export");
+                each_file = "https://drive.google.com/file/d/" + each_file[start_index:end_index] + "/view"
 
             # 구글 드라이브 주소가 검출되었을때
             if bool(p_google.match(each_file)):
@@ -830,25 +845,30 @@ def download_blogspot(url,callback):
                     fileName = os.path.basename(parsed_url.path)
                     fileName = unquote(fileName)
 
-                if(not p_extension.match(fileName)):
-                   download_progress_count += 1
-                   callback(download_progress_count,download_progress_length)
-                   continue;
-
-                print("[=] 다운로드 시작 => "+fileName)
-
                 path = outpath + smiDir
+
+                if fileName == "uc":
+                    fileName = gdrive.get_file_name(each_file)
+
+                if(not p_extension.match(fileName)):
+                    download_progress_count += 1
+                    callback(download_progress_count,download_progress_length)
+                    continue;
+
+                print_log("[=] 다운로드 시작 => "+ fileName)
+
                 if not os.path.exists(path):
                     os.makedirs(path)
 
-                gdown.download(each_file, path + fileName, quiet=False)
+                gdrive.download(each_file, path + fileName, quiet=False)
+                print_log("[+] 파일 다운로드가 완료 되었습니다. ")
+                    
                 isDownloaded = 1;
-                print("[+] 파일 다운로드가 완료 되었습니다. ")
                 download_progress_count += 1
                 callback(download_progress_count,download_progress_length)
             # 일반 다운로드 주소가 검출되었을때
             elif bool(p_attach.match(each_file)) == False:
-                print("  Link : %s" % each_file)
+                print_log("  Link : %s" % each_file)
                 remotefile = urlopen(each_file)
                 fileName = remotefile.headers.get_filename();
 
@@ -863,7 +883,12 @@ def download_blogspot(url,callback):
                     fileName = os.path.basename(parsed_url.path)
                     fileName = unquote(fileName)
 
-                print("[=] 다운로드 시작 => "+fileName)
+                if(not p_extension.match(fileName)):
+                   download_progress_count += 1
+                   callback(download_progress_count,download_progress_length)
+                   continue;
+                
+                print_log("[=] 다운로드 시작 => "+fileName)
 
                 path = outpath + smiDir
                 if not os.path.exists(path):
@@ -871,13 +896,13 @@ def download_blogspot(url,callback):
 
                 download(each_file, path + fileName);
                 isDownloaded = 1;
-                print("[+] 파일 다운로드가 완료 되었습니다. ")
+                print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                 download_progress_count += 1
                 callback(download_progress_count,download_progress_length)
             
         except Exception as e:
-            print("[-] Error : %s" % e)
-            print(traceback.format_exc())
+            print_log("[-] Error : %s" % e)
+            print_log(traceback.format_exc())
             download_progress_count += 1
             isDownloadError = 1;
 
@@ -908,11 +933,11 @@ def download_count_blogspot(url):
             each_file = each_file.replace('&amp;','&');
             # 구글 드라이브 주소가 검출되었을때
             if bool(p_google.match(each_file)):
-                print("[+] 구글 드라이브 주소가 검출되었습니다.")
+                print_log("[+] 구글 드라이브 주소가 검출되었습니다.")
                 download_count += 1
             # 일반 다운로드 주소가 검출되었을때
             elif bool(p_attach.match(each_file)) == False:
-                print("[+] 일반 다운로드 주소가 검출되었습니다.")
+                print_log("[+] 일반 다운로드 주소가 검출되었습니다.")
                 download_count += 1
         except Exception as e:
             download_count += 0
@@ -929,14 +954,14 @@ def get_url_source_blogspot(url):
             last_slash_index = url.rfind('/')
             body = url[:last_slash_index]
             query = quote(url[last_slash_index:])
-            #print("출력=> "+body + query)
+            #print_log("출력=> "+body + query)
             f = request.urlopen(body + query)
         url_info = f.info()
         url_charset = client.HTTPMessage.get_charsets(url_info)[0]
         url_source = f.read().decode(url_charset)
         return url_source
     except Exception as e:
-        print("[-] Error : %s" % e)
+        print_log("[-] Error : %s" % e)
         isDownloadError = 1;
         return None;
 
@@ -948,11 +973,11 @@ def run_scheduler(callback):
         if config['download_path'] != "":
             outpath = config['download_path'] + "/"
 
-        print("다운경로: "+outpath)
+        print_log("다운경로: "+outpath)
 
         animelist = json.loads(config['anime_list'])
 
-        print("================================================================")
+        print_log("================================================================")
 
         for k in animelist:
             global AnimeName,AnimeNO
@@ -961,6 +986,6 @@ def run_scheduler(callback):
             requestAnimeSMI(AnimeNO,callback);
 
 if __name__ == "__main__":
-    print("hello")
+    print_log("hello")
     #run_scheduler()
 

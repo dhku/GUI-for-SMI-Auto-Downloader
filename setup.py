@@ -3,7 +3,16 @@ import os
 from cx_Freeze import setup, Executable
 
 # ADD FILES
-files = ['icon.ico','themes/']
+files = ['icon.ico','themes/','anime.yml','downloads/','log']
+
+# ADD PACKAGE
+build_exe_options = {
+    "excludes":[
+    	"tkinter","matplotlib"
+    ],
+    "include_files" : files,
+    "optimize": 2
+}
 
 # TARGET
 target = Executable(
@@ -14,11 +23,11 @@ target = Executable(
 
 # SETUP CX FREEZE
 setup(
-    name = "PyDracula",
+    name = "SMI-AUTO-DOWNLOADER",
     version = "1.0",
-    description = "Modern GUI for Python applications",
-    author = "Wanderson M. Pimenta",
-    options = {'build_exe' : {'include_files' : files}},
+    description = "Modern GUI for SMI-AUTO-DOWNLOADER",
+    author = "KUDONG",
+    options = {'build_exe' : build_exe_options},
     executables = [target]
     
 )

@@ -5,4 +5,4 @@ anime_list: '[
   { "Anime":"이세계 실격", "AnimeNo":"2451" }
 
   ]'
-download_path: E:/QTGUI/Modern_GUI_PyDracula_PySide6_or_PyQt6/download
+download_path: ""

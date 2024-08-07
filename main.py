@@ -43,6 +43,8 @@ clickedRemoveRow = -1;
 isScheduler_button_clicked = False;
 isScheduler_mode = False; 
 
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -50,6 +52,9 @@ class MainWindow(QMainWindow):
         #self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         #self.setAttribute(Qt.WA_TranslucentBackground)
         #self.setStyleSheet("background:transparent;")
+
+        # 콘솔 로깅 초기화
+        # ///////////////////////////////////////////////////////////////
 
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
@@ -74,10 +79,10 @@ class MainWindow(QMainWindow):
         widgets.settingsTopBtn.hide()
 
         # 트레이 설정
-        self.setWindowIcon(QIcon(os.path.abspath('.') + "/images/images/PyDracula.png"))
+        self.setWindowIcon(QIcon("./icon.ico"))
 
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon(os.path.abspath('.') + "/images/images/PyDracula.png"))  # 트레이 아이콘으로 사용할 이미지 파일의 경로
+        self.tray_icon.setIcon(QIcon("./icon.ico"))  # 트레이 아이콘으로 사용할 이미지 파일의 경로
         tray_menu = QMenu(self)
 
         restore_action = QAction("열기", self)
@@ -396,7 +401,11 @@ class MainWindow(QMainWindow):
         with open('anime.yml', 'r', encoding='utf-8') as file:
             data = yaml.safe_load(file)
 
-        outpath = os.path.abspath('.')
+        outpath = os.path.abspath('.') + "/downloads"
+
+        if not os.path.exists(outpath):
+            os.makedirs(outpath)
+
         if(data['download_path'] != ""):
             outpath = data['download_path']
         else:
@@ -637,6 +646,7 @@ class MainWindow(QMainWindow):
                     )
 
         log_file_list = natsort.natsorted(os.listdir(os.path.abspath('.') + "/log"))
+        log_file_list.remove("error.log")
 
         log_size = len(log_file_list)
         if(log_size > 30):
@@ -761,6 +771,7 @@ class MainWindow(QMainWindow):
 
         if isFinished == True:
             log_file_list = natsort.natsorted(os.listdir(os.path.abspath('.') + "/log"))
+            log_file_list.remove("error.log")
 
             log_size = len(log_file_list)
             if(log_size > 30):
@@ -868,6 +879,7 @@ class WorkerThread(QThread):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
 if __name__ == "__main__":
+    # console_logger_init()
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
