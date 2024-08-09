@@ -42,7 +42,7 @@ selectedAnime_LeftBox = None
 clickedRemoveRow = -1;
 isScheduler_button_clicked = False;
 isScheduler_mode = False; 
-
+download_thread = None
 
 
 class MainWindow(QMainWindow):
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
         # APP NAME
         # ///////////////////////////////////////////////////////////////
         title = "SMI-AUTO-DOWNLOADER"
-        description = "SMI-AUTO-DOWNLOADER - Automation of Subtitle Download for Anime Fanboys"
+        description = "SMI-AUTO-DOWNLOADER - Automation of Subtitle Download for Anime Fans"
         # APPLY TEXTS
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
@@ -89,8 +89,13 @@ class MainWindow(QMainWindow):
         restore_action.triggered.connect(self.showNormal)
         tray_menu.addAction(restore_action)
 
+
+        def closeApp():
+            set_global_quitSignal(True)
+            QApplication.instance().quit()
+
         quit_action = QAction("종료", self)
-        quit_action.triggered.connect(QApplication.instance().quit)
+        quit_action.triggered.connect(closeApp)
         tray_menu.addAction(quit_action)
 
         # Set the context menu to the tray icon
@@ -301,6 +306,7 @@ class MainWindow(QMainWindow):
             self.smiWorker.start()
 
         def directDownload():
+            global download_thread
             if(selectedAnime_LeftBox is not None):
                 #widgets.left_progressBar.show()
 
@@ -314,8 +320,8 @@ class MainWindow(QMainWindow):
                 
                 if lock_Scheduler() == True:
                     widgets.left_progressBar.setValue(0)
-                    thread = threading.Thread(target= lambda: requestAnimeSMI_3(selectedAnime_LeftBox,callback_test))
-                    thread.start()
+                    download_thread = threading.Thread(target= lambda: requestAnimeSMI_3(selectedAnime_LeftBox,callback_test))
+                    download_thread.start()
                 else:
                     QMessageBox.information( 
                     window, 

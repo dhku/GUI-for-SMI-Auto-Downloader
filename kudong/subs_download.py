@@ -60,6 +60,8 @@ regrex3 = re.compile(r".*(tistory).*")
 thread_lock = threading.Lock()
 isRunning = False
 
+quitSignal = False
+
 def download(url, file_name = None):
     with open(file_name, "wb") as file:  
         response = requests.get(url)              
@@ -73,6 +75,10 @@ def text_to_file(txt, file_name):
 def set_global_outpath(path):
     global outpath
     outpath = path + "/"
+
+def set_global_quitSignal(signal):
+    global quitSignal
+    quitSignal = signal
 
 def get_global_outpath():
     return outpath
@@ -269,6 +275,10 @@ def requestMultipleAnimeSMI(callback):
 
         count = 0
         for json_data in list:
+
+            if quitSignal == True:
+                break
+
             AnimeName = key1[count]
             AnimeNO = key2[count]
             _requestAnimeSMI(AnimeNO,callback,new_filename,json_data)
@@ -288,6 +298,9 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
     global smiDir,isDownloadError,download_progress_count,download_progress_length,console_output
 
     for k in json_data:
+        
+        if quitSignal == True:
+            break
 
         isDownloadError = 0;
 
