@@ -110,7 +110,7 @@ class MainWindow(QMainWindow):
             window.tray_icon.showMessage(
                 "SMI-AUTO-DOWNLOADER",
                 "해당 어플리케이션은 시스템 트레이에 최소화 되었습니다.",
-                QSystemTrayIcon.Information,
+                QIcon("icon.ico"),
                 2000
         )
             
