@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
         # APP NAME
         # ///////////////////////////////////////////////////////////////
         title = "SMI-AUTO-DOWNLOADER"
-        description = "SMI-AUTO-DOWNLOADER - Automation of Subtitle for Anime Fanboys"
+        description = "SMI-AUTO-DOWNLOADER - Automation of Subtitle Download for Anime Fanboys"
         # APPLY TEXTS
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
@@ -79,10 +79,10 @@ class MainWindow(QMainWindow):
         widgets.settingsTopBtn.hide()
 
         # 트레이 설정
-        self.setWindowIcon(QIcon("./icon.ico"))
+        self.setWindowIcon(QIcon("icon.ico"))
 
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon("./icon.ico"))  # 트레이 아이콘으로 사용할 이미지 파일의 경로
+        self.tray_icon.setIcon(QIcon("icon.ico"))  # 트레이 아이콘으로 사용할 이미지 파일의 경로
         tray_menu = QMenu(self)
 
         restore_action = QAction("열기", self)
@@ -192,6 +192,10 @@ class MainWindow(QMainWindow):
                     item = widgets.anime_time_table.item(row, column)
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 
+            widgets.anime_time_table.horizontalScrollBar().setValue(
+                    widgets.log_console.horizontalScrollBar().minimum()
+            )
+
         widgets.pushButton_sun.clicked.connect(partial(clickWeekendButton,0))
         widgets.pushButton_mon.clicked.connect(partial(clickWeekendButton,1))
         widgets.pushButton_tue.clicked.connect(partial(clickWeekendButton,2))
@@ -299,7 +303,6 @@ class MainWindow(QMainWindow):
         def directDownload():
             if(selectedAnime_LeftBox is not None):
                 #widgets.left_progressBar.show()
-                widgets.left_progressBar.setValue(0);
 
                 widgets.log_console.setPlainText("")
                 widgets.log_console.verticalScrollBar().setValue(
@@ -310,6 +313,7 @@ class MainWindow(QMainWindow):
                 widgets.left_progressName.setWordWrap(True)
                 
                 if lock_Scheduler() == True:
+                    widgets.left_progressBar.setValue(0)
                     thread = threading.Thread(target= lambda: requestAnimeSMI_3(selectedAnime_LeftBox,callback_test))
                     thread.start()
                 else:
@@ -836,7 +840,7 @@ class MainWindow(QMainWindow):
             # UIFunctions.resetStyle(self, btnName)
             # btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
-            webbrowser.open("https://github.com/dhku/SMI-Auto-Downloader")
+            webbrowser.open("https://github.com/dhku/GUI-for-SMI-Auto-Downloader")
             # QMessageBox.information( 
             # window, 
             # "Application Name", 
@@ -879,7 +883,7 @@ class WorkerThread(QThread):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
 if __name__ == "__main__":
-    # console_logger_init()
+    console_logger_init()
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()

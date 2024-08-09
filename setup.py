@@ -25,7 +25,7 @@ target = Executable(
 setup(
     name = "SMI-AUTO-DOWNLOADER",
     version = "1.0",
-    description = "Modern GUI for SMI-AUTO-DOWNLOADER",
+    description = "SMI-AUTO-DOWNLOADER",
     author = "KUDONG",
     options = {'build_exe' : build_exe_options},
     executables = [target]

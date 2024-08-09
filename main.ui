@@ -73,8 +73,9 @@ Left Menu */
 }
 #topLogo {
 	background-color: rgb(33, 37, 43);
-	background-image: url(:/images/images/images/PyDracula.png);
-	background-position: centered;
+	/*background-image: url(:/images/images/images/logo.png);*/
+	border-image: url(:/images/images/images/logo.png) ;
+	background-position: center center;
 	background-repeat: no-repeat;
 }
 #titleLeftApp { font: 63 12pt &quot;Segoe UI Semibold&quot;; }
