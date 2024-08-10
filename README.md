@@ -1,10 +1,13 @@
-![logo](./images/readme/logo.png)
+<p align="center">
+  <img src="./images/readme/logo.png" width="50%"/>
+  <br>
+</p>
 
 # GUI For SMI Auto Downloader
 
 ![title](./images/readme/main.png)
 
-자막 다운로드를 원클릭으로 쉽게 받을수 있는 프로그램입니다.
+자막을 원클릭으로 쉽게 다운로드 받을 수 있는 프로그램입니다.
 
 [Download GUI For SMI Auto Downloader](https://github.com/dhku/GUI-for-SMI-Auto-Downloader/releases)
 
