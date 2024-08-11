@@ -3,7 +3,7 @@ import os
 from cx_Freeze import setup, Executable
 
 # ADD FILES
-files = ['icon.ico','themes/','anime.yml','downloads/','log']
+files = ['icon.ico','themes/','anime.yml','settings.yml','downloads/','log']
 
 # ADD PACKAGE
 build_exe_options = {
@@ -16,7 +16,7 @@ build_exe_options = {
 
 # TARGET
 target = Executable(
-    script="main.py",
+    script="SMIAutoDownloader.py",
     base="Win32GUI",
     icon="icon.ico"
 )

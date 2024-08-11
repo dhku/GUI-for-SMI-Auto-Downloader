@@ -887,9 +887,15 @@ class WorkerThread(QThread):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
 if __name__ == "__main__":
+
+    with open('settings.yml', encoding='UTF8') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        os.environ["QT_FONT_DPI"] = str(config['resolution'])
+
     console_logger_init() # 배포시 활성화
     app = QApplication(sys.argv)
     QApplication.setStyle(QStyleFactory.create("WindowsVista"));
+
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
     sys.exit(app.exec_())
