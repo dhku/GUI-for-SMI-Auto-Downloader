@@ -6,6 +6,9 @@
 #
 # ///////////////////////////////////////////////////////////////
 
+# IMPORT / GUI AND MODULES AND WIDGETS
+# ///////////////////////////////////////////////////////////////
+
 import sys
 import os
 import platform
@@ -15,8 +18,6 @@ import natsort
 from datetime import datetime
 from functools import partial
 
-# IMPORT / GUI AND MODULES AND WIDGETS
-# ///////////////////////////////////////////////////////////////
 from modules import *
 from widgets import *
 from kudong import *
@@ -24,47 +25,37 @@ os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
 # SET AS GLOBAL WIDGETS
 # ///////////////////////////////////////////////////////////////
+
 widgets = None
 
 animeWeeklist = []
 animeWeekIdx = 0
 selectedAnime_LeftBox = None
 
-#2. Download Page
 clickedRemoveRow = -1;
 isScheduler_button_clicked = False;
 isScheduler_mode = False; 
 download_thread = None
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
-        #self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        #self.setAttribute(Qt.WA_TranslucentBackground)
-        #self.setStyleSheet("background:transparent;")
-
-        # 콘솔 로깅 초기화
-        # ///////////////////////////////////////////////////////////////
-
-        # SET AS GLOBAL WIDGETS
+        # 위젯 전역 설정
         # ///////////////////////////////////////////////////////////////
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         global widgets
-
         widgets = self.ui
 
-        # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
+        # 커스텀 제목 사용 | USE AS "False" FOR MAC OR LINUX
         # ///////////////////////////////////////////////////////////////
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
 
-        # APP NAME
+        # 타이틀 이름
         # ///////////////////////////////////////////////////////////////
         title = "SMI-AUTO-DOWNLOADER"
         description = "SMI-AUTO-DOWNLOADER - Automation of Subtitle Download for Anime Fans"
-        # APPLY TEXTS
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
 
@@ -91,13 +82,10 @@ class MainWindow(QMainWindow):
         quit_action.triggered.connect(closeApp)
         tray_menu.addAction(quit_action)
 
-        # Set the context menu to the tray icon
         self.tray_icon.setContextMenu(tray_menu)
-
-        # Show the tray icon
         self.tray_icon.show()
 
-        # CLOSE APPLICATION
+        # 어플리케이션 종료시
         def minimize_to_tray():
             window.hide()
             window.tray_icon.showMessage(
@@ -114,15 +102,16 @@ class MainWindow(QMainWindow):
         widgets.closeAppBtn.clicked.connect(minimize_to_tray)
         self.tray_icon.activated.connect(on_tray_icon_activated) 
 
-        # TOGGLE MENU
+        # 토글 메뉴
         # ///////////////////////////////////////////////////////////////
         widgets.toggleButton.clicked.connect(lambda: UIFunctions.toggleMenu(self, True))
 
-        # SET UI DEFINITIONS
+        # 내부 UI 셋팅
         # ///////////////////////////////////////////////////////////////
         UIFunctions.uiDefinitions(self)
 
         self.smiWorker = None
+
         # 1. Schedule Page
         # //////////////////////////////////////////////////////////////////
 
@@ -148,10 +137,8 @@ class MainWindow(QMainWindow):
 
         def clickWeekendButton(idx):
             global animeWeeklist,animeWeekIdx
-
             #print("idx 클릭 "+ str(idx))
             count = 0
-
             beforeSheet = "background-color: rgb(52, 59, 72); font-size: 30px; font-weight: bold;"
             setWeekendButtonStyle(animeWeekIdx, beforeSheet)
             afterSheet = "background-color: rgb(156, 179, 199); font-size: 30px; font-weight: bold; color: rgb(255, 255, 255);"
@@ -175,7 +162,6 @@ class MainWindow(QMainWindow):
                 isOnAir = ""
                 if k.status == "OFF":
                     isOnAir = "[결방] "
-
 
                 item = QTableWidgetItem(k.time)
                 item.setFont(font)
@@ -352,7 +338,7 @@ class MainWindow(QMainWindow):
         widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:600;'>"+idle_text+"</span></p></body></html>");
         widgets.label.setWordWrap(True)
         
-        # QTableWidget PARAMETERS
+        # QTableWidget 편성표 테이블 설정
 
         widgets.anime_time_table.setSelectionBehavior(QTableWidget.SelectRows)
         widgets.anime_time_table.verticalHeader().setDefaultSectionSize(60)
@@ -381,7 +367,7 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         widgets.scheduler_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
-        # QFileDialog
+        # 다운로드 경로 선택시
         def on_openfile_clicked():
             #fileDir = QFileDialog.getOpenFileName(self);
             #widgets.yml_downloadPath.setText(outpath)
@@ -404,6 +390,7 @@ class MainWindow(QMainWindow):
                     "anime_list: '" + data['anime_list'] + "'\n"  + 
                     "download_path: '" + data['download_path'] + "'"
                 );
+        
         #outpath
 
         with open('anime.yml', 'r', encoding='utf-8') as file:
@@ -840,27 +827,19 @@ class MainWindow(QMainWindow):
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
         if btnName == "btn_exit":
-            # widgets.stackedWidget.setCurrentWidget(widgets.home)
-            # UIFunctions.resetStyle(self, btnName)
-            # btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
-
             webbrowser.open("https://github.com/dhku/GUI-for-SMI-Auto-Downloader")
-            # QMessageBox.information( 
-            # window, 
-            # "Application Name", 
-            # "An information message.");
 
-        # PRINT BTN NAME
+        # 버튼 디버깅
         #print(btn.styleSheet())
         #print(f'Button "{btnName}" pressed!')
 
-    # RESIZE EVENTS
+    # 리사이징 이벤트
     # ///////////////////////////////////////////////////////////////
     def resizeEvent(self, event):
         # Update Size Grips
         UIFunctions.resize_grips(self)
 
-    # MOUSE CLICK EVENTS
+    # 마우스 클릭 이벤트
     # ///////////////////////////////////////////////////////////////
     def mousePressEvent(self, event):
         # SET DRAG POS WINDOW
@@ -886,13 +865,18 @@ class WorkerThread(QThread):
     def run(self):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
+# 진입점
 if __name__ == "__main__":
 
+    # HIDPI 값 불러오기
     with open('settings.yml', encoding='UTF8') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
         os.environ["QT_FONT_DPI"] = str(config['resolution'])
 
+    # 콘솔 로깅
     console_logger_init() # 배포시 활성화
+
+    # UI 인스턴스화
     app = QApplication(sys.argv)
     QApplication.setStyle(QStyleFactory.create("WindowsVista"));
 

@@ -59,7 +59,6 @@ regrex3 = re.compile(r".*(tistory).*")
 
 thread_lock = threading.Lock()
 isRunning = False
-
 quitSignal = False
 
 def download(url, file_name = None):
@@ -600,8 +599,6 @@ def download_tistory(url,callback):
         print_log("[-] It is not a Tistory Blog")
         isDownloadError = 1;
         return;
-
-    #text_to_file(get_url_source_tistory( "https://harnenim.github.io/WinPNG/Viewer.html?url=" + url), "hello.html");
 
     try:
         # find all 'attach file link'
