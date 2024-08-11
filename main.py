@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         global widgets
+
         widgets = self.ui
 
         # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
@@ -159,6 +160,11 @@ class MainWindow(QMainWindow):
 
             widgets.anime_time_table.clearContents()
             animeWeeklist = requestAnimeWeekInfo(idx)
+
+            if animeWeeklist is None:
+                reply = QMessageBox.information(self,'SMI-DOWNLOADER','현재 애니시아 서버와 연결할수 없습니다!')
+                return
+
             widgets.anime_time_table.setRowCount(len(animeWeeklist))
             widgets.anime_time_table.setColumnCount(7)
 
@@ -881,7 +887,7 @@ class WorkerThread(QThread):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
 if __name__ == "__main__":
-    console_logger_init()
+    console_logger_init() # 배포시 활성화
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()

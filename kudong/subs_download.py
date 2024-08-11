@@ -257,7 +257,12 @@ def requestMultipleAnimeSMI(callback):
             AnimeName = k['Anime']
             AnimeNO = k['AnimeNo']
 
-            response = requests.get("https://api.anissia.net/anime/caption/animeNo/" + str(AnimeNO))
+            try:
+                response = requests.get("https://api.anissia.net/anime/caption/animeNo/" + str(AnimeNO))
+            except Exception as e:
+                print_log("[-] 현재 애니시아 서버와 연결할수 없습니다..... :-(")
+                break
+
             #print_log(response.status_code)
             datas = json.loads(response.text)
             json_data = datas["data"]

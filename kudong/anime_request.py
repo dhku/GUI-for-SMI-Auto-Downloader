@@ -50,9 +50,11 @@ class SubsInfo:
 
 def requestAnimeWeekInfo(week):
     list = []
-    response = requests.get("https://api.anissia.net/anime/schedule/" + str(week))
 
-    #print(response.status_code)
+    try:
+        response = requests.get("https://api.anissia.net/anime/schedule/" + str(week),timeout=3)
+    except Exception as e:
+        return None
 
     datas = json.loads(response.text)
     json_data = datas["data"]
@@ -93,6 +95,7 @@ def requestAnimeWeekInfo(week):
                     captionCount,
                     website));
     return list
+
 
 def requestAnimeSubsInfo(anime):
 
