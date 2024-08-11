@@ -889,6 +889,7 @@ class WorkerThread(QThread):
 if __name__ == "__main__":
     console_logger_init() # 배포시 활성화
     app = QApplication(sys.argv)
+    QApplication.setStyle(QStyleFactory.create("WindowsVista"));
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
     sys.exit(app.exec_())
