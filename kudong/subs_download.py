@@ -180,11 +180,11 @@ def requestAnimeSMI_2(AnimeNo,name,callback):
 def requestAnimeSMI(AnimeNo,callback):
     global smiDir,isDownloadError,download_progress_count,download_progress_length,console_output,isRunning
 
-    print_log("다운경로: "+outpath)
-    print_log("================================================================")
-
     # 콘솔 출력 결과물 초기화
     console_output = ""
+
+    print_log("다운경로: "+outpath)
+    print_log("================================================================")
 
     # 로그 파일 디렉토리가 존재하지 않을시 생성
     if not os.path.exists(log_path):
@@ -232,11 +232,11 @@ def requestMultipleAnimeSMI(callback):
 
         animelist = json.loads(config['anime_list'])
 
-        print_log("다운경로: "+outpath)
-        print_log("================================================================")
-
         # 콘솔 출력 결과물 초기화
         console_output = ""
+
+        print_log("다운경로: "+outpath)
+        print_log("================================================================")
 
         # 로그 파일 디렉토리가 존재하지 않을시 생성
         if not os.path.exists(log_path):
