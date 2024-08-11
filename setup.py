@@ -16,7 +16,7 @@ build_exe_options = {
 
 # TARGET
 target = Executable(
-    script="SMIAutoDownloader.py",
+    script="main.py",
     base="Win32GUI",
     icon="icon.ico"
 )
