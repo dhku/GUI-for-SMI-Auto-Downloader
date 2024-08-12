@@ -21,7 +21,7 @@ from functools import partial
 from modules import *
 from widgets import *
 from kudong import *
-os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
+os.environ["QT_FONT_DPI"] = "96" # HiDPI 기본값 100%
 
 # SET AS GLOBAL WIDGETS
 # ///////////////////////////////////////////////////////////////

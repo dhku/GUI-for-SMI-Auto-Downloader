@@ -59,5 +59,5 @@
 
 <img src="./images/readme/resolution.png" alt="title"  />
 
-* 기본 해상도 배율은 96% 입니다.
+* 기본 해상도 DPI는 96 입니다. (100% 배율)
 * 해상도 배율을 변경하기 위해서는 settings.yml 을 열어 resolution 값을 변경합니다. (프로그램 재시작 필요)
