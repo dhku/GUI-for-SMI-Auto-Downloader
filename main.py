@@ -2,7 +2,7 @@
 #
 # BY: KUDONG
 # PROJECT: SMI-AUTO-DOWNLOADER
-# Version: 1.0.0
+# Version: 1.1.0
 #
 # ///////////////////////////////////////////////////////////////
 
@@ -73,7 +73,6 @@ class MainWindow(QMainWindow):
         restore_action.triggered.connect(self.showNormal)
         tray_menu.addAction(restore_action)
 
-
         def closeApp():
             set_global_quitSignal(True)
             QApplication.instance().quit()
@@ -135,6 +134,7 @@ class MainWindow(QMainWindow):
             elif idx == 8:
                 widgets.pushButton_new.setStyleSheet(sheet);
 
+
         def clickWeekendButton(idx):
             global animeWeeklist,animeWeekIdx
             #print("idx 클릭 "+ str(idx))
@@ -155,26 +155,46 @@ class MainWindow(QMainWindow):
             widgets.anime_time_table.setRowCount(len(animeWeeklist))
             widgets.anime_time_table.setColumnCount(7)
 
+            widgets.anime_time_table.setFocusPolicy(Qt.NoFocus)
+
             font = QFont()
             font.setPointSize(25)
 
             for k in animeWeeklist:
-                isOnAir = ""
-                if k.status == "OFF":
-                    isOnAir = "[결방] "
+                prefix = ""
+                
+                if idx < 7:
+                    currentDate = datetime.now()
+                    startDate = None
+                    endDate = None
+
+                    if k.startDate != '':
+                        startDate = datetime.strptime(k.startDate, '%Y-%m-%d')
+                        #print("출력" + k.startDate)
+
+                    if k.endDate != '':
+                        endDate = datetime.strptime(k.endDate, '%Y-%m-%d')
+                        #print("출력" + k.endDate)
+
+                    if k.status == "OFF":
+                        prefix = "[결방] "
+                    elif endDate is not None and currentDate > endDate:
+                        prefix = "[完] "
+                    elif startDate is not None and currentDate < startDate:
+                        prefix = startDate.strftime("[%m-%d] ")
 
                 item = QTableWidgetItem(k.time)
                 item.setFont(font)
 
                 widgets.anime_time_table.setItem(count,0,item);
-                widgets.anime_time_table.setItem(count,1,QTableWidgetItem(isOnAir + k.subject));
+                widgets.anime_time_table.setItem(count,1,QTableWidgetItem(prefix + k.subject));
                 widgets.anime_time_table.setItem(count,2,QTableWidgetItem(str(k.animeNo)));
                 widgets.anime_time_table.setItem(count,3,QTableWidgetItem(k.genres));
                 
                 widgets.anime_time_table.setItem(count,4,QTableWidgetItem(k.startDate));
                 widgets.anime_time_table.setItem(count,5,QTableWidgetItem(str(k.captionCount)));
                 widgets.anime_time_table.setItem(count,6,QTableWidgetItem(k.website));  
-                count += 1                 
+                count += 1     
 
             for row in range(widgets.anime_time_table.rowCount()):
                 for column in range(widgets.anime_time_table.columnCount()):
@@ -865,6 +885,7 @@ class WorkerThread(QThread):
     def run(self):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
+
 # 진입점
 if __name__ == "__main__":
 
@@ -874,7 +895,7 @@ if __name__ == "__main__":
         os.environ["QT_FONT_DPI"] = str(config['resolution'])
 
     # 콘솔 로깅
-    console_logger_init() # 배포시 활성화
+    #console_logger_init() # 배포시 활성화
 
     # UI 인스턴스화
     app = QApplication(sys.argv)

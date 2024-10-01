@@ -36,7 +36,7 @@ from functools import partial
 # =================================================
 # Title: SMI AUTO DOWNLOADER
 # Author: KUDONG
-# Version: 1.2
+# Version: 1.3
 # Url: https://github.com/dhku/SMI-Auto-Downloader
 # =================================================
 
