@@ -122,6 +122,7 @@ def get_new_log_file():
     return new_filename
 
 def get_download_progress_length(json_data):
+    global AnimeName
     #다운로드 사이즈 체크
     download_progress_length = 0
     for k in json_data:
@@ -131,7 +132,10 @@ def get_download_progress_length(json_data):
         updDt = k['updDt']
         website = unquote(k['website'])
 
-        smiDir = AnimeName + "/" + episode + "화/" + name + "/"
+        folder_name = AnimeName
+        folder_name = folder_name.replace(":","")
+        folder_name = folder_name.replace("/","")
+        smiDir = folder_name + "/" + episode + "화/" + name + "/"
 
         if os.path.isfile(outpath + smiDir + "finish.txt"):
             continue;
@@ -322,10 +326,11 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
         print_log("> 업데이트: " + updDt)
         print_log("> 주소: " + website)
 
-        AnimeName = AnimeName.replace(":","")
-        AnimeName = AnimeName.replace("/","")
+        folder_name = AnimeName
+        folder_name = folder_name.replace(":","")
+        folder_name = folder_name.replace("/","")
         
-        smiDir = AnimeName + "/" + episode + "화/" + name + "/"
+        smiDir = folder_name + "/" + episode + "화/" + name + "/"
 
         if os.path.isfile(outpath + smiDir + "finish.txt"):
             print_log("[=] 이전에 생성된 finish.txt가 발견되어 과정이 스킵되었습니다.")
