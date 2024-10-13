@@ -299,7 +299,7 @@ def requestMultipleAnimeSMI(callback):
         unlock_Scheduler()
 
 def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
-    global smiDir,isDownloadError,download_progress_count,download_progress_length,console_output
+    global AnimeName,smiDir,isDownloadError,download_progress_count,download_progress_length,console_output
 
     for k in json_data:
         
@@ -313,8 +313,6 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
         updDt = k['updDt']
         website = unquote(k['website'])
 
-        smiDir = AnimeName + "/" + episode + "화/" + name + "/"
-
         callback(download_progress_count,download_progress_length,"<"+AnimeName+"> 다운로드중...")
         print_log("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
         print_log("ANIME SMI AUTO DOWNLOADER - Target => <"+AnimeName+">")    
@@ -323,6 +321,11 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
         print_log("> 회차: " + episode+"화")
         print_log("> 업데이트: " + updDt)
         print_log("> 주소: " + website)
+
+        AnimeName = AnimeName.replace(":","")
+        AnimeName = AnimeName.replace("/","")
+        
+        smiDir = AnimeName + "/" + episode + "화/" + name + "/"
 
         if os.path.isfile(outpath + smiDir + "finish.txt"):
             print_log("[=] 이전에 생성된 finish.txt가 발견되어 과정이 스킵되었습니다.")

@@ -164,7 +164,9 @@ class MainWindow(QMainWindow):
                 prefix = ""
                 
                 if idx < 7:
-                    currentDate = datetime.now()
+                    date_str = datetime.now().strftime("%Y-%m-%d")
+                    currentDate = datetime.strptime(date_str, "%Y-%m-%d")
+
                     startDate = None
                     endDate = None
 
@@ -180,7 +182,7 @@ class MainWindow(QMainWindow):
                         prefix = "[결방] "
                     elif endDate is not None and currentDate > endDate:
                         prefix = "[完] "
-                    elif startDate is not None and currentDate < startDate:
+                    elif startDate is not None and currentDate <= startDate:
                         prefix = startDate.strftime("[%m-%d] ")
 
                 item = QTableWidgetItem(k.time)
