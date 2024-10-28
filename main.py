@@ -276,7 +276,7 @@ class MainWindow(QMainWindow):
                     elif total_sec < 2592000: #30일 이내
                         time_diff_str = time_diff_prefix + str(round(total_sec/86400)) + "일 전)"
                     else: 
-                        time_diff_str = time_diff_prefix + updDtStr[:updDtStr.rfind("T")]
+                        time_diff_str = time_diff_prefix + updDtStr[:updDtStr.rfind("T")] +")"
 
                     if(website == ""):
                         button = QPushButton("준비중 "+name+ " "+updDtStr[:updDtStr.rfind("T")])
