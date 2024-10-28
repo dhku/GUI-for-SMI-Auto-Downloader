@@ -11,7 +11,6 @@
 
 import sys
 import os
-import platform
 import webbrowser
 import threading
 import natsort
@@ -256,13 +255,33 @@ class MainWindow(QMainWindow):
                     name = k.name
                     episode = k.episode
                     website = k.website
-                    updDt = k.updDt
-                    updDt = updDt[:updDt.rfind("T")]
+                    updDtStr = k.updDt
+
+                    updDt = datetime.strptime(updDtStr, "%Y-%m-%dT%H:%M:%S")
+                    currentDt = datetime.now();
+
+                    time_diff = currentDt - updDt
+                    time_diff_str = ""
+                    #print("time_diff = " + time_diff)
+
+                    time_diff_prefix = " - "
+                    total_sec = time_diff.total_seconds();
+
+                    if total_sec < 60: # 60초 이내
+                        time_diff_str = time_diff_prefix + str(total_sec) + "초 전"
+                    elif total_sec < 3600: # 60분 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/60)) + "분 전"
+                    elif total_sec < 86400: # 24시간 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/3600)) + "시간 전"
+                    elif total_sec < 2592000: #30일 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/86400)) + "일 전"
+                    else: 
+                        time_diff_str = time_diff_prefix + updDtStr[:updDtStr.rfind("T")]
 
                     if(website == ""):
-                        button = QPushButton("준비중 "+name+ " "+updDt)
+                        button = QPushButton("준비중 "+name+ " "+updDtStr[:updDtStr.rfind("T")])
                     else:
-                        button = QPushButton(episode+"화 "+name)
+                        button = QPushButton(episode+"화 "+name + time_diff_str)
                         button.clicked.connect(partial(open_url,website))
 
                     button.setMinimumSize(0, 60)

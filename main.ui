@@ -3655,7 +3655,7 @@ font-size: 30px; font-weight: bold;</string>
                 <item>
                  <widget class="QLabel" name="version">
                   <property name="text">
-                   <string>v1.2.0</string>
+                   <string>v1.3.0</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
