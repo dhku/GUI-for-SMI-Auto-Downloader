@@ -264,7 +264,7 @@ class MainWindow(QMainWindow):
                     time_diff_str = ""
                     #print("time_diff = " + time_diff)
 
-                    time_diff_prefix = " - "
+                    time_diff_prefix = " "
                     total_sec = time_diff.total_seconds();
 
                     if total_sec < 60: # 60초 이내
