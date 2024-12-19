@@ -10,6 +10,7 @@ import traceback
 import threading
 import natsort
 import gdrive
+import urllib.error
 from http import client
 from urllib import request
 from urllib.request import urlopen
@@ -36,7 +37,7 @@ from functools import partial
 # =================================================
 # Title: SMI AUTO DOWNLOADER
 # Author: KUDONG
-# Version: 1.3
+# Version: 1.5
 # Url: https://github.com/dhku/SMI-Auto-Downloader
 # =================================================
 
@@ -494,11 +495,13 @@ def download_naver(url,callback):
                         print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                         download_progress_count += 1
                         callback(download_progress_count,download_progress_length)
-                    
+
+                except urllib.error.HTTPError as e:
+                    print_log("[=] 해당 URL은 스킵되었습니다. : %s" % e)
+                    download_progress_count += 1
                 except Exception as e:
                     print_log("[-] Error : %s" % e)
                     download_progress_count += 1
-                    isDownloadError = 1;
             
             if(file_found == 0):
                 print_log("[-] Attached File not found !!")
@@ -720,12 +723,14 @@ def download_tistory(url,callback):
                         print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                         download_progress_count += 1
                         callback(download_progress_count,download_progress_length)
-                    
+
+                except urllib.error.HTTPError as e:
+                    print_log("[=] 해당 URL은 스킵되었습니다. : %s" % e)
+                    download_progress_count += 1    
                 except Exception as e:
                     print_log("[-] Error : %s" % e)
                     print_log(traceback.format_exc())
                     download_progress_count += 1
-                    isDownloadError = 1;
             
             if(file_found == 0):
                 print_log("[-] Attached File not found !!")
@@ -922,12 +927,14 @@ def download_blogspot(url,callback):
                 print_log("[+] 파일 다운로드가 완료 되었습니다. ")
                 download_progress_count += 1
                 callback(download_progress_count,download_progress_length)
-            
+
+        except urllib.error.HTTPError as e:
+            print_log("[=] 해당 URL은 스킵되었습니다. : %s" % e)
+            download_progress_count += 1 
         except Exception as e:
             print_log("[-] Error : %s" % e)
             print_log(traceback.format_exc())
             download_progress_count += 1
-            isDownloadError = 1;
 
     if isDownloaded == 0:
         isDownloadError = 1;
