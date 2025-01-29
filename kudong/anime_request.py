@@ -24,7 +24,9 @@ class AnimeInfo:
                  startDate,
                  endDate,
                  captionCount,
-                 website):
+                 website,
+                 weekNo
+                 ):
         self.animeNo = animeNo
         self.status = status
         self.time = time
@@ -34,6 +36,7 @@ class AnimeInfo:
         self.endDate = endDate
         self.captionCount = captionCount
         self.website = website
+        self.weekNo = weekNo
 
 class SubsInfo:
 
@@ -70,7 +73,7 @@ def requestAnimeWeekInfo(week):
         endDate = k['endDate']
         captionCount = k['captionCount']
         website = unquote(k['website'])
-
+        weekNo = week
 
         # print("ANIME SMI AUTO DOWNLOADER - Target => <"+subject+">")    
         # print("================================================================")
@@ -93,7 +96,9 @@ def requestAnimeWeekInfo(week):
                     startDate,
                     endDate,
                     captionCount,
-                    website));
+                    website,
+                    weekNo
+                    ));
     return list
 
 

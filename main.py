@@ -138,9 +138,9 @@ class MainWindow(QMainWindow):
             global animeWeeklist,animeWeekIdx
             #print("idx 클릭 "+ str(idx))
             count = 0
-            beforeSheet = "background-color: rgb(52, 59, 72); font-size: 30px; font-weight: bold;"
+            beforeSheet = "background-color: rgb(52, 59, 72); font-size: 32px; font-weight: bold;"
             setWeekendButtonStyle(animeWeekIdx, beforeSheet)
-            afterSheet = "background-color: rgb(156, 179, 199); font-size: 30px; font-weight: bold; color: rgb(255, 255, 255);"
+            afterSheet = "background-color: rgb(156, 179, 199); font-size: 32px; font-weight: bold; color: rgb(255, 255, 255);"
             setWeekendButtonStyle(idx, afterSheet)
             animeWeekIdx = idx
 
@@ -158,6 +158,7 @@ class MainWindow(QMainWindow):
 
             font = QFont()
             font.setPointSize(25)
+            font.setBold(QFont.Bold)
 
             for k in animeWeeklist:
                 prefix = ""
@@ -236,8 +237,77 @@ class MainWindow(QMainWindow):
 
                 #print("Item data:", anime.subject)
 
-                widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:600;'>"+anime.subject+"</span></p></body></html>");
+                widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
                 widgets.label.setWordWrap(True)
+
+                startDate = None;
+                endDate = None;
+                currentDate = datetime.now();
+
+                if anime.startDate != '':
+
+                    try:
+                        startDate = datetime.strptime(anime.startDate, '%Y-%m-%d')
+                    except Exception as e:  
+                        startDate = None;
+
+                    try:
+                        endDate = datetime.strptime(anime.endDate, '%Y-%m-%d')
+                    except Exception as e:  
+                        endDate = None;  
+                    
+                    week_Ko = None;
+
+                    if anime.weekNo == 0:
+                        week_Ko = "일"
+                    elif anime.weekNo == 1:  
+                        week_Ko = "월"
+                    elif anime.weekNo == 2:  
+                        week_Ko = "화"
+                    elif anime.weekNo == 3:  
+                        week_Ko = "수"
+                    elif anime.weekNo == 4:  
+                        week_Ko = "목"
+                    elif anime.weekNo == 5:  
+                        week_Ko = "금"
+                    elif anime.weekNo == 6:  
+                        week_Ko = "토"
+
+                    if anime.status == 'ON':
+                        if startDate is not None and currentDate <= startDate :
+                            widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                            widgets.label_date.setWordWrap(True)
+                            widgets.label_date.show()
+                        else:
+                            if endDate is not None:
+                                if startDate == endDate:
+                                    widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                                else:
+                                    widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                            else:
+                                try:
+                                    time_obj = datetime.strptime(anime.time, "%H:%M") # 2025-99-99 가 넘어오면 예외처리
+                                    formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
+                                    widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                                except Exception as e:  
+                                    try:
+                                        widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                        widgets.label_date.setWordWrap(True)
+                                        widgets.label_date.show()
+                                    except Exception as e2: 
+                                        widgets.label_date.hide()        
+                    else:
+                        widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>결방</span></p></body></html>");
+                        widgets.label_date.setWordWrap(True)
+                        widgets.label_date.show()
+                else:
+                    widgets.label_date.hide() 
 
                 subs = requestAnimeSubsInfo(anime)
 
@@ -378,6 +448,8 @@ class MainWindow(QMainWindow):
         idle_text = "편성표에서 원하는 자막을 선택하세요"
         widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:600;'>"+idle_text+"</span></p></body></html>");
         widgets.label.setWordWrap(True)
+
+        widgets.label_date.hide()
         
         # QTableWidget 편성표 테이블 설정
 
@@ -473,19 +545,23 @@ class MainWindow(QMainWindow):
         def onYmlsaveButtonClicked():
             temp = ""
 
+            save_dict = {}
+
             for row in range(widgets.scheduler_table.rowCount()):
                 id = widgets.scheduler_table.item(row, 0)
                 anime = widgets.scheduler_table.item(row, 1)
-            
-                #print(str(row) + " " + str(widgets.scheduler_table.rowCount()))
-
                 if(id is None):
-                    temp = temp[:-2] +"\n"
-                    break
+                    continue;
+                save_dict[id.text()] = anime.text();
 
-                temp += "{ \"Anime\":\""+anime.text()+"\", \"AnimeNo\":\""+str(id.text())+"\" }"
+            for key,value in save_dict.items():
+                id = key
+                anime = value
+                #print(str(row) + " " + str(widgets.scheduler_table.rowCount()))
+                temp += "{ \"Anime\":\""+anime+"\", \"AnimeNo\":\""+str(id)+"\" }"
                 temp += ",\n"
 
+            temp = temp[:-2] +"\n"
             temp = '[\n' +temp + ']'
 
             with open('anime.yml', 'r', encoding='utf-8') as file:
@@ -514,6 +590,8 @@ class MainWindow(QMainWindow):
 
         def onYmlremoveRowButtonClicked():
             widgets.scheduler_table.removeRow(clickedRemoveRow)
+            rowCount = widgets.scheduler_table.rowCount()
+            widgets.scheduler_table.insertRow(rowCount)
 
         def onYmlreloadButtonClicked():
 
@@ -559,7 +637,6 @@ class MainWindow(QMainWindow):
         widgets.scheduler_folder.clicked.connect(onDownloadFolderButtonClicked)
         widgets.scheduler_table.cellClicked.connect(onYmlremoveRowClicked)
         
-
         # 스케줄러 체크박스 클릭시
         def scheduler_checkbox_changed(state):
             if state == 2: #checked
@@ -916,7 +993,7 @@ if __name__ == "__main__":
         os.environ["QT_FONT_DPI"] = str(config['resolution'])
 
     # 콘솔 로깅
-    console_logger_init() # 배포시 활성화
+    #console_logger_init() # 배포시 활성화
 
     # UI 인스턴스화
     app = QApplication(sys.argv)

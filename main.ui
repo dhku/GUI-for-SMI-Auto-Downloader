@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1327</width>
+    <width>1511</width>
     <height>741</height>
    </rect>
   </property>
@@ -57,6 +57,18 @@ QToolTip {
 	text-align: left;
 	padding-left: 8px;
 	margin: 0px;
+}
+
+#extraTopMenu #label {
+    font-family: &quot;Malgun Gothic&quot;;
+}
+
+#pushButton_week .QPushButton {
+ 	font-family: &quot;Malgun Gothic&quot;;
+}
+
+#anime_time_table {
+ 	font-family: &quot;Malgun Gothic&quot;;
 }
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -575,6 +587,9 @@ Button */
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
       <layout class="QHBoxLayout" name="appLayout">
        <property name="spacing">
         <number>0</number>
@@ -601,7 +616,7 @@ Button */
          </property>
          <property name="minimumSize">
           <size>
-           <width>50</width>
+           <width>60</width>
            <height>0</height>
           </size>
          </property>
@@ -1358,6 +1373,18 @@ Button */
                  </widget>
                 </item>
                 <item>
+                 <widget class="QLabel" name="label_date">
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;line-height:0.6;&quot;&gt;&lt;span style=&quot; font-size:16pt; &quot;&gt;2024. 10. 02. ~ 방영중&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;매주 (수) 오전 00:00&lt;/span&gt;
+&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="left_downloadButton">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2010,7 +2037,7 @@ font-size:15pt;</string>
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>1</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="anime_schedule">
                       <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2054,7 +2081,7 @@ font-size:15pt;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2063,7 +2090,7 @@ font-size:15pt;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;
+font-size: 32px; font-weight: bold;
 </string>
                             </property>
                             <property name="text">
@@ -2081,7 +2108,7 @@ font-size: 30px; font-weight: bold;
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2090,7 +2117,7 @@ font-size: 30px; font-weight: bold;
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>月</string>
@@ -2107,7 +2134,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2116,7 +2143,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>火</string>
@@ -2133,7 +2160,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2142,7 +2169,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>水</string>
@@ -2159,7 +2186,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2168,7 +2195,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>木</string>
@@ -2185,7 +2212,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2194,7 +2221,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>金</string>
@@ -2211,7 +2238,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2220,7 +2247,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>土</string>
@@ -2237,7 +2264,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2246,7 +2273,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>外</string>
@@ -2263,7 +2290,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="font">
                              <font>
-                              <family>Segoe UI</family>
+                              <family>Malgun Gothic</family>
                               <pointsize>-1</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
@@ -2272,7 +2299,7 @@ font-size: 30px; font-weight: bold;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(52, 59, 72);
-font-size: 30px; font-weight: bold;</string>
+font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>新</string>
@@ -2530,7 +2557,7 @@ font-size: 30px; font-weight: bold;</string>
                                    <string notr="true"/>
                                   </property>
                                   <property name="text">
-                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;다운로드 경로&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;다운로드 경로 설정&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -2795,7 +2822,7 @@ font-size: 30px; font-weight: bold;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>928</width>
+                                 <width>1020</width>
                                  <height>210</height>
                                 </rect>
                                </property>
