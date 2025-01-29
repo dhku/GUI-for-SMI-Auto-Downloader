@@ -993,7 +993,7 @@ if __name__ == "__main__":
         os.environ["QT_FONT_DPI"] = str(config['resolution'])
 
     # 콘솔 로깅
-    #console_logger_init() # 배포시 활성화
+    console_logger_init() # 배포시 활성화
 
     # UI 인스턴스화
     app = QApplication(sys.argv)
