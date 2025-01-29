@@ -136,6 +136,7 @@ def get_download_progress_length(json_data):
         folder_name = AnimeName
         folder_name = folder_name.replace(":","")
         folder_name = folder_name.replace("/","")
+        folder_name = folder_name.replace("?","")
         smiDir = folder_name + "/" + episode + "화/" + name + "/"
 
         if os.path.isfile(outpath + smiDir + "finish.txt"):
@@ -330,6 +331,7 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
         folder_name = AnimeName
         folder_name = folder_name.replace(":","")
         folder_name = folder_name.replace("/","")
+        folder_name = folder_name.replace("?","")
         
         smiDir = folder_name + "/" + episode + "화/" + name + "/"
 
