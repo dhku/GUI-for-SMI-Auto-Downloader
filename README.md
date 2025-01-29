@@ -5,7 +5,7 @@
 
 # GUI For SMI Auto Downloader
 
-![title](./images/readme/main.png)
+![title](./images/readme/main2.png)
 
 자막을 원클릭으로 쉽게 다운로드 받을 수 있는 프로그램입니다. 
 
