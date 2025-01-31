@@ -53,7 +53,7 @@ download_progress_length = 0;
 console_output = ""
 log_path = os.path.abspath('.') + "/log/"
 
-p_extension = re.compile(r"^.*\.(zip|ass|smi|7z)$")
+p_extension = re.compile(r"^.*\.(zip|ass|smi|7z)$", re.IGNORECASE)
 regrex1 = re.compile(r".*(naver).*")
 regrex2 = re.compile(r".*(blogspot).*")
 regrex3 = re.compile(r".*(tistory).*")
@@ -842,7 +842,7 @@ def download_blogspot(url,callback):
 
     for a in links:
         each_file = a.attrs['href']
-        # print_log("href = "+each_file)
+        #print_log("href = "+each_file)
         try:
             each_file = each_file.replace('&amp;','&');
 
@@ -879,6 +879,8 @@ def download_blogspot(url,callback):
 
                 if fileName == "uc":
                     fileName = gdrive.get_file_name(each_file)
+
+                #print_log(fileName);
 
                 if(not p_extension.match(fileName)):
                     download_progress_count += 1
