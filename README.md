@@ -5,6 +5,8 @@
 
 # GUI For SMI Auto Downloader
 
+![python]( https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white)![pyside6]( https://img.shields.io/badge/PySide6-%230092D2.svg?style=for-the-badge&logo=Qt&logocolor=white)![Anissia](https://img.shields.io/badge/Anissia-%230064BF.svg?style=for-the-badge&logoColor=white)![YAML](https://img.shields.io/badge/YAML-%23000000.svg?style=for-the-badge&logo=yaml&logoColor=white)![downloads](https://img.shields.io/github/downloads/dhku/GUI-for-SMI-Auto-Downloader/total?style=for-the-badge)
+
 ![title](./images/readme/main2.png)
 
 자막을 원클릭으로 쉽게 다운로드 받을 수 있는 프로그램입니다. 
