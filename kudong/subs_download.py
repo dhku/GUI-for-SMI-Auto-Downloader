@@ -53,7 +53,7 @@ download_progress_length = 0;
 console_output = ""
 log_path = os.path.abspath('.') + "/log/"
 
-p_extension = re.compile(r"^.*\.(zip|ass|smi|7z)$", re.IGNORECASE)
+p_extension = re.compile(r"^.*\.(zip|ass|smi|7z)$")
 regrex1 = re.compile(r".*(naver).*")
 regrex2 = re.compile(r".*(blogspot).*")
 regrex3 = re.compile(r".*(tistory).*")
