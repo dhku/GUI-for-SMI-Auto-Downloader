@@ -285,7 +285,9 @@ class MainWindow(QMainWindow):
                                     widgets.label_date.setWordWrap(True)
                                     widgets.label_date.show()
                                 else:
-                                    widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    time_obj = datetime.strptime(anime.time, "%H:%M")
+                                    formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
+                                    widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
                                     widgets.label_date.setWordWrap(True)
                                     widgets.label_date.show()
                             else:
