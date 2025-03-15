@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 
             widgets.anime_time_table.horizontalScrollBar().setValue(
-                    widgets.log_console.horizontalScrollBar().minimum()
+                    widgets.anime_time_table.horizontalScrollBar().minimum()
             )
 
         widgets.pushButton_sun.clicked.connect(partial(clickWeekendButton,0))
@@ -383,8 +383,8 @@ class MainWindow(QMainWindow):
                 #print("리스트 출력" + str(list))
 
                 if(str(selectedAnime_LeftBox.animeNo) in list):
-                    QMessageBox.information(self,'SMI-DOWNLOADER','이미 즐겨찾기에 존재하는 작품입니다!')
-                    return     
+                    QMessageBox.information(self,'SMI-DOWNLOADER','즐겨찾기에 이미 존재하는 작품입니다!')
+                    return    
                 
                 for row in range(widgets.scheduler_table.rowCount()):
                     id = widgets.scheduler_table.item(row, 0)
@@ -396,6 +396,7 @@ class MainWindow(QMainWindow):
                 widgets.scheduler_table.setItem(idx,1,QTableWidgetItem(selectedAnime_LeftBox.subject));  
 
                 onYmlsaveButtonClicked()
+                QMessageBox.information(self,'SMI-DOWNLOADER','즐겨찾기에 추가되었습니다!')
 
         def callback_test(progress,count,output = "None",isFinished = False):
             if self.smiWorker is not None:
@@ -620,11 +621,13 @@ class MainWindow(QMainWindow):
                 UIFunctions.openLeftBox(self, True)
 
         
-
-        widgets.scheduler_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        widgets.scheduler_table.horizontalHeader().setSectionResizeMode(0,QHeaderView.Fixed)
+        widgets.scheduler_table.horizontalHeader().setSectionResizeMode(1,QHeaderView.Stretch)
+        widgets.scheduler_table.setColumnWidth(0, 200)
+        widgets.scheduler_table.setColumnWidth(1, 400)
         widgets.scheduler_table.verticalHeader().setSectionsMovable(False)
         widgets.scheduler_table.cellClicked.connect(on_scheduler_cell_clicked)
-
+        widgets.scheduler_table.setFocusPolicy(Qt.NoFocus)
 
         # 다운로드 경로 선택시
         def on_openfile_clicked():
@@ -956,6 +959,172 @@ class MainWindow(QMainWindow):
             widgets.log_timestamp.verticalScrollBar().maximum()
         )
 
+        widgets.log_console.setReadOnly(True)
+
+        # 4. SEARCH
+        # ///////////////////////////////////////////////////////////////       
+
+        def on_search_cell_clicked(row,column):
+            global selectedAnime_LeftBox
+            #print(f"Row {row} {column}")
+            item = widgets.anime_search_table.item(row, 2) # AnimeNo 가 None이 아닌지 체크
+
+            if item is not None:
+                anime, subs = requestAnimeInfo(item.text());
+
+                selectedAnime_LeftBox = anime
+
+                #print("Item data:", anime.subject)
+
+                widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
+                widgets.label.setWordWrap(True)
+
+                startDate = None;
+                endDate = None;
+                currentDate = datetime.now();
+
+                if anime.startDate != '':
+
+                    try:
+                        startDate = datetime.strptime(anime.startDate, '%Y-%m-%d')
+                    except Exception as e:  
+                        startDate = None;
+
+                    try:
+                        endDate = datetime.strptime(anime.endDate, '%Y-%m-%d')
+                    except Exception as e:  
+                        endDate = None;  
+                    
+                    week_Ko = None;
+
+                    if anime.weekNo == 0:
+                        week_Ko = "일"
+                    elif anime.weekNo == 1:  
+                        week_Ko = "월"
+                    elif anime.weekNo == 2:  
+                        week_Ko = "화"
+                    elif anime.weekNo == 3:  
+                        week_Ko = "수"
+                    elif anime.weekNo == 4:  
+                        week_Ko = "목"
+                    elif anime.weekNo == 5:  
+                        week_Ko = "금"
+                    elif anime.weekNo == 6:  
+                        week_Ko = "토"
+
+                    if anime.status == 'ON':
+                        if startDate is not None and currentDate <= startDate :
+                            widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                            widgets.label_date.setWordWrap(True)
+                            widgets.label_date.show()
+                        else:
+                            if endDate is not None:
+                                if startDate == endDate:
+                                    widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                                else:
+                                    time_obj = datetime.strptime(anime.time, "%H:%M")
+                                    formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
+                                    widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                            else:
+                                try:
+                                    time_obj = datetime.strptime(anime.time, "%H:%M") # 2025-99-99 가 넘어오면 예외처리
+                                    formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
+                                    widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                                except Exception as e:  
+                                    try:
+                                        widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                        widgets.label_date.setWordWrap(True)
+                                        widgets.label_date.show()
+                                    except Exception as e2: 
+                                        widgets.label_date.hide()        
+                    else:
+                        widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>결방</span></p></body></html>");
+                        widgets.label_date.setWordWrap(True)
+                        widgets.label_date.show()
+                else:
+                    widgets.label_date.hide() 
+
+                spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+                layout = widgets.extraCenter.layout()
+
+                while layout.count():
+                    item = layout.takeAt(0)
+                    widget = item.widget()
+                    if widget is not None:
+                        widget.deleteLater()
+
+                for k in subs:
+                    name = k.name
+                    episode = k.episode
+                    website = k.website
+                    updDtStr = k.updDt
+
+                    updDt = datetime.strptime(updDtStr, "%Y-%m-%dT%H:%M:%S")
+                    currentDt = datetime.now();
+
+                    time_diff = currentDt - updDt
+                    time_diff_str = ""
+                    #print("time_diff = " + time_diff)
+
+                    time_diff_prefix = " ("
+                    total_sec = time_diff.total_seconds();
+
+                    if total_sec < 60: # 60초 이내
+                        time_diff_str = time_diff_prefix + str(total_sec) + "초 전)"
+                    elif total_sec < 3600: # 60분 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/60)) + "분 전)"
+                    elif total_sec < 86400: # 24시간 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/3600)) + "시간 전)"
+                    elif total_sec < 2592000: #30일 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/86400)) + "일 전)"
+                    else: 
+                        time_diff_str = time_diff_prefix + updDtStr[:updDtStr.rfind("T")] +")"
+
+                    if(website == ""):
+                        button = QPushButton("준비중 "+name+ " "+updDtStr[:updDtStr.rfind("T")])
+                    else:
+                        button = QPushButton(episode+"화 "+name + time_diff_str)
+                        button.clicked.connect(partial(open_url,website))
+
+                    button.setMinimumSize(0, 60)
+                    button.setStyleSheet("font-size: 20px; color: rgb(0, 0, 0);")
+                    layout.addWidget(button)
+
+                layout.addItem(spacer)
+                widgets.extraCenter.setLayout(layout);
+                UIFunctions.openLeftBox(self, True)
+
+
+
+        self.search_thread = WorkerThread2(self)
+
+        def update_search_task():
+            current_text = widgets.search_input.text()
+            self.search_thread.setValue(current_text)
+            self.search_thread.start()
+           
+        widgets.anime_search_table.setSelectionBehavior(QTableWidget.SelectRows)
+        widgets.anime_search_table.verticalHeader().setDefaultSectionSize(60)
+        widgets.anime_search_table.verticalHeader().setVisible(False)
+        widgets.anime_search_table.verticalHeader().setSectionsMovable(False)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(2,QHeaderView.ResizeToContents)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(3,QHeaderView.ResizeToContents)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(4,QHeaderView.ResizeToContents)
+        widgets.anime_search_table.horizontalHeader().setSectionResizeMode(5,QHeaderView.ResizeToContents)
+        widgets.anime_search_table.cellClicked.connect(on_search_cell_clicked)
+        widgets.search_button.clicked.connect(self.on_search_button_clicked)
+        widgets.search_input.textChanged.connect(update_search_task)
+        
         # BUTTONS CLICK
         # ///////////////////////////////////////////////////////////////
 
@@ -964,6 +1133,7 @@ class MainWindow(QMainWindow):
         widgets.btn_download.clicked.connect(self.buttonClick)
         widgets.btn_log.clicked.connect(self.buttonClick)
         widgets.btn_exit.clicked.connect(self.buttonClick)
+        widgets.btn_search.clicked.connect(self.buttonClick)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
@@ -1008,6 +1178,80 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         widgets.stackedWidget.setCurrentWidget(widgets.anime_schedule)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
+
+    def on_search_button_clicked(self):
+            keyword = widgets.search_input.text()
+
+            search_list = requestSearchAnimeInfo(keyword);
+
+            count = 0
+
+            widgets.anime_search_table.clearContents()
+
+            if search_list is None:
+                reply = QMessageBox.information(self,'SMI-DOWNLOADER','현재 애니시아 서버와 연결할수 없습니다!')
+                return
+
+            widgets.anime_search_table.setRowCount(len(search_list))
+            widgets.anime_search_table.setColumnCount(7)
+
+            widgets.anime_search_table.setFocusPolicy(Qt.NoFocus)
+
+            font = QFont()
+            font.setPointSize(25)
+            font.setBold(QFont.Bold)
+
+            for k in search_list:
+                prefix = ""
+                
+                if k.weekNo < 7:
+                    date_str = datetime.now().strftime("%Y-%m-%d")
+                    currentDate = datetime.strptime(date_str, "%Y-%m-%d")
+
+                    startDate = None
+                    endDate = None
+
+                    if k.startDate != '':
+                        startDate = datetime.strptime(k.startDate, '%Y-%m-%d')
+                        #print("출력" + k.startDate)
+
+                    if k.endDate != '':
+                        endDate = datetime.strptime(k.endDate, '%Y-%m-%d')
+                        #print("출력" + k.endDate)
+
+                    if k.status == "OFF":
+                        prefix = "[결방] "
+                    elif endDate is not None and currentDate > endDate:
+                        prefix = "[完] "
+                    elif startDate is not None and currentDate <= startDate:
+                        prefix = startDate.strftime("[%m-%d] ")
+
+                item = QTableWidgetItem(k.time)
+                item.setFont(font)
+
+                widgets.anime_search_table.setItem(count,0,item);
+                widgets.anime_search_table.setItem(count,1,QTableWidgetItem(prefix + k.subject));
+                widgets.anime_search_table.setItem(count,2,QTableWidgetItem(str(k.animeNo)));
+                widgets.anime_search_table.setItem(count,3,QTableWidgetItem(k.genres));
+                
+                widgets.anime_search_table.setItem(count,4,QTableWidgetItem(k.startDate));
+                widgets.anime_search_table.setItem(count,5,QTableWidgetItem(str(k.captionCount)));
+                widgets.anime_search_table.setItem(count,6,QTableWidgetItem(k.website));  
+                count += 1     
+
+            for row in range(widgets.anime_search_table.rowCount()):
+                for column in range(widgets.anime_search_table.columnCount()):
+                    item = widgets.anime_search_table.item(row, column)
+                    item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
+
+            widgets.anime_search_table.horizontalScrollBar().setValue(
+                    widgets.anime_search_table.horizontalScrollBar().minimum()
+            )
+
+
+    @Slot(str)
+    def update_search_correct(self, correct_keyword):
+        widgets.search_input.setToolTip(correct_keyword)
 
     @Slot(int, int, str, bool)
     def updateProgressBar(self,progress,count,output,isFinished):
@@ -1103,12 +1347,18 @@ class MainWindow(QMainWindow):
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
+        if btnName == "btn_search":
+            widgets.stackedWidget.setCurrentWidget(widgets.search_page)
+            self.on_search_button_clicked()
+            UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+
         if btnName == "btn_exit":
             webbrowser.open("https://github.com/dhku/GUI-for-SMI-Auto-Downloader")
 
         # 버튼 디버깅
-        #print(btn.styleSheet())
-        #print(f'Button "{btnName}" pressed!')
+        # print(btn.styleSheet())
+        # print(f'Button "{btnName}" pressed!')
 
     # 리사이징 이벤트
     # ///////////////////////////////////////////////////////////////
@@ -1141,6 +1391,21 @@ class WorkerThread(QThread):
 
     def run(self):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
+
+class WorkerThread2(QThread):
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window
+
+    def setValue(self,keyword):
+        self.keyword = keyword
+
+    def run(self):
+        list = requestSearchAnimeCorrect(self.keyword)
+        correct_keyword = "\n".join(list)
+        # print(correct_keyword)
+        QMetaObject.invokeMethod(self.main_window, "update_search_correct", Qt.QueuedConnection,Q_ARG(str,correct_keyword))
+
 
 def get_windows_dpi():
     try:

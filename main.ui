@@ -880,6 +880,18 @@ Button */
              </item>
              <item alignment="Qt::AlignTop">
               <widget class="QFrame" name="topMenu">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
                </property>
@@ -977,6 +989,43 @@ Button */
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="btn_search">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>45</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Segoe UI</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-find-in-page.png);</string>
+                  </property>
+                  <property name="text">
+                   <string>로그</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="btn_log">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1017,6 +1066,7 @@ Button */
                <zorder>btn_log</zorder>
                <zorder>btn_download</zorder>
                <zorder>btn_home</zorder>
+               <zorder>btn_search</zorder>
               </widget>
              </item>
              <item alignment="Qt::AlignBottom">
@@ -2037,7 +2087,7 @@ font-size:15pt;</string>
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>2</number>
                      </property>
                      <widget class="QWidget" name="anime_schedule">
                       <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -3344,6 +3394,202 @@ font-size: 32px; font-weight: bold;</string>
                             <column>
                              <property name="text">
                               <string>제목(폴더이름)</string>
+                             </property>
+                            </column>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                     <widget class="QWidget" name="search_page">
+                      <layout class="QVBoxLayout" name="verticalLayout_28">
+                       <item>
+                        <widget class="QFrame" name="search_row_1">
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>35</height>
+                          </size>
+                         </property>
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_8">
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <widget class="QLabel" name="labelBoxBlenderInstalation_2">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Segoe UI</family>
+                              <pointsize>10</pointsize>
+                              <weight>50</weight>
+                              <italic>false</italic>
+                              <bold>false</bold>
+                             </font>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true"/>
+                            </property>
+                            <property name="text">
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;애니메이션 작품 검색&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QFrame" name="search_row_2">
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_10">
+                          <item>
+                           <widget class="QLineEdit" name="search_input">
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>60</height>
+                             </size>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">background-color: rgb(33, 37, 43);
+font-size: 20px;</string>
+                            </property>
+                            <property name="text">
+                             <string/>
+                            </property>
+                            <property name="placeholderText">
+                             <string>애니검색 #장르 @제작자 /완결 /도움말</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="search_button">
+                            <property name="minimumSize">
+                             <size>
+                              <width>150</width>
+                              <height>60</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Segoe UI</family>
+                              <pointsize>-1</pointsize>
+                              <weight>50</weight>
+                              <italic>false</italic>
+                              <bold>false</bold>
+                             </font>
+                            </property>
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">background-color: rgb(52, 59, 72);
+font-size: 20px;</string>
+                            </property>
+                            <property name="text">
+                             <string>검색</string>
+                            </property>
+                            <property name="icon">
+                             <iconset theme="None"/>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QFrame" name="search_row_3">
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_12">
+                          <item>
+                           <widget class="QTableWidget" name="anime_search_table">
+                            <property name="styleSheet">
+                             <string notr="true">font-size: 20px; 
+</string>
+                            </property>
+                            <property name="frameShape">
+                             <enum>QFrame::StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                             <enum>QFrame::Sunken</enum>
+                            </property>
+                            <property name="dragEnabled">
+                             <bool>false</bool>
+                            </property>
+                            <attribute name="horizontalHeaderHighlightSections">
+                             <bool>true</bool>
+                            </attribute>
+                            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                             <bool>false</bool>
+                            </attribute>
+                            <column>
+                             <property name="text">
+                              <string>시간</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>제목</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>ID</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>장르</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>시작일</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>자막러</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>공식사이트</string>
                              </property>
                             </column>
                            </widget>

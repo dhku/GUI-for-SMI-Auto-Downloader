@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainfMXHcg.ui'
+## Form generated from reading UI file 'mainhkHGlc.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -684,6 +684,9 @@ class Ui_MainWindow(object):
 
         self.topMenu = QFrame(self.leftMenuFrame)
         self.topMenu.setObjectName(u"topMenu")
+        sizePolicy.setHeightForWidth(self.topMenu.sizePolicy().hasHeightForWidth())
+        self.topMenu.setSizePolicy(sizePolicy)
+        self.topMenu.setMaximumSize(QSize(16777215, 16777215))
         self.topMenu.setFrameShape(QFrame.NoFrame)
         self.topMenu.setFrameShadow(QFrame.Raised)
         self.verticalLayout_8 = QVBoxLayout(self.topMenu)
@@ -714,6 +717,18 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.btn_download)
 
+        self.btn_search = QPushButton(self.topMenu)
+        self.btn_search.setObjectName(u"btn_search")
+        sizePolicy2.setHeightForWidth(self.btn_search.sizePolicy().hasHeightForWidth())
+        self.btn_search.setSizePolicy(sizePolicy2)
+        self.btn_search.setMinimumSize(QSize(0, 45))
+        self.btn_search.setFont(font)
+        self.btn_search.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.btn_search.setLayoutDirection(Qt.LeftToRight)
+        self.btn_search.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-find-in-page.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_search)
+
         self.btn_log = QPushButton(self.topMenu)
         self.btn_log.setObjectName(u"btn_log")
         sizePolicy2.setHeightForWidth(self.btn_log.sizePolicy().hasHeightForWidth())
@@ -729,6 +744,7 @@ class Ui_MainWindow(object):
         self.btn_log.raise_()
         self.btn_download.raise_()
         self.btn_home.raise_()
+        self.btn_search.raise_()
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
 
@@ -1658,6 +1674,102 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.row_3)
 
         self.stackedWidget.addWidget(self.download_page)
+        self.search_page = QWidget()
+        self.search_page.setObjectName(u"search_page")
+        self.verticalLayout_28 = QVBoxLayout(self.search_page)
+        self.verticalLayout_28.setObjectName(u"verticalLayout_28")
+        self.search_row_1 = QFrame(self.search_page)
+        self.search_row_1.setObjectName(u"search_row_1")
+        self.search_row_1.setMaximumSize(QSize(16777215, 35))
+        self.search_row_1.setFrameShape(QFrame.StyledPanel)
+        self.search_row_1.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_8 = QHBoxLayout(self.search_row_1)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalLayout_8.setContentsMargins(-1, 0, 0, 0)
+        self.labelBoxBlenderInstalation_2 = QLabel(self.search_row_1)
+        self.labelBoxBlenderInstalation_2.setObjectName(u"labelBoxBlenderInstalation_2")
+        sizePolicy9.setHeightForWidth(self.labelBoxBlenderInstalation_2.sizePolicy().hasHeightForWidth())
+        self.labelBoxBlenderInstalation_2.setSizePolicy(sizePolicy9)
+        self.labelBoxBlenderInstalation_2.setMinimumSize(QSize(0, 50))
+        self.labelBoxBlenderInstalation_2.setFont(font)
+        self.labelBoxBlenderInstalation_2.setStyleSheet(u"")
+
+        self.horizontalLayout_8.addWidget(self.labelBoxBlenderInstalation_2)
+
+
+        self.verticalLayout_28.addWidget(self.search_row_1)
+
+        self.search_row_2 = QFrame(self.search_page)
+        self.search_row_2.setObjectName(u"search_row_2")
+        self.search_row_2.setFrameShape(QFrame.StyledPanel)
+        self.search_row_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_10 = QHBoxLayout(self.search_row_2)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.search_input = QLineEdit(self.search_row_2)
+        self.search_input.setObjectName(u"search_input")
+        self.search_input.setMinimumSize(QSize(0, 60))
+        self.search_input.setStyleSheet(u"background-color: rgb(33, 37, 43);\n"
+"font-size: 20px;")
+
+        self.horizontalLayout_10.addWidget(self.search_input)
+
+        self.search_button = QPushButton(self.search_row_2)
+        self.search_button.setObjectName(u"search_button")
+        self.search_button.setMinimumSize(QSize(150, 60))
+        font7 = QFont()
+        font7.setFamilies([u"Segoe UI"])
+        font7.setBold(False)
+        font7.setItalic(False)
+        self.search_button.setFont(font7)
+        self.search_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.search_button.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
+"font-size: 20px;")
+        icon5 = QIcon(QIcon.fromTheme(u"None"))
+        self.search_button.setIcon(icon5)
+
+        self.horizontalLayout_10.addWidget(self.search_button)
+
+
+        self.verticalLayout_28.addWidget(self.search_row_2)
+
+        self.search_row_3 = QFrame(self.search_page)
+        self.search_row_3.setObjectName(u"search_row_3")
+        self.search_row_3.setFrameShape(QFrame.StyledPanel)
+        self.search_row_3.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_12 = QHBoxLayout(self.search_row_3)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.anime_search_table = QTableWidget(self.search_row_3)
+        if (self.anime_search_table.columnCount() < 7):
+            self.anime_search_table.setColumnCount(7)
+        __qtablewidgetitem25 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(0, __qtablewidgetitem25)
+        __qtablewidgetitem26 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(1, __qtablewidgetitem26)
+        __qtablewidgetitem27 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(2, __qtablewidgetitem27)
+        __qtablewidgetitem28 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(3, __qtablewidgetitem28)
+        __qtablewidgetitem29 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(4, __qtablewidgetitem29)
+        __qtablewidgetitem30 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(5, __qtablewidgetitem30)
+        __qtablewidgetitem31 = QTableWidgetItem()
+        self.anime_search_table.setHorizontalHeaderItem(6, __qtablewidgetitem31)
+        self.anime_search_table.setObjectName(u"anime_search_table")
+        self.anime_search_table.setStyleSheet(u"font-size: 20px; \n"
+"")
+        self.anime_search_table.setFrameShape(QFrame.StyledPanel)
+        self.anime_search_table.setFrameShadow(QFrame.Sunken)
+        self.anime_search_table.setDragEnabled(False)
+        self.anime_search_table.horizontalHeader().setHighlightSections(True)
+        self.anime_search_table.horizontalHeader().setProperty("showSortIndicator", False)
+
+        self.horizontalLayout_12.addWidget(self.anime_search_table)
+
+
+        self.verticalLayout_28.addWidget(self.search_row_3)
+
+        self.stackedWidget.addWidget(self.search_page)
         self.log_page = QWidget()
         self.log_page.setObjectName(u"log_page")
         sizePolicy3.setHeightForWidth(self.log_page.sizePolicy().hasHeightForWidth())
@@ -1675,12 +1787,12 @@ class Ui_MainWindow(object):
         self.log_timestamp = QTableWidget(self.frame_2)
         if (self.log_timestamp.columnCount() < 3):
             self.log_timestamp.setColumnCount(3)
-        __qtablewidgetitem25 = QTableWidgetItem()
-        self.log_timestamp.setHorizontalHeaderItem(0, __qtablewidgetitem25)
-        __qtablewidgetitem26 = QTableWidgetItem()
-        self.log_timestamp.setHorizontalHeaderItem(1, __qtablewidgetitem26)
-        __qtablewidgetitem27 = QTableWidgetItem()
-        self.log_timestamp.setHorizontalHeaderItem(2, __qtablewidgetitem27)
+        __qtablewidgetitem32 = QTableWidgetItem()
+        self.log_timestamp.setHorizontalHeaderItem(0, __qtablewidgetitem32)
+        __qtablewidgetitem33 = QTableWidgetItem()
+        self.log_timestamp.setHorizontalHeaderItem(1, __qtablewidgetitem33)
+        __qtablewidgetitem34 = QTableWidgetItem()
+        self.log_timestamp.setHorizontalHeaderItem(2, __qtablewidgetitem34)
         self.log_timestamp.setObjectName(u"log_timestamp")
 
         self.verticalLayout_23.addWidget(self.log_timestamp)
@@ -1806,10 +1918,6 @@ class Ui_MainWindow(object):
         self.creditsLabel = QLabel(self.bottomBar)
         self.creditsLabel.setObjectName(u"creditsLabel")
         self.creditsLabel.setMaximumSize(QSize(16777215, 16))
-        font7 = QFont()
-        font7.setFamilies([u"Segoe UI"])
-        font7.setBold(False)
-        font7.setItalic(False)
         self.creditsLabel.setFont(font7)
         self.creditsLabel.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
@@ -1846,7 +1954,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1859,6 +1967,7 @@ class Ui_MainWindow(object):
         self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"\uc228\uae30\uae30", None))
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"\uc560\ub2c8 \ud3b8\uc131\ud45c", None))
         self.btn_download.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4\ub85c\ub4dc \uad00\ub9ac", None))
+        self.btn_search.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8", None))
         self.btn_log.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8", None))
         self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"\uae43\ud5c8\ube0c", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9 \uc815\ubcf4", None))
@@ -1979,12 +2088,30 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem23.setText(QCoreApplication.translate("MainWindow", u"New Row", None));
         ___qtablewidgetitem24 = self.scheduler_table.verticalHeaderItem(15)
         ___qtablewidgetitem24.setText(QCoreApplication.translate("MainWindow", u"New Row", None));
-        ___qtablewidgetitem25 = self.log_timestamp.horizontalHeaderItem(0)
-        ___qtablewidgetitem25.setText(QCoreApplication.translate("MainWindow", u"TimeStamp", None));
-        ___qtablewidgetitem26 = self.log_timestamp.horizontalHeaderItem(1)
-        ___qtablewidgetitem26.setText(QCoreApplication.translate("MainWindow", u"Category", None));
-        ___qtablewidgetitem27 = self.log_timestamp.horizontalHeaderItem(2)
-        ___qtablewidgetitem27.setText(QCoreApplication.translate("MainWindow", u"Message", None));
+        self.labelBoxBlenderInstalation_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc560\ub2c8\uba54\uc774\uc158 \uc791\ud488 \uac80\uc0c9</span></p></body></html>", None))
+        self.search_input.setText("")
+        self.search_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\uc560\ub2c8\uac80\uc0c9 #\uc7a5\ub974 @\uc81c\uc791\uc790 /\uc644\uacb0 /\ub3c4\uc6c0\ub9d0", None))
+        self.search_button.setText(QCoreApplication.translate("MainWindow", u"\uac80\uc0c9", None))
+        ___qtablewidgetitem25 = self.anime_search_table.horizontalHeaderItem(0)
+        ___qtablewidgetitem25.setText(QCoreApplication.translate("MainWindow", u"\uc2dc\uac04", None));
+        ___qtablewidgetitem26 = self.anime_search_table.horizontalHeaderItem(1)
+        ___qtablewidgetitem26.setText(QCoreApplication.translate("MainWindow", u"\uc81c\ubaa9", None));
+        ___qtablewidgetitem27 = self.anime_search_table.horizontalHeaderItem(2)
+        ___qtablewidgetitem27.setText(QCoreApplication.translate("MainWindow", u"ID", None));
+        ___qtablewidgetitem28 = self.anime_search_table.horizontalHeaderItem(3)
+        ___qtablewidgetitem28.setText(QCoreApplication.translate("MainWindow", u"\uc7a5\ub974", None));
+        ___qtablewidgetitem29 = self.anime_search_table.horizontalHeaderItem(4)
+        ___qtablewidgetitem29.setText(QCoreApplication.translate("MainWindow", u"\uc2dc\uc791\uc77c", None));
+        ___qtablewidgetitem30 = self.anime_search_table.horizontalHeaderItem(5)
+        ___qtablewidgetitem30.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9\ub7ec", None));
+        ___qtablewidgetitem31 = self.anime_search_table.horizontalHeaderItem(6)
+        ___qtablewidgetitem31.setText(QCoreApplication.translate("MainWindow", u"\uacf5\uc2dd\uc0ac\uc774\ud2b8", None));
+        ___qtablewidgetitem32 = self.log_timestamp.horizontalHeaderItem(0)
+        ___qtablewidgetitem32.setText(QCoreApplication.translate("MainWindow", u"TimeStamp", None));
+        ___qtablewidgetitem33 = self.log_timestamp.horizontalHeaderItem(1)
+        ___qtablewidgetitem33.setText(QCoreApplication.translate("MainWindow", u"Category", None));
+        ___qtablewidgetitem34 = self.log_timestamp.horizontalHeaderItem(2)
+        ___qtablewidgetitem34.setText(QCoreApplication.translate("MainWindow", u"Message", None));
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
