@@ -17,6 +17,8 @@ import natsort
 from datetime import datetime
 from functools import partial
 
+import time
+import ctypes
 from modules import *
 from widgets import *
 from kudong import *
@@ -985,22 +987,49 @@ class WorkerThread(QThread):
     def run(self):
         QMetaObject.invokeMethod(self.main_window, "updateProgressBar", Qt.QueuedConnection,Q_ARG(int,self.progress),Q_ARG(int,self.count),Q_ARG(str,self.output),Q_ARG(bool,self.isFinished))
 
-
+def get_windows_dpi():
+    try:
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        dpi = user32.GetDpiForSystem()
+        return dpi
+    except Exception as e:
+        print("error :", e)
+        return None
+    
 # 진입점
 if __name__ == "__main__":
 
-    # HIDPI 값 불러오기
-    with open('settings.yml', encoding='UTF8') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-        os.environ["QT_FONT_DPI"] = str(config['resolution'])
+    autoDPI = False
 
     # 콘솔 로깅
     console_logger_init() # 배포시 활성화
 
+    # HIDPI 값 불러오기
+    with open('settings.yml', encoding='UTF8') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        autoDPI = config['auto-dpi']
+        # print("auto-dpi = "+ str(autoDPI))
+        os.environ["QT_FONT_DPI"] = str(config['dpi'])
+
+    start = time.time()
+
+    if(autoDPI is True):
+        dpi = get_windows_dpi()
+        if dpi is not None:
+            # print("DPI = "+ str(dpi) +" / SCALE_FACTOR = " + str((dpi / 96.0) * 100))
+            os.environ["QT_FONT_DPI"] = str(dpi)
+    # else:
+    #     print("DPI = "+ os.environ["QT_FONT_DPI"])
+        
     # UI 인스턴스화
     app = QApplication(sys.argv)
     QApplication.setStyle(QStyleFactory.create("WindowsVista"));
 
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
+
+    end = time.time()
+    # print(f"{end - start:.5f} sec")
+
     sys.exit(app.exec_())
