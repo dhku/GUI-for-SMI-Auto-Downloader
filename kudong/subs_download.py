@@ -3,8 +3,6 @@ import json
 import sys
 import re
 import os
-import io
-import time
 import yaml
 import traceback
 import threading
@@ -19,8 +17,6 @@ from urllib.parse import quote
 from urllib.parse import urlparse
 from datetime import datetime
 from bs4 import BeautifulSoup
-from functools import partial
-
 
 #pip install gdown
 #pip install requests

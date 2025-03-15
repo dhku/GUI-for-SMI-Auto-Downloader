@@ -1,17 +1,8 @@
 import requests
 import json
-import sys
-import re
-import os
-import gdown
-import yaml
-from http import client
-from urllib import request
 from urllib.request import urlopen
 from urllib.parse import unquote
 from urllib.parse import urlparse
-from bs4 import BeautifulSoup
-
 
 class AnimeInfo:
 
