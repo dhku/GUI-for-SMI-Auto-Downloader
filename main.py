@@ -383,7 +383,7 @@ class MainWindow(QMainWindow):
                 #print("리스트 출력" + str(list))
 
                 if(str(selectedAnime_LeftBox.animeNo) in list):
-                    QMessageBox.information(self,'SMI-DOWNLOADER','이미 다운로드 대기열에 존재하는 작품입니다!')
+                    QMessageBox.information(self,'SMI-DOWNLOADER','이미 즐겨찾기에 존재하는 작품입니다!')
                     return     
                 
                 for row in range(widgets.scheduler_table.rowCount()):
@@ -395,7 +395,7 @@ class MainWindow(QMainWindow):
                 widgets.scheduler_table.setItem(idx,0,QTableWidgetItem(str(selectedAnime_LeftBox.animeNo)));
                 widgets.scheduler_table.setItem(idx,1,QTableWidgetItem(selectedAnime_LeftBox.subject));  
 
-                #onYmlsaveButtonClicked()
+                onYmlsaveButtonClicked()
 
         def callback_test(progress,count,output = "None",isFinished = False):
             if self.smiWorker is not None:
@@ -482,8 +482,150 @@ class MainWindow(QMainWindow):
 
         # 2. Download_Page
         # ///////////////////////////////////////////////////////////////
-        widgets.scheduler_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        #편성표에서 클릭 했을때 
+        def on_scheduler_cell_clicked(row,column):
+            global selectedAnime_LeftBox
+            #print(f"Row {row} {column}")
+            item = widgets.scheduler_table.item(row, 0) # AnimeNo 가 None이 아닌지 체크
+            if item is not None:
+                anime, subs = requestAnimeInfo(item.text());
+
+                selectedAnime_LeftBox = anime
+
+                #print("Item data:", anime.subject)
+
+                widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
+                widgets.label.setWordWrap(True)
+
+                startDate = None;
+                endDate = None;
+                currentDate = datetime.now();
+
+                if anime.startDate != '':
+
+                    try:
+                        startDate = datetime.strptime(anime.startDate, '%Y-%m-%d')
+                    except Exception as e:  
+                        startDate = None;
+
+                    try:
+                        endDate = datetime.strptime(anime.endDate, '%Y-%m-%d')
+                    except Exception as e:  
+                        endDate = None;  
+                    
+                    week_Ko = None;
+
+                    if anime.weekNo == 0:
+                        week_Ko = "일"
+                    elif anime.weekNo == 1:  
+                        week_Ko = "월"
+                    elif anime.weekNo == 2:  
+                        week_Ko = "화"
+                    elif anime.weekNo == 3:  
+                        week_Ko = "수"
+                    elif anime.weekNo == 4:  
+                        week_Ko = "목"
+                    elif anime.weekNo == 5:  
+                        week_Ko = "금"
+                    elif anime.weekNo == 6:  
+                        week_Ko = "토"
+
+                    if anime.status == 'ON':
+                        if startDate is not None and currentDate <= startDate :
+                            widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                            widgets.label_date.setWordWrap(True)
+                            widgets.label_date.show()
+                        else:
+                            if endDate is not None:
+                                if startDate == endDate:
+                                    widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                                else:
+                                    time_obj = datetime.strptime(anime.time, "%H:%M")
+                                    formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
+                                    widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                            else:
+                                try:
+                                    time_obj = datetime.strptime(anime.time, "%H:%M") # 2025-99-99 가 넘어오면 예외처리
+                                    formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
+                                    widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                    widgets.label_date.setWordWrap(True)
+                                    widgets.label_date.show()
+                                except Exception as e:  
+                                    try:
+                                        widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                        widgets.label_date.setWordWrap(True)
+                                        widgets.label_date.show()
+                                    except Exception as e2: 
+                                        widgets.label_date.hide()        
+                    else:
+                        widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>결방</span></p></body></html>");
+                        widgets.label_date.setWordWrap(True)
+                        widgets.label_date.show()
+                else:
+                    widgets.label_date.hide() 
+
+                spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+                layout = widgets.extraCenter.layout()
+
+                while layout.count():
+                    item = layout.takeAt(0)
+                    widget = item.widget()
+                    if widget is not None:
+                        widget.deleteLater()
+
+                for k in subs:
+                    name = k.name
+                    episode = k.episode
+                    website = k.website
+                    updDtStr = k.updDt
+
+                    updDt = datetime.strptime(updDtStr, "%Y-%m-%dT%H:%M:%S")
+                    currentDt = datetime.now();
+
+                    time_diff = currentDt - updDt
+                    time_diff_str = ""
+                    #print("time_diff = " + time_diff)
+
+                    time_diff_prefix = " ("
+                    total_sec = time_diff.total_seconds();
+
+                    if total_sec < 60: # 60초 이내
+                        time_diff_str = time_diff_prefix + str(total_sec) + "초 전)"
+                    elif total_sec < 3600: # 60분 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/60)) + "분 전)"
+                    elif total_sec < 86400: # 24시간 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/3600)) + "시간 전)"
+                    elif total_sec < 2592000: #30일 이내
+                        time_diff_str = time_diff_prefix + str(round(total_sec/86400)) + "일 전)"
+                    else: 
+                        time_diff_str = time_diff_prefix + updDtStr[:updDtStr.rfind("T")] +")"
+
+                    if(website == ""):
+                        button = QPushButton("준비중 "+name+ " "+updDtStr[:updDtStr.rfind("T")])
+                    else:
+                        button = QPushButton(episode+"화 "+name + time_diff_str)
+                        button.clicked.connect(partial(open_url,website))
+
+                    button.setMinimumSize(0, 60)
+                    button.setStyleSheet("font-size: 20px; color: rgb(0, 0, 0);")
+                    layout.addWidget(button)
+
+                layout.addItem(spacer)
+                widgets.extraCenter.setLayout(layout);
+                UIFunctions.openLeftBox(self, True)
+
         
+
+        widgets.scheduler_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        widgets.scheduler_table.verticalHeader().setSectionsMovable(False)
+        widgets.scheduler_table.cellClicked.connect(on_scheduler_cell_clicked)
+
+
         # 다운로드 경로 선택시
         def on_openfile_clicked():
             #fileDir = QFileDialog.getOpenFileName(self);
@@ -527,6 +669,7 @@ class MainWindow(QMainWindow):
 
         set_global_outpath(outpath)   
         widgets.yml_downloadPath.setText(outpath)
+        widgets.yml_downloadPath.setReadOnly(True)
         widgets.ym_openfileButton.clicked.connect(on_openfile_clicked)
 
         widgets.yml_content.setPlainText(
@@ -645,15 +788,27 @@ class MainWindow(QMainWindow):
         def scheduler_checkbox_changed(state):
             if state == 2: #checked
                 widgets.scheduler_comboBox.setEnabled(True)
+                widgets.scheduler_comboBox.setCurrentIndex(0);
                 widgets.scheduler_button.setText("스케줄러 시작")
             else:
                 widgets.scheduler_comboBox.setEnabled(False)
+                widgets.scheduler_comboBox.setCurrentIndex(7);
                 widgets.scheduler_button.setText("다운로드 시작")
 
         # 스케줄러 시작 버튼 클릭시
         def scheduler_button_clicked():
             global isScheduler_button_clicked, isScheduler_mode
             if isScheduler_button_clicked == False: # 시작 로직
+
+                idx = widgets.scheduler_comboBox.currentIndex()
+
+                #"반복 없음"이 스케쥴러 모드에서 버튼 클릭 되었을때 처리
+                if widgets.scheduler_checkBox.isChecked() and idx == 7: 
+                    QMessageBox.information( 
+                    window, 
+                    "SMI-DOWNLOADER", 
+                    "반복 없음은 선택할수 없습니다!");
+                    return
 
                 if widgets.scheduler_checkBox.isChecked():
                     widgets.left_progressName.setText("곧 스케쥴러가 시작됩니다...")
@@ -671,7 +826,7 @@ class MainWindow(QMainWindow):
                     "SMI-DOWNLOADER", 
                     "다른 작업이 먼저 수행중입니다....");
                     return
-
+                
                 afterSheet = "background-color: rgb(156, 179, 199); color: rgb(255, 255, 255);"
                 widgets.scheduler_button.setStyleSheet(afterSheet)
 
@@ -688,7 +843,6 @@ class MainWindow(QMainWindow):
                 isScheduler_button_clicked = True
 
                 if widgets.scheduler_checkBox.isChecked(): # 반복 옵션이 체크 되어있었다면
-                    idx = widgets.scheduler_comboBox.currentIndex()
 
                     min = 1000 * 60
                     hour = min * 60
@@ -700,13 +854,13 @@ class MainWindow(QMainWindow):
                         self.timer.start(30 * min)
                     elif idx == 2: #1시간마다
                         self.timer.start(hour)
-                    elif idx == 2: #3시간마다
+                    elif idx == 3: #3시간마다
                         self.timer.start(3 * hour)
-                    elif idx == 2: #6시간마다
+                    elif idx == 4: #6시간마다
                         self.timer.start(6 * hour)
-                    elif idx == 2: #12시간마다
+                    elif idx == 5: #12시간마다
                         self.timer.start(12 * hour)
-                    elif idx == 2: #24시간마다
+                    elif idx == 6: #24시간마다
                         self.timer.start(day)
                         
             else: # 중지 로직
@@ -726,12 +880,13 @@ class MainWindow(QMainWindow):
                 isScheduler_button_clicked = False
                 
         widgets.scheduler_comboBox.setEnabled(False)
-        widgets.scheduler_comboBox.setStyleSheet("""
-            QComboBox:disabled {
-                background-color: lightgray;
-                color: gray;
-            }
-        """)
+        widgets.scheduler_comboBox.setCurrentIndex(7);
+        # widgets.scheduler_comboBox.setStyleSheet("""
+        #     QComboBox:disabled {
+        #         background-color: lightgray;
+        #         color: gray;
+        #     }
+        # """)
 
         widgets.scheduler_checkBox.stateChanged.connect(scheduler_checkbox_changed)
         widgets.scheduler_button.clicked.connect(scheduler_button_clicked)

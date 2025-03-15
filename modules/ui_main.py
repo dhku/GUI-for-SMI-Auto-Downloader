@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainLNFtKr.ui'
+## Form generated from reading UI file 'mainfMXHcg.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -710,7 +710,7 @@ class Ui_MainWindow(object):
         self.btn_download.setFont(font)
         self.btn_download.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.btn_download.setLayoutDirection(Qt.LeftToRight)
-        self.btn_download.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-save.png);")
+        self.btn_download.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-star.png);")
 
         self.verticalLayout_8.addWidget(self.btn_download)
 
@@ -743,7 +743,7 @@ class Ui_MainWindow(object):
         self.btn_exit = QPushButton(self.bottomMenu)
         self.btn_exit.setObjectName(u"btn_exit")
         self.btn_exit.setMinimumSize(QSize(0, 45))
-        self.btn_exit.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-star.png);")
+        self.btn_exit.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-external-link.png);")
 
         self.verticalLayout_9.addWidget(self.btn_exit)
 
@@ -899,7 +899,7 @@ class Ui_MainWindow(object):
         self.left_addQueue.setFont(font3)
         self.left_addQueue.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.left_addQueue.setLayoutDirection(Qt.LeftToRight)
-        self.left_addQueue.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-equalizer.png);\n"
+        self.left_addQueue.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-star.png); \n"
 "font-size:15pt;")
 
         self.verticalLayout_11.addWidget(self.left_addQueue)
@@ -1300,7 +1300,7 @@ class Ui_MainWindow(object):
         self.download_page.setObjectName(u"download_page")
         self.download_page.setStyleSheet(u"b")
         self.verticalLayout = QVBoxLayout(self.download_page)
-        self.verticalLayout.setSpacing(10)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(10, 10, 10, 10)
         self.row_1 = QFrame(self.download_page)
@@ -1360,12 +1360,30 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(-1, -1, -1, 0)
+        self.labelVersion_3 = QLabel(self.frame_content_wid_1)
+        self.labelVersion_3.setObjectName(u"labelVersion_3")
+        self.labelVersion_3.setStyleSheet(u"color: rgb(113, 126, 149);")
+        self.labelVersion_3.setLineWidth(1)
+        self.labelVersion_3.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.gridLayout.addWidget(self.labelVersion_3, 2, 0, 1, 4)
+
         self.yml_downloadPath = QLineEdit(self.frame_content_wid_1)
         self.yml_downloadPath.setObjectName(u"yml_downloadPath")
         self.yml_downloadPath.setMinimumSize(QSize(0, 30))
         self.yml_downloadPath.setStyleSheet(u"background-color: rgb(33, 37, 43);")
 
-        self.gridLayout.addWidget(self.yml_downloadPath, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.yml_downloadPath, 1, 0, 1, 1)
+
+        self.scheduler_folder = QPushButton(self.frame_content_wid_1)
+        self.scheduler_folder.setObjectName(u"scheduler_folder")
+        self.scheduler_folder.setMinimumSize(QSize(150, 30))
+        self.scheduler_folder.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.scheduler_folder.setIcon(icon4)
+
+        self.gridLayout.addWidget(self.scheduler_folder, 1, 2, 1, 1)
 
         self.ym_openfileButton = QPushButton(self.frame_content_wid_1)
         self.ym_openfileButton.setObjectName(u"ym_openfileButton")
@@ -1373,19 +1391,9 @@ class Ui_MainWindow(object):
         self.ym_openfileButton.setFont(font)
         self.ym_openfileButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.ym_openfileButton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
-        icon4 = QIcon()
-        icon4.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.ym_openfileButton.setIcon(icon4)
 
-        self.gridLayout.addWidget(self.ym_openfileButton, 0, 1, 1, 1)
-
-        self.labelVersion_3 = QLabel(self.frame_content_wid_1)
-        self.labelVersion_3.setObjectName(u"labelVersion_3")
-        self.labelVersion_3.setStyleSheet(u"color: rgb(113, 126, 149);")
-        self.labelVersion_3.setLineWidth(1)
-        self.labelVersion_3.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-
-        self.gridLayout.addWidget(self.labelVersion_3, 1, 0, 1, 2)
+        self.gridLayout.addWidget(self.ym_openfileButton, 1, 1, 1, 1)
 
 
         self.horizontalLayout_9.addLayout(self.gridLayout)
@@ -1407,7 +1415,16 @@ class Ui_MainWindow(object):
         self.row_2.setFrameShape(QFrame.StyledPanel)
         self.row_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_19 = QVBoxLayout(self.row_2)
+        self.verticalLayout_19.setSpacing(3)
         self.verticalLayout_19.setObjectName(u"verticalLayout_19")
+        self.label_3 = QLabel(self.row_2)
+        self.label_3.setObjectName(u"label_3")
+        sizePolicy3.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy3)
+        self.label_3.setMinimumSize(QSize(0, 0))
+
+        self.verticalLayout_19.addWidget(self.label_3)
+
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.scheduler_checkBox = QCheckBox(self.row_2)
@@ -1417,6 +1434,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.scheduler_checkBox, 1, 0, 3, 1)
 
         self.scheduler_comboBox = QComboBox(self.row_2)
+        self.scheduler_comboBox.addItem("")
         self.scheduler_comboBox.addItem("")
         self.scheduler_comboBox.addItem("")
         self.scheduler_comboBox.addItem("")
@@ -1473,7 +1491,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1020, 210))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 964, 210))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1522,13 +1540,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.yml_reload_button, 1, 8, 1, 1)
 
-        self.scheduler_folder = QPushButton(self.row_2)
-        self.scheduler_folder.setObjectName(u"scheduler_folder")
-        self.scheduler_folder.setMinimumSize(QSize(90, 0))
-        self.scheduler_folder.setStyleSheet(u"background-color: rgb(52, 59, 72);")
-
-        self.gridLayout_2.addWidget(self.scheduler_folder, 1, 4, 1, 1)
-
 
         self.verticalLayout_19.addLayout(self.gridLayout_2)
 
@@ -1542,10 +1553,10 @@ class Ui_MainWindow(object):
         self.row_3.setMinimumSize(QSize(0, 150))
         self.row_3.setFrameShape(QFrame.StyledPanel)
         self.row_3.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_12 = QHBoxLayout(self.row_3)
-        self.horizontalLayout_12.setSpacing(0)
-        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
-        self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_24 = QVBoxLayout(self.row_3)
+        self.verticalLayout_24.setSpacing(3)
+        self.verticalLayout_24.setObjectName(u"verticalLayout_24")
+        self.verticalLayout_24.setContentsMargins(2, 0, 2, 0)
         self.scheduler_table = QTableWidget(self.row_3)
         if (self.scheduler_table.columnCount() < 2):
             self.scheduler_table.setColumnCount(2)
@@ -1641,7 +1652,7 @@ class Ui_MainWindow(object):
         self.scheduler_table.verticalHeader().setHighlightSections(False)
         self.scheduler_table.verticalHeader().setStretchLastSection(True)
 
-        self.horizontalLayout_12.addWidget(self.scheduler_table)
+        self.verticalLayout_24.addWidget(self.scheduler_table)
 
 
         self.verticalLayout.addWidget(self.row_3)
@@ -1861,7 +1872,7 @@ class Ui_MainWindow(object):
 "<p align=\"center\"><span style=\" font-size:16pt;\">\ub9e4\uc8fc (\uc218) \uc624\uc804 00:00</span>\n"
 "</p></body></html>", None))
         self.left_downloadButton.setText(QCoreApplication.translate("MainWindow", u"\uc989\uc2dc \uc790\ub9c9 \ub2e4\uc6b4\ub85c\ub4dc", None))
-        self.left_addQueue.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4\ub85c\ub4dc \ub300\uae30\uc5f4\uc5d0 \ucd94\uac00", None))
+        self.left_addQueue.setText(QCoreApplication.translate("MainWindow", u"\uc791\ud488 \uc990\uaca8\ucc3e\uae30\uc5d0 \ucd94\uac00", None))
         self.left_website.setText(QCoreApplication.translate("MainWindow", u"\uc560\ub2c8 \uc6f9\uc0ac\uc774\ud2b8", None))
         self.left_more.setText(QCoreApplication.translate("MainWindow", u"\ub354 \ubcf4\uae30", None))
         self.left_progressName.setText(QCoreApplication.translate("MainWindow", u"<\uc560\ub2c8\uba54\uc774\uc158> \ub2e4\uc6b4\ub85c\ub4dc\uc911...", None))
@@ -1908,11 +1919,13 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9\ub7ec", None));
         ___qtablewidgetitem6 = self.anime_time_table.horizontalHeaderItem(6)
         ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"\uacf5\uc2dd\uc0ac\uc774\ud2b8", None));
-        self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\ub2e4\uc6b4\ub85c\ub4dc \uacbd\ub85c \uc124\uc815</span></p></body></html>", None))
+        self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc790\ub9c9 \ub2e4\uc6b4\ub85c\ub4dc \uacbd\ub85c</span></p></body></html>", None))
+        self.labelVersion_3.setText(QCoreApplication.translate("MainWindow", u"\ud574\ub2f9 \uacbd\ub85c\ub97c \ud1b5\ud574 \uc790\ub9c9\uc774 \ub2e4\uc6b4\ub85c\ub4dc \ub429\ub2c8\ub2e4.", None))
         self.yml_downloadPath.setText("")
         self.yml_downloadPath.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Type here", None))
-        self.ym_openfileButton.setText(QCoreApplication.translate("MainWindow", u"Open", None))
-        self.labelVersion_3.setText(QCoreApplication.translate("MainWindow", u"\ud574\ub2f9 \uacbd\ub85c\ub97c \ud1b5\ud574 \uc790\ub9c9\uc774 \ub2e4\uc6b4\ub85c\ub4dc \ub429\ub2c8\ub2e4.", None))
+        self.scheduler_folder.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4 \ud3f4\ub354 \uc5f4\uae30", None))
+        self.ym_openfileButton.setText(QCoreApplication.translate("MainWindow", u"\uacbd\ub85c \ubcc0\uacbd", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc791\ud488 \uc990\uaca8\ucc3e\uae30 \uad00\ub9ac</span></p></body></html>", None))
         self.scheduler_checkBox.setText(QCoreApplication.translate("MainWindow", u"\uc8fc\uae30\uc801\uc73c\ub85c \ubc18\ubcf5 \uc2e4\ud589", None))
         self.scheduler_comboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"10\ubd84 \ub9c8\ub2e4", None))
         self.scheduler_comboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"30\ubd84 \ub9c8\ub2e4", None))
@@ -1921,6 +1934,7 @@ class Ui_MainWindow(object):
         self.scheduler_comboBox.setItemText(4, QCoreApplication.translate("MainWindow", u"6\uc2dc\uac04 \ub9c8\ub2e4", None))
         self.scheduler_comboBox.setItemText(5, QCoreApplication.translate("MainWindow", u"12\uc2dc\uac04 \ub9c8\ub2e4", None))
         self.scheduler_comboBox.setItemText(6, QCoreApplication.translate("MainWindow", u"24\uc2dc\uac04 \ub9c8\ub2e4", None))
+        self.scheduler_comboBox.setItemText(7, QCoreApplication.translate("MainWindow", u"\ubc18\ubcf5 \uc5c6\uc74c", None))
 
         self.yml_save_button.setText(QCoreApplication.translate("MainWindow", u"\uc800\uc7a5 \ud558\uae30", None))
         self.yml_remove_row.setText(QCoreApplication.translate("MainWindow", u"\uc120\ud0dd\ud589\uc0ad\uc81c", None))
@@ -1929,7 +1943,6 @@ class Ui_MainWindow(object):
         self.yml_reset_button.setText(QCoreApplication.translate("MainWindow", u"\ubaa8\ub4e0\ud589\uc0ad\uc81c", None))
         self.scheduler_button.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4\ub85c\ub4dc \uc2dc\uc791", None))
         self.yml_reload_button.setText(QCoreApplication.translate("MainWindow", u"\ub9ac\ub85c\ub4dc", None))
-        self.scheduler_folder.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4\ud3f4\ub354 \uc5f4\uae30", None))
         ___qtablewidgetitem7 = self.scheduler_table.horizontalHeaderItem(0)
         ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"ID", None));
         ___qtablewidgetitem8 = self.scheduler_table.horizontalHeaderItem(1)
@@ -1975,7 +1988,7 @@ class Ui_MainWindow(object):
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
-        self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"Made By KUDONG", None))
-        self.version.setText(QCoreApplication.translate("MainWindow", u"v1.4.0", None))
+        self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"KUDONG", None))
+        self.version.setText(QCoreApplication.translate("MainWindow", u"v1.5.0", None))
     # retranslateUi
 

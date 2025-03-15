@@ -969,7 +969,7 @@ Button */
                    <enum>Qt::LeftToRight</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-save.png);</string>
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-star.png);</string>
                   </property>
                   <property name="text">
                    <string>다운로드 관리</string>
@@ -1052,7 +1052,7 @@ Button */
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-star.png);</string>
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-external-link.png);</string>
                   </property>
                   <property name="text">
                    <string>깃허브</string>
@@ -1458,11 +1458,11 @@ font-size:15pt;</string>
                    <enum>Qt::LeftToRight</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-equalizer.png);
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-star.png); 
 font-size:15pt;</string>
                   </property>
                   <property name="text">
-                   <string>다운로드 대기열에 추가</string>
+                   <string>작품 즐겨찾기에 추가</string>
                   </property>
                  </widget>
                 </item>
@@ -2417,7 +2417,7 @@ font-size: 32px; font-weight: bold;</string>
                       </property>
                       <layout class="QVBoxLayout" name="verticalLayout">
                        <property name="spacing">
-                        <number>10</number>
+                        <number>3</number>
                        </property>
                        <property name="leftMargin">
                         <number>10</number>
@@ -2557,7 +2557,7 @@ font-size: 32px; font-weight: bold;</string>
                                    <string notr="true"/>
                                   </property>
                                   <property name="text">
-                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;다운로드 경로 설정&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;자막 다운로드 경로&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -2584,7 +2584,23 @@ font-size: 32px; font-weight: bold;</string>
                                   <property name="bottomMargin">
                                    <number>0</number>
                                   </property>
-                                  <item row="0" column="0">
+                                  <item row="2" column="0" colspan="4">
+                                   <widget class="QLabel" name="labelVersion_3">
+                                    <property name="styleSheet">
+                                     <string notr="true">color: rgb(113, 126, 149);</string>
+                                    </property>
+                                    <property name="lineWidth">
+                                     <number>1</number>
+                                    </property>
+                                    <property name="text">
+                                     <string>해당 경로를 통해 자막이 다운로드 됩니다.</string>
+                                    </property>
+                                    <property name="alignment">
+                                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="0">
                                    <widget class="QLineEdit" name="yml_downloadPath">
                                     <property name="minimumSize">
                                      <size>
@@ -2603,7 +2619,27 @@ font-size: 32px; font-weight: bold;</string>
                                     </property>
                                    </widget>
                                   </item>
-                                  <item row="0" column="1">
+                                  <item row="1" column="2">
+                                   <widget class="QPushButton" name="scheduler_folder">
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>150</width>
+                                      <height>30</height>
+                                     </size>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">background-color: rgb(52, 59, 72);</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>다운 폴더 열기</string>
+                                    </property>
+                                    <property name="icon">
+                                     <iconset resource="resources.qrc">
+                                      <normaloff>:/icons/images/icons/cil-folder-open.png</normaloff>:/icons/images/icons/cil-folder-open.png</iconset>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="1">
                                    <widget class="QPushButton" name="ym_openfileButton">
                                     <property name="minimumSize">
                                      <size>
@@ -2627,27 +2663,11 @@ font-size: 32px; font-weight: bold;</string>
                                      <string notr="true">background-color: rgb(52, 59, 72);</string>
                                     </property>
                                     <property name="text">
-                                     <string>Open</string>
+                                     <string>경로 변경</string>
                                     </property>
                                     <property name="icon">
                                      <iconset resource="resources.qrc">
                                       <normaloff>:/icons/images/icons/cil-folder-open.png</normaloff>:/icons/images/icons/cil-folder-open.png</iconset>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item row="1" column="0" colspan="2">
-                                   <widget class="QLabel" name="labelVersion_3">
-                                    <property name="styleSheet">
-                                     <string notr="true">color: rgb(113, 126, 149);</string>
-                                    </property>
-                                    <property name="lineWidth">
-                                     <number>1</number>
-                                    </property>
-                                    <property name="text">
-                                     <string>해당 경로를 통해 자막이 다운로드 됩니다.</string>
-                                    </property>
-                                    <property name="alignment">
-                                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                                     </property>
                                    </widget>
                                   </item>
@@ -2683,6 +2703,28 @@ font-size: 32px; font-weight: bold;</string>
                           <enum>QFrame::Raised</enum>
                          </property>
                          <layout class="QVBoxLayout" name="verticalLayout_19">
+                          <property name="spacing">
+                           <number>3</number>
+                          </property>
+                          <item>
+                           <widget class="QLabel" name="label_3">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="text">
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;작품 즐겨찾기 관리&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                           </widget>
+                          </item>
                           <item>
                            <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0,0">
                             <item row="1" column="0" rowspan="3">
@@ -2730,6 +2772,11 @@ font-size: 32px; font-weight: bold;</string>
                               <item>
                                <property name="text">
                                 <string>24시간 마다</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>반복 없음</string>
                                </property>
                               </item>
                              </widget>
@@ -2822,7 +2869,7 @@ font-size: 32px; font-weight: bold;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>1020</width>
+                                 <width>964</width>
                                  <height>210</height>
                                 </rect>
                                </property>
@@ -2932,22 +2979,6 @@ font-size: 32px; font-weight: bold;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="4">
-                             <widget class="QPushButton" name="scheduler_folder">
-                              <property name="minimumSize">
-                               <size>
-                                <width>90</width>
-                                <height>0</height>
-                               </size>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">background-color: rgb(52, 59, 72);</string>
-                              </property>
-                              <property name="text">
-                               <string>다운폴더 열기</string>
-                              </property>
-                             </widget>
-                            </item>
                            </layout>
                           </item>
                          </layout>
@@ -2973,18 +3004,18 @@ font-size: 32px; font-weight: bold;</string>
                          <property name="frameShadow">
                           <enum>QFrame::Raised</enum>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_12">
+                         <layout class="QVBoxLayout" name="verticalLayout_24">
                           <property name="spacing">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <property name="leftMargin">
-                           <number>0</number>
+                           <number>2</number>
                           </property>
                           <property name="topMargin">
                            <number>0</number>
                           </property>
                           <property name="rightMargin">
-                           <number>0</number>
+                           <number>2</number>
                           </property>
                           <property name="bottomMargin">
                            <number>0</number>
@@ -3672,7 +3703,7 @@ font-size: 32px; font-weight: bold;</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Made By KUDONG</string>
+                   <string>KUDONG</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -3682,7 +3713,7 @@ font-size: 32px; font-weight: bold;</string>
                 <item>
                  <widget class="QLabel" name="version">
                   <property name="text">
-                   <string>v1.4.0</string>
+                   <string>v1.5.0</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
