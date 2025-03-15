@@ -168,6 +168,51 @@ def requestAnimeInfo(animeNo):
 
     return info, list
 
+def requestSearchAnimeInfo(keyword):
+
+    list = []
+
+    response = requests.get("https://api.anissia.net/anime/list/0?q=" + str(keyword))
+    datas = json.loads(response.text)
+    json_data = datas["data"]
+
+    for k in json_data["content"]:
+
+        animeNo = k['animeNo']
+        status = k['status']
+        time = k['time']
+        subject = k['subject']
+        genres = k['genres']
+        startDate = k['startDate']
+        endDate = k['endDate']
+        captionCount = k['captionCount']
+        website = unquote(k['website'])
+        weekNo = int(k['week'])
+
+        list.append(AnimeInfo(animeNo,
+                    status,
+                    time,
+                    subject,
+                    genres,
+                    startDate,
+                    endDate,
+                    captionCount,
+                    website,
+                    weekNo
+                    ));
+    return list
+
+def requestSearchAnimeCorrect(keyword):
+
+    list = []
+    response = requests.get("https://api.anissia.net/anime/autocorrect?q=" + str(keyword))
+    datas = json.loads(response.text)
+    json_data = datas["data"]
+
+    for k in json_data:
+        list.append(k);
+
+    return list
 
 if __name__ == "__main__":
     list = requestAnimeWeekInfo(0);
