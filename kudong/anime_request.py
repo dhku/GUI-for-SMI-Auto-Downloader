@@ -119,6 +119,55 @@ def requestAnimeSubsInfo(anime):
 
     return list
 
+def requestAnimeInfo(animeNo):
+
+    list = []
+
+    response = requests.get("https://api.anissia.net/anime/animeNo/" + str(animeNo))
+
+    datas = json.loads(response.text)
+    json_data = datas["data"]
+
+    animeNo = json_data['animeNo']
+    status = json_data['status']
+    time = json_data['time']
+    subject = json_data['subject']
+    genres = json_data['genres']
+    startDate = json_data['startDate']
+    endDate = json_data['endDate']
+    captionCount = json_data['captionCount']
+    website = unquote(json_data['website'])
+    weekNo = int(json_data['week'])
+
+    info = AnimeInfo(animeNo,
+                    status,
+                    time,
+                    subject,
+                    genres,
+                    startDate,
+                    endDate,
+                    captionCount,
+                    website,
+                    weekNo
+                    );
+
+    for k in json_data['captions']:
+
+        name = k['name']
+        episode = k['episode']
+        updDt = k['updDt']
+        website = unquote(k['website'])
+
+        list.append(SubsInfo(name,episode,updDt,website))
+
+        # print("================================================================")
+        # print("> 제작자: " + name)
+        # print("> 회차: " + episode+"화")
+        # print("> 업데이트: " + updDt)
+        # print("> 주소: " + website)
+
+    return info, list
+
 
 if __name__ == "__main__":
     list = requestAnimeWeekInfo(0);
