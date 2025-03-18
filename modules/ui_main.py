@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainhkHGlc.ui'
+## Form generated from reading UI file 'mainobBLWT.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -78,6 +78,10 @@ class Ui_MainWindow(object):
 " 	font-family: \"Malgun Gothic\";\n"
 "}\n"
 "\n"
+"#anime_search_table {\n"
+" 	font-family: \"Malgun Gothic\";\n"
+"}\n"
+"\n"
 "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
 "Bg App */\n"
 "#bgApp {	\n"
@@ -102,9 +106,9 @@ class Ui_MainWindow(object):
 "\n"
 "/* MENUS */\n"
 "#topMenu .QPushButton {	\n"
-"	background-position: left center;\n"
-"    background-repeat: no-repeat;"
-                        "\n"
+""
+                        "	background-position: left center;\n"
+"    background-repeat: no-repeat;\n"
 "	border: none;\n"
 "	border-left: 22px solid transparent;\n"
 "	background-color: transparent;\n"
@@ -140,10 +144,10 @@ class Ui_MainWindow(object):
 "\n"
 "/* Toggle Button */\n"
 "#toggleButton {\n"
-"	background-position: left center;\n"
+"	background-posit"
+                        "ion: left center;\n"
 "    background-repeat: no-repeat;\n"
-"	border: non"
-                        "e;\n"
+"	border: none;\n"
 "	border-left: 20px solid transparent;\n"
 "	background-color: rgb(37, 41, 48);\n"
 "	text-align: left;\n"
@@ -181,8 +185,8 @@ class Ui_MainWindow(object):
 "#extraLabel { color: rgb(255, 255, 255); }\n"
 "\n"
 "/* Btn Close */\n"
-"#extraCloseColumnBtn { background-color: rgba(255, 255, 255, 0); border: none;  border-radius"
-                        ": 5px; }\n"
+"#extraCloseColumnBtn "
+                        "{ background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }\n"
 "#extraCloseColumnBtn:hover { background-color: rgb(196, 161, 249); border-style: solid; border-radius: 4px; }\n"
 "#extraCloseColumnBtn:pressed { background-color: rgb(180, 141, 238); border-style: solid; border-radius: 4px; }\n"
 "\n"
@@ -210,11 +214,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-"Content App */\n"
+"Cont"
+                        "ent App */\n"
 "#contentTopBg{	\n"
 "	background-color: rgb(33, 37, 43);\n"
-""
-                        "}\n"
+"}\n"
 "#contentBottom{\n"
 "	border-top: 3px solid rgb(44, 49, 58);\n"
 "}\n"
@@ -236,10 +240,10 @@ class Ui_MainWindow(object):
 "/* MENUS */\n"
 "#contentSettings .QPushButton {	\n"
 "	background-position: left center;\n"
-"    background-repeat: no-repeat;\n"
+"    b"
+                        "ackground-repeat: no-repeat;\n"
 "	border: none;\n"
-"	border-left: 22px soli"
-                        "d transparent;\n"
+"	border-left: 22px solid transparent;\n"
 "	background-color:transparent;\n"
 "	text-align: left;\n"
 "	padding-left: 44px;\n"
@@ -272,10 +276,10 @@ class Ui_MainWindow(object):
 "}\n"
 "QHeaderView::section{\n"
 "	background-color: rgb(33, 37, 43);\n"
-"	max-width: 30px;\n"
+"	max-"
+                        "width: 30px;\n"
 "	border: 1px solid rgb(44, 49, 58);\n"
-"	border-style: non"
-                        "e;\n"
+"	border-style: none;\n"
 "    border-bottom: 1px solid rgb(44, 49, 60);\n"
 "    border-right: 1px solid rgb(44, 49, 60);\n"
 "}\n"
@@ -308,12 +312,12 @@ class Ui_MainWindow(object):
 "QLineEdit:hover {\n"
 "	border: 2px solid rgb(64, 71, 88);\n"
 "}\n"
-"QLineEdit:focus {\n"
+"QL"
+                        "ineEdit:focus {\n"
 "	border: 2px solid rgb(91, 101, 124);\n"
 "}\n"
 "\n"
-"/*"
-                        " /////////////////////////////////////////////////////////////////////////////////////////////////\n"
+"/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
 "PlainTextEdit */\n"
 "QPlainTextEdit {\n"
 "	background-color: rgb(27, 29, 35);\n"
@@ -344,11 +348,11 @@ class Ui_MainWindow(object):
 "    margin: 0px 21px 0 21px;\n"
 "	border-radius: 0px;\n"
 "}\n"
-"QScrollBar::handle:horizontal {\n"
+"QScrollBar::handle:horizontal "
+                        "{\n"
 "    background: rgb(189, 147, 249);\n"
 "    min-width: 25px;\n"
-"	bor"
-                        "der-radius: 4px\n"
+"	border-radius: 4px\n"
 "}\n"
 "QScrollBar::add-line:horizontal {\n"
 "    border: none;\n"
@@ -383,10 +387,10 @@ class Ui_MainWindow(object):
 "    margin: 21px 0 21px 0;\n"
 "	border-radius: 0px;\n"
 " }\n"
-" QScrollBar::handle:vertical {	\n"
+" "
+                        "QScrollBar::handle:vertical {	\n"
 "	background: rgb(189, 147, 249);\n"
-"   "
-                        " min-height: 25px;\n"
+"    min-height: 25px;\n"
 "	border-radius: 4px\n"
 " }\n"
 " QScrollBar::add-line:vertical {\n"
@@ -417,11 +421,11 @@ class Ui_MainWindow(object):
 "\n"
 "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
 "CheckBox */\n"
-"QCheckBox::indicator {\n"
+"QCheckBox::ind"
+                        "icator {\n"
 "    border: 3px solid rgb(52, 59, 72);\n"
 "	width: 15px;\n"
-"	"
-                        "height: 15px;\n"
+"	height: 15px;\n"
 "	border-radius: 10px;\n"
 "    background: rgb(44, 49, 60);\n"
 "}\n"
@@ -451,10 +455,10 @@ class Ui_MainWindow(object):
 "	border: 3px solid rgb(52, 59, 72);	\n"
 "}\n"
 "\n"
-"/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
+"/* /////////////////////////////////////////////////"
+                        "////////////////////////////////////////////////\n"
 "ComboBox */\n"
-"QCombo"
-                        "Box{\n"
+"QComboBox{\n"
 "	background-color: rgb(27, 29, 35);\n"
 "	border-radius: 5px;\n"
 "	border: 2px solid rgb(33, 37, 43);\n"
@@ -484,11 +488,11 @@ class Ui_MainWindow(object):
 "	selection-background-color: rgb(39, 44, 54);\n"
 "}\n"
 "\n"
-"/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
+"/* ///////////////////////////////////////////////////////////////////////////////////"
+                        "//////////////\n"
 "Sliders */\n"
 "QSlider::groove:horizontal {\n"
-"    bord"
-                        "er-radius: 5px;\n"
+"    border-radius: 5px;\n"
 "    height: 10px;\n"
 "	margin: 0px;\n"
 "	background-color: rgb(52, 59, 72);\n"
@@ -525,11 +529,11 @@ class Ui_MainWindow(object):
 "	border: none;\n"
 "    height: 10px;\n"
 "    width: 10px;\n"
-"    margin: 0px;\n"
+"    m"
+                        "argin: 0px;\n"
 "	border-radius: 5px;\n"
 "}\n"
-"QSlider::handle:vertical:hov"
-                        "er {\n"
+"QSlider::handle:vertical:hover {\n"
 "    background-color: rgb(195, 155, 255);\n"
 "}\n"
 "QSlider::handle:vertical:pressed {\n"
@@ -560,10 +564,10 @@ class Ui_MainWindow(object):
 "	border-radius: 5px;	\n"
 "	background-color: rgb(52, 59, 72);\n"
 "}\n"
-"#pagesContainer QPushButton:hover {\n"
+"#pagesContainer QPushButton:hov"
+                        "er {\n"
 "	background-color: rgb(57, 65, 80);\n"
-"	border: 2px solid rgb(61,"
-                        " 70, 86);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
 "}\n"
 "#pagesContainer QPushButton:pressed {	\n"
 "	background-color: rgb(35, 40, 49);\n"
@@ -1724,7 +1728,13 @@ class Ui_MainWindow(object):
         self.search_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.search_button.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
 "font-size: 20px;")
-        icon5 = QIcon(QIcon.fromTheme(u"None"))
+        icon5 = QIcon()
+        iconThemeName = u"None"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon5 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon5.addFile(u".", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+
         self.search_button.setIcon(icon5)
 
         self.horizontalLayout_10.addWidget(self.search_button)
@@ -1954,7 +1964,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1967,7 +1977,7 @@ class Ui_MainWindow(object):
         self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"\uc228\uae30\uae30", None))
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"\uc560\ub2c8 \ud3b8\uc131\ud45c", None))
         self.btn_download.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4\ub85c\ub4dc \uad00\ub9ac", None))
-        self.btn_search.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8", None))
+        self.btn_search.setText(QCoreApplication.translate("MainWindow", u"\uac80\uc0c9", None))
         self.btn_log.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8", None))
         self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"\uae43\ud5c8\ube0c", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9 \uc815\ubcf4", None))

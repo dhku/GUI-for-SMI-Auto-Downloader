@@ -71,6 +71,10 @@ QToolTip {
  	font-family: &quot;Malgun Gothic&quot;;
 }
 
+#anime_search_table {
+ 	font-family: &quot;Malgun Gothic&quot;;
+}
+
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Bg App */
 #bgApp {	
@@ -1021,7 +1025,7 @@ Button */
                    <string notr="true">background-image: url(:/icons/images/icons/cil-find-in-page.png);</string>
                   </property>
                   <property name="text">
-                   <string>로그</string>
+                   <string>검색</string>
                   </property>
                  </widget>
                 </item>
@@ -2087,7 +2091,7 @@ font-size:15pt;</string>
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="anime_schedule">
                       <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -3520,7 +3524,8 @@ font-size: 20px;</string>
                              <string>검색</string>
                             </property>
                             <property name="icon">
-                             <iconset theme="None"/>
+                             <iconset theme="None">
+                              <normaloff>.</normaloff>.</iconset>
                             </property>
                            </widget>
                           </item>

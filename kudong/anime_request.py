@@ -41,17 +41,19 @@ class SubsInfo:
         self.updDt = updDt
         self.website = website
 
-
+# 해당 요일의 분기 애니메이션 정보들를 가져옵니다.
 def requestAnimeWeekInfo(week):
     list = []
 
+    datas = None
+    json_data = None
+
     try:
         response = requests.get("https://api.anissia.net/anime/schedule/" + str(week),timeout=3)
+        datas = json.loads(response.text)
+        json_data = datas["data"]
     except Exception as e:
         return None
-
-    datas = json.loads(response.text)
-    json_data = datas["data"]
 
     for k in json_data:
 
@@ -92,15 +94,20 @@ def requestAnimeWeekInfo(week):
                     ));
     return list
 
-
+# 해당 애니메이션의 자막 정보를 가져옵니다.
 def requestAnimeSubsInfo(anime):
 
     list = []
 
-    response = requests.get("https://api.anissia.net/anime/caption/animeNo/" + str(anime.animeNo))
+    datas = None
+    json_data = None
 
-    datas = json.loads(response.text)
-    json_data = datas["data"]
+    try:
+        response = requests.get("https://api.anissia.net/anime/caption/animeNo/" + str(anime.animeNo))
+        datas = json.loads(response.text)
+        json_data = datas["data"]
+    except Exception as e:
+        return None
 
     for k in json_data:
 
@@ -119,14 +126,20 @@ def requestAnimeSubsInfo(anime):
 
     return list
 
+# 해당 애니메이션의 정보와 자막정보를 가져옵니다.
 def requestAnimeInfo(animeNo):
 
     list = []
 
-    response = requests.get("https://api.anissia.net/anime/animeNo/" + str(animeNo))
+    datas = None
+    json_data = None
 
-    datas = json.loads(response.text)
-    json_data = datas["data"]
+    try:
+        response = requests.get("https://api.anissia.net/anime/animeNo/" + str(animeNo))
+        datas = json.loads(response.text)
+        json_data = datas["data"]
+    except Exception as e:
+        return None, None
 
     animeNo = json_data['animeNo']
     status = json_data['status']
@@ -168,13 +181,20 @@ def requestAnimeInfo(animeNo):
 
     return info, list
 
+# 제목 검색시 나온 애니메이션 목록을 가져옵니다. 
 def requestSearchAnimeInfo(keyword):
 
     list = []
 
-    response = requests.get("https://api.anissia.net/anime/list/0?q=" + str(keyword))
-    datas = json.loads(response.text)
-    json_data = datas["data"]
+    datas = None
+    json_data = None
+
+    try:
+        response = requests.get("https://api.anissia.net/anime/list/0?q=" + str(keyword))
+        datas = json.loads(response.text)
+        json_data = datas["data"]
+    except Exception as e:
+        return None
 
     for k in json_data["content"]:
 
@@ -202,13 +222,21 @@ def requestSearchAnimeInfo(keyword):
                     ));
     return list
 
+# 키워드 자동완성에서 검색된 작품을 가져옵니다.
 def requestSearchAnimeCorrect(keyword):
 
     list = []
-    response = requests.get("https://api.anissia.net/anime/autocorrect?q=" + str(keyword))
-    datas = json.loads(response.text)
-    json_data = datas["data"]
 
+    datas = None
+    json_data = None
+
+    try:
+        response = requests.get("https://api.anissia.net/anime/autocorrect?q=" + str(keyword))
+        datas = json.loads(response.text)
+        json_data = datas["data"]
+    except Exception as e:
+        return None
+    
     for k in json_data:
         list.append(k);
 
