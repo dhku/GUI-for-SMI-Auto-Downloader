@@ -45,6 +45,10 @@ class SearchPage(QObject):
     def on_search_button_clicked(self):
             keyword = self.widgets.search_input.text()
 
+            if keyword == "/도움말":
+                open_url("https://anissia.net/notice?topicNo=141")
+                return
+
             search_list = requestSearchAnimeInfo(keyword);
 
             count = 0
