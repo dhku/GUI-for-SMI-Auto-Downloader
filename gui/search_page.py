@@ -1,4 +1,5 @@
 
+from urllib.parse import quote
 from datetime import datetime
 from functools import partial
 from PySide6.QtCore import *
@@ -49,7 +50,7 @@ class SearchPage(QObject):
                 open_url("https://anissia.net/notice?topicNo=141")
                 return
 
-            search_list = requestSearchAnimeInfo(keyword);
+            search_list = requestSearchAnimeInfo(quote(keyword));
 
             count = 0
 
@@ -69,35 +70,12 @@ class SearchPage(QObject):
             font.setBold(QFont.Bold)
 
             for k in search_list:
-                prefix = ""
-
-                if k.weekNo < 7: #분기 애니메이션일 경우만
-                    date_str = datetime.now().strftime("%Y-%m-%d")
-                    currentDate = datetime.strptime(date_str, "%Y-%m-%d")
-
-                    startDate = None
-                    endDate = None
-
-                    if k.startDate != '':
-                        startDate = datetime.strptime(k.startDate, '%Y-%m-%d')
-                        # print("출력" + k.startDate)
-
-                    if k.endDate != '':
-                        endDate = datetime.strptime(k.endDate, '%Y-%m-%d')
-                        # print("출력" + k.endDate)
-
-                    if k.status == "OFF":
-                        prefix = "[결방] "
-                    elif endDate is not None and currentDate > endDate:
-                        prefix = "[完] "
-                    elif startDate is not None and currentDate <= startDate:
-                        prefix = startDate.strftime("[%m-%d] ")
-
+                
                 item = QTableWidgetItem(k.time)
                 item.setFont(font)
 
                 self.widgets.anime_search_table.setItem(count,0,item);
-                self.widgets.anime_search_table.setItem(count,1,QTableWidgetItem(prefix + k.subject));
+                self.widgets.anime_search_table.setItem(count,1,QTableWidgetItem(k.subject));
                 self.widgets.anime_search_table.setItem(count,2,QTableWidgetItem(str(k.animeNo)));
                 self.widgets.anime_search_table.setItem(count,3,QTableWidgetItem(k.genres));
                 
