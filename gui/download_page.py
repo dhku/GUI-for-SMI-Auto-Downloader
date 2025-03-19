@@ -169,7 +169,11 @@ class DownloadPage:
                                     self.widgets.label_date.setWordWrap(True)
                                     self.widgets.label_date.show()
                                 except Exception as e2: 
-                                    self.widgets.label_date.hide()        
+                                    self.widgets.label_date.hide()
+                elif anime.status == 'END':
+                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>완결</span></p></body></html>");
+                    self.widgets.label_date.setWordWrap(True)
+                    self.widgets.label_date.show()                              
                 else:
                     self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>결방</span></p></body></html>");
                     self.widgets.label_date.setWordWrap(True)
