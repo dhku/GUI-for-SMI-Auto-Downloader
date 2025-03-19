@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainobBLWT.ui'
+## Form generated from reading UI file 'mainQmpCdu.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -1748,6 +1748,7 @@ class Ui_MainWindow(object):
         self.search_row_3.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_12 = QHBoxLayout(self.search_row_3)
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.horizontalLayout_12.setContentsMargins(7, -1, 7, -1)
         self.anime_search_table = QTableWidget(self.search_row_3)
         if (self.anime_search_table.columnCount() < 7):
             self.anime_search_table.setColumnCount(7)
@@ -1964,7 +1965,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

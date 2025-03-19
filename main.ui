@@ -2091,7 +2091,7 @@ font-size:15pt;</string>
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>2</number>
                      </property>
                      <widget class="QWidget" name="anime_schedule">
                       <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -3541,6 +3541,12 @@ font-size: 20px;</string>
                           <enum>QFrame::Raised</enum>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_12">
+                          <property name="leftMargin">
+                           <number>7</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>7</number>
+                          </property>
                           <item>
                            <widget class="QTableWidget" name="anime_search_table">
                             <property name="styleSheet">
