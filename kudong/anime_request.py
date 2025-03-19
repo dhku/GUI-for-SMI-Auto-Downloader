@@ -1,8 +1,10 @@
 import requests
 import json
+
 from urllib.request import urlopen
-from urllib.parse import unquote
 from urllib.parse import urlparse
+from urllib.parse import unquote
+from urllib.parse import quote
 
 class AnimeInfo:
 
@@ -40,6 +42,20 @@ class SubsInfo:
         self.episode = episode
         self.updDt = updDt
         self.website = website
+
+class PageInfo:
+
+    def __init__(self,
+                 keyword,
+                 pageNumber,
+                 numberOfElements,
+                 totalPages,
+                 totalElements):
+        self.keyword = keyword # 키워드
+        self.pageNumber = pageNumber # 현재 페이지 번호 
+        self.numberOfElements = numberOfElements # 해당 페이지의 요소 수
+        self.totalPages = totalPages # 총 페이지 수
+        self.totalElements = totalElements # 총 작품 수
 
 # 해당 요일의 분기 애니메이션 정보들를 가져옵니다.
 def requestAnimeWeekInfo(week):
@@ -182,7 +198,7 @@ def requestAnimeInfo(animeNo):
     return info, list
 
 # 제목 검색시 나온 애니메이션 목록을 가져옵니다. 
-def requestSearchAnimeInfo(keyword):
+def requestSearchAnimeInfo(keyword, page = 0):
 
     list = []
 
@@ -190,11 +206,25 @@ def requestSearchAnimeInfo(keyword):
     json_data = None
 
     try:
-        response = requests.get("https://api.anissia.net/anime/list/0?q=" + str(keyword))
+        response = requests.get("https://api.anissia.net/anime/list/"+str(page)+"?q=" + quote(str(keyword)))
         datas = json.loads(response.text)
         json_data = datas["data"]
     except Exception as e:
         return None
+    
+
+    pageNumber = int(json_data["number"]) # 현재 페이지 번호 
+    numberOfElements = int(json_data["numberOfElements"]) # 해당 페이지의 요소 수
+    totalPages = int(json_data["totalPages"]) # 총 페이지 수
+    totalElements = int(json_data["totalElements"]) # 총 작품 수
+
+    pageInfo = PageInfo(
+        keyword,
+        pageNumber,
+        numberOfElements,
+        totalPages,
+        totalElements
+    );
 
     for k in json_data["content"]:
 
@@ -220,7 +250,7 @@ def requestSearchAnimeInfo(keyword):
                     website,
                     weekNo
                     ));
-    return list
+    return list, pageInfo
 
 # 키워드 자동완성에서 검색된 작품을 가져옵니다.
 def requestSearchAnimeCorrect(keyword):
@@ -231,7 +261,7 @@ def requestSearchAnimeCorrect(keyword):
     json_data = None
 
     try:
-        response = requests.get("https://api.anissia.net/anime/autocorrect?q=" + str(keyword))
+        response = requests.get("https://api.anissia.net/anime/autocorrect?q=" + quote(str(keyword)))
         datas = json.loads(response.text)
         json_data = datas["data"]
     except Exception as e:
@@ -243,7 +273,15 @@ def requestSearchAnimeCorrect(keyword):
     return list
 
 if __name__ == "__main__":
-    list = requestAnimeWeekInfo(0);
+    # list = requestAnimeWeekInfo(0);
+
+    list, pageInfo = requestSearchAnimeInfo("",106);
+
+    print("> keyword: " + str(pageInfo.keyword))
+    print("> pageNumber: " + str(pageInfo.pageNumber))
+    print("> numberOfElements: " + str(pageInfo.numberOfElements))
+    print("> totalPages: " + str(pageInfo.totalPages))
+    print("> totalElements: " + str(pageInfo.totalElements))
 
     for k in list:
         print("ANIME SMI AUTO DOWNLOADER - Target => <"+k.subject+">")    

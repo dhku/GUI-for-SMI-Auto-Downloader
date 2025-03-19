@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1511</width>
+    <width>1449</width>
     <height>741</height>
    </rect>
   </property>
@@ -2091,7 +2091,7 @@ font-size:15pt;</string>
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="anime_schedule">
                       <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2923,7 +2923,7 @@ font-size: 32px; font-weight: bold;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>964</width>
+                                 <width>933</width>
                                  <height>210</height>
                                 </rect>
                                </property>
@@ -3428,7 +3428,7 @@ font-size: 32px; font-weight: bold;</string>
                            <number>0</number>
                           </property>
                           <property name="rightMargin">
-                           <number>0</number>
+                           <number>11</number>
                           </property>
                           <property name="bottomMargin">
                            <number>0</number>
@@ -3461,6 +3461,25 @@ font-size: 32px; font-weight: bold;</string>
                             </property>
                             <property name="text">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;애니메이션 작품 검색&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="label_total_elements">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="text">
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                            </widget>
                           </item>

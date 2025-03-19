@@ -1,5 +1,4 @@
 
-from urllib.parse import quote
 from datetime import datetime
 from functools import partial
 from PySide6.QtCore import *
@@ -14,6 +13,7 @@ class SearchPage(QObject):
         super().__init__()
         self.MainWindow = MainWindow
         self.widgets = widgets  
+        self.page_info = None
 
         self.widgets.anime_search_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.widgets.anime_search_table.verticalHeader().setDefaultSectionSize(60)
@@ -26,13 +26,55 @@ class SearchPage(QObject):
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(3,QHeaderView.ResizeToContents)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(4,QHeaderView.ResizeToContents)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(5,QHeaderView.ResizeToContents)
+        self.widgets.anime_search_table.verticalScrollBar().valueChanged.connect(self.on_scroll_search_table)
         self.widgets.anime_search_table.cellClicked.connect(self.on_search_cell_clicked)
-        # self.widgets.search_button.clicked.connect(self.on_search_button_clicked)
         self.widgets.search_button.clicked.connect(self.update_search_keyword_task)
         self.widgets.search_input.textChanged.connect(self.update_search_correct_task)
-
+                 
         self.search_thread = SearchCorrectWorkerThread(self)
         self.search_keyword_thread = SearchKeywordWorkerThread(self)
+
+    def on_scroll_search_table(self):
+        scroll_bar = self.widgets.anime_search_table.verticalScrollBar()
+        if scroll_bar.value() == scroll_bar.maximum():
+            self.load_more_data()
+
+    def load_more_data(self):
+        if self.page_info.pageNumber + 1 >= self.page_info.totalPages:
+            return
+
+        search_list, page_info = requestSearchAnimeInfo(self.page_info.keyword, self.page_info.pageNumber + 1);   
+        self.page_info = page_info
+
+        font = QFont()
+        font.setPointSize(25)
+        font.setBold(QFont.Bold)
+
+        start_row = self.widgets.anime_search_table.rowCount();
+
+        for k in search_list:
+            
+            item = QTableWidgetItem(k.time)
+            item.setFont(font)
+
+            row = self.widgets.anime_search_table.rowCount()
+            self.widgets.anime_search_table.insertRow(row)
+
+            self.widgets.anime_search_table.setItem(row,0,item);
+            self.widgets.anime_search_table.setItem(row,1,QTableWidgetItem(k.subject));
+            self.widgets.anime_search_table.setItem(row,2,QTableWidgetItem(str(k.animeNo)));
+            self.widgets.anime_search_table.setItem(row,3,QTableWidgetItem(k.genres));
+            
+            self.widgets.anime_search_table.setItem(row,4,QTableWidgetItem(k.startDate));
+            self.widgets.anime_search_table.setItem(row,5,QTableWidgetItem(str(k.captionCount)));
+            self.widgets.anime_search_table.setItem(row,6,QTableWidgetItem(k.website));  
+
+        end_row = self.widgets.anime_search_table.rowCount();
+
+        for row in range(start_row,end_row):
+            for column in range(self.widgets.anime_search_table.columnCount()):
+                item = self.widgets.anime_search_table.item(row, column)
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 
     def update_search_keyword_task(self):
         self.search_keyword_thread.setValue(self.on_search_button_clicked)
@@ -50,15 +92,19 @@ class SearchPage(QObject):
                 open_url("https://anissia.net/notice?topicNo=141")
                 return
 
-            search_list = requestSearchAnimeInfo(quote(keyword));
+            search_list, page_info = requestSearchAnimeInfo(keyword);
+            self.page_info = page_info
 
             count = 0
-
-            self.widgets.anime_search_table.clearContents()
-
+            
             if search_list is None:
                 reply = QMessageBox.information(self.MainWindow,'SMI-DOWNLOADER','현재 애니시아 서버와 연결할수 없습니다!')
                 return
+            
+            self.widgets.anime_search_table.clearContents()
+            self.widgets.anime_search_table.verticalScrollBar().setValue(0)
+
+            self.widgets.label_total_elements.setText("<html><head/><body><p><span style='font-size:12pt;'>총 "+str(page_info.totalElements)+"개의 작품이 검색되었습니다.</span></p></body></html>");    
 
             self.widgets.anime_search_table.setRowCount(len(search_list))
             self.widgets.anime_search_table.setColumnCount(7)

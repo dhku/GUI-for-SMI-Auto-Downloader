@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainQmpCdu.ui'
+## Form generated from reading UI file 'mainlrUTZR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1511, 741)
+        MainWindow.resize(1449, 741)
         MainWindow.setMinimumSize(QSize(940, 560))
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
@@ -1511,7 +1511,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 964, 210))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 933, 210))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1689,7 +1689,7 @@ class Ui_MainWindow(object):
         self.search_row_1.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_8 = QHBoxLayout(self.search_row_1)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
-        self.horizontalLayout_8.setContentsMargins(-1, 0, 0, 0)
+        self.horizontalLayout_8.setContentsMargins(-1, 0, 11, 0)
         self.labelBoxBlenderInstalation_2 = QLabel(self.search_row_1)
         self.labelBoxBlenderInstalation_2.setObjectName(u"labelBoxBlenderInstalation_2")
         sizePolicy9.setHeightForWidth(self.labelBoxBlenderInstalation_2.sizePolicy().hasHeightForWidth())
@@ -1699,6 +1699,14 @@ class Ui_MainWindow(object):
         self.labelBoxBlenderInstalation_2.setStyleSheet(u"")
 
         self.horizontalLayout_8.addWidget(self.labelBoxBlenderInstalation_2)
+
+        self.label_total_elements = QLabel(self.search_row_1)
+        self.label_total_elements.setObjectName(u"label_total_elements")
+        sizePolicy.setHeightForWidth(self.label_total_elements.sizePolicy().hasHeightForWidth())
+        self.label_total_elements.setSizePolicy(sizePolicy)
+        self.label_total_elements.setMinimumSize(QSize(0, 50))
+
+        self.horizontalLayout_8.addWidget(self.label_total_elements)
 
 
         self.verticalLayout_28.addWidget(self.search_row_1)
@@ -2100,6 +2108,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem24 = self.scheduler_table.verticalHeaderItem(15)
         ___qtablewidgetitem24.setText(QCoreApplication.translate("MainWindow", u"New Row", None));
         self.labelBoxBlenderInstalation_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc560\ub2c8\uba54\uc774\uc158 \uc791\ud488 \uac80\uc0c9</span></p></body></html>", None))
+        self.label_total_elements.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p></p></body></html>", None))
         self.search_input.setText("")
         self.search_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\uc560\ub2c8\uac80\uc0c9 #\uc7a5\ub974 @\uc81c\uc791\uc790 /\uc644\uacb0 /\ub3c4\uc6c0\ub9d0", None))
         self.search_button.setText(QCoreApplication.translate("MainWindow", u"\uac80\uc0c9", None))
