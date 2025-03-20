@@ -31,6 +31,7 @@ class SearchPage(QObject):
         self.widgets.anime_search_table.cellClicked.connect(self.on_search_cell_clicked)
         self.widgets.search_button.clicked.connect(self.async_update_search_keyword_task)
         self.widgets.search_input.textChanged.connect(self.update_search_correct_task)
+        self.search_thread = SearchCorrectWorkerThread(self)
 
     def on_scroll_search_table(self):
         scroll_bar = self.widgets.anime_search_table.verticalScrollBar()
@@ -83,7 +84,6 @@ class SearchPage(QObject):
 
     def update_search_correct_task(self):
         current_text = self.widgets.search_input.text()
-        self.search_thread = SearchCorrectWorkerThread(self)
         self.search_thread.setValue(current_text)
         self.search_thread.start()
 
