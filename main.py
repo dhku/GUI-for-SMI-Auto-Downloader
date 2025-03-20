@@ -208,7 +208,7 @@ if __name__ == "__main__":
     autoDPI = False
 
     # 콘솔 로깅
-    # console_logger_init() # 배포시 활성화
+    console_logger_init() # 배포시 활성화
 
     # HIDPI 값 불러오기
     with open('settings.yml', encoding='UTF8') as f:

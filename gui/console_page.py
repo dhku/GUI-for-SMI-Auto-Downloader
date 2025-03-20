@@ -50,7 +50,8 @@ class ConsolePage:
         self.widgets.log_timestamp.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
         self.widgets.log_timestamp.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
         self.widgets.log_timestamp.cellClicked.connect(self.on_cell_clicked_console)
-
+        self.widgets.log_timestamp.setFocusPolicy(Qt.NoFocus)
+        
         self.widgets.log_timestamp.verticalScrollBar().setValue(
             self.widgets.log_timestamp.verticalScrollBar().maximum()
         )
