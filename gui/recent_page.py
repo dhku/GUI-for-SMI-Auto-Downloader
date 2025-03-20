@@ -99,7 +99,7 @@ class RecentPage(QObject):
         self.widgets.anime_recent_table.clearContents()
         self.widgets.anime_recent_table.verticalScrollBar().setValue(0)
 
-        self.widgets.label_recemt_total_elements.setText("<html><head/><body><p><span style='font-size:12pt;'>최근 90일 데이터 / 총 "+str(page_info.totalElements)+"개의 작품이 검색되었습니다.</span></p></body></html>");    
+        self.widgets.label_recemt_total_elements.setText("<html><head/><body><p><span style='font-size:12pt;'>최근 90일 데이터 / 총 "+str(page_info.totalElements)+" 작품</span></p></body></html>");    
 
         self.widgets.anime_recent_table.setRowCount(len(search_list))
         self.widgets.anime_recent_table.setColumnCount(6)

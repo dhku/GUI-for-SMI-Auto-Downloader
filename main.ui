@@ -2400,19 +2400,19 @@ font-size: 32px; font-weight: bold;</string>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_7">
                           <property name="spacing">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <property name="leftMargin">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <property name="topMargin">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <property name="rightMargin">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <property name="bottomMargin">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <item>
                            <widget class="QTableWidget" name="anime_time_table">
@@ -3691,7 +3691,7 @@ font-size: 20px;</string>
                              <string notr="true"/>
                             </property>
                             <property name="text">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;애니메이션 자막 최신 업데이트&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;애니메이션 최신 자막&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                            </widget>
                           </item>

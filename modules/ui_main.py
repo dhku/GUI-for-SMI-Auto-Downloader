@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainvIUasC.ui'
+## Form generated from reading UI file 'mainCQSUqQ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -1293,9 +1293,9 @@ class Ui_MainWindow(object):
         self.anime_time.setFrameShape(QFrame.StyledPanel)
         self.anime_time.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_7 = QHBoxLayout(self.anime_time)
-        self.horizontalLayout_7.setSpacing(0)
+        self.horizontalLayout_7.setSpacing(3)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_7.setContentsMargins(3, 3, 3, 3)
         self.anime_time_table = QTableWidget(self.anime_time)
         if (self.anime_time_table.columnCount() < 7):
             self.anime_time_table.setColumnCount(7)
@@ -2209,7 +2209,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem30.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9\ub7ec", None));
         ___qtablewidgetitem31 = self.anime_search_table.horizontalHeaderItem(6)
         ___qtablewidgetitem31.setText(QCoreApplication.translate("MainWindow", u"\uacf5\uc2dd\uc0ac\uc774\ud2b8", None));
-        self.labal_recent_title.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc560\ub2c8\uba54\uc774\uc158 \uc790\ub9c9 \ucd5c\uc2e0 \uc5c5\ub370\uc774\ud2b8</span></p></body></html>", None))
+        self.labal_recent_title.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc560\ub2c8\uba54\uc774\uc158 \ucd5c\uc2e0 \uc790\ub9c9</span></p></body></html>", None))
         self.label_recemt_total_elements.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><br/></p></body></html>", None))
         ___qtablewidgetitem32 = self.anime_recent_table.horizontalHeaderItem(0)
         ___qtablewidgetitem32.setText(QCoreApplication.translate("MainWindow", u"\uc2dc\uac04", None));
