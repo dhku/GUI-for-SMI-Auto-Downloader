@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainCQSUqQ.ui'
+## Form generated from reading UI file 'mainopYNhU.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -742,6 +742,7 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.btn_update.sizePolicy().hasHeightForWidth())
         self.btn_update.setSizePolicy(sizePolicy2)
         self.btn_update.setMinimumSize(QSize(0, 45))
+        self.btn_update.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.btn_update.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-history.png);")
 
         self.verticalLayout_8.addWidget(self.btn_update)
@@ -1523,7 +1524,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 972, 210))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 210, 210))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"

@@ -1047,6 +1047,9 @@ Button */
                     <height>45</height>
                    </size>
                   </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">background-image: url(:/icons/images/icons/cil-history.png);</string>
                   </property>
@@ -2935,7 +2938,7 @@ font-size: 32px; font-weight: bold;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>972</width>
+                                 <width>210</width>
                                  <height>210</height>
                                 </rect>
                                </property>
