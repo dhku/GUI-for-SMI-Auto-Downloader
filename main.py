@@ -2,7 +2,7 @@
 #
 # BY: KUDONG
 # PROJECT: GUI-FOR-SMI-AUTO-DOWNLOADER
-# Version: 1.5.0
+# Version: 1.5.2
 #
 # ///////////////////////////////////////////////////////////////
 
@@ -65,6 +65,8 @@ class MainWindow(QMainWindow):
         self.console_page = ConsolePage(self,widgets)
         # 검색 페이지
         self.search_page = SearchPage(self,widgets)
+        # 최근 자막 페이지
+        self.recent_page = RecentPage(self,widgets)
 
         # BUTTONS CLICK
         # ///////////////////////////////////////////////////////////////
@@ -75,6 +77,7 @@ class MainWindow(QMainWindow):
         widgets.btn_log.clicked.connect(self.buttonClick)
         widgets.btn_exit.clicked.connect(self.buttonClick)
         widgets.btn_search.clicked.connect(self.buttonClick)
+        widgets.btn_update.clicked.connect(self.buttonClick)
 
         # 좌측 사이드 바
         def openCloseLeftBox():
@@ -149,7 +152,14 @@ class MainWindow(QMainWindow):
         # 검색 페이지 이동 버튼
         if btnName == "btn_search":
             widgets.stackedWidget.setCurrentWidget(widgets.search_page)
-            self.search_page.update_search_keyword_task()
+            self.search_page.async_update_search_keyword_task()
+            UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+
+        # 최근 자막 페이지 이동 버튼
+        if btnName == "btn_update":
+            widgets.stackedWidget.setCurrentWidget(widgets.recent_page)
+            self.recent_page.async_update_recent_task()
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
@@ -198,7 +208,7 @@ if __name__ == "__main__":
     autoDPI = False
 
     # 콘솔 로깅
-    console_logger_init() # 배포시 활성화
+    # console_logger_init() # 배포시 활성화
 
     # HIDPI 값 불러오기
     with open('settings.yml', encoding='UTF8') as f:

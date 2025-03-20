@@ -21,24 +21,28 @@ class SearchPage(QObject):
         self.widgets.anime_search_table.verticalHeader().setSectionsMovable(False)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
-        self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
+        self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(1,QHeaderView.Fixed)
+        self.widgets.anime_search_table.horizontalHeader().resizeSection(1, 620)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(2,QHeaderView.ResizeToContents)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(3,QHeaderView.ResizeToContents)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(4,QHeaderView.ResizeToContents)
         self.widgets.anime_search_table.horizontalHeader().setSectionResizeMode(5,QHeaderView.ResizeToContents)
         self.widgets.anime_search_table.verticalScrollBar().valueChanged.connect(self.on_scroll_search_table)
         self.widgets.anime_search_table.cellClicked.connect(self.on_search_cell_clicked)
-        self.widgets.search_button.clicked.connect(self.update_search_keyword_task)
+        self.widgets.search_button.clicked.connect(self.async_update_search_keyword_task)
         self.widgets.search_input.textChanged.connect(self.update_search_correct_task)
-                 
+
         self.search_thread = SearchCorrectWorkerThread(self)
-        self.search_keyword_thread = SearchKeywordWorkerThread(self)
+        self.search_keyword_thread = AsyncSearchWorkerThread(self)
+        self.search_keyword_thread.setValue(self.on_search_button_clicked)
+        self.scroll_thread = AsyncSearchWorkerThread(self)
+        self.scroll_thread.setValue(self.load_more_data)
 
     def on_scroll_search_table(self):
         scroll_bar = self.widgets.anime_search_table.verticalScrollBar()
         if scroll_bar.value() == scroll_bar.maximum():
-            self.load_more_data()
-
+            self.scroll_thread.start()
+            
     def load_more_data(self):
         if self.page_info.pageNumber + 1 >= self.page_info.totalPages:
             return
@@ -76,8 +80,7 @@ class SearchPage(QObject):
                 item = self.widgets.anime_search_table.item(row, column)
                 item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 
-    def update_search_keyword_task(self):
-        self.search_keyword_thread.setValue(self.on_search_button_clicked)
+    def async_update_search_keyword_task(self):
         self.search_keyword_thread.start()
 
     def update_search_correct_task(self):
@@ -286,7 +289,7 @@ class SearchPage(QObject):
         self.widgets.search_input.setToolTip(correct_keyword)
 
 
-class SearchKeywordWorkerThread(QThread):
+class AsyncSearchWorkerThread(QThread):
     def __init__(self, search_page):
         super().__init__()
 

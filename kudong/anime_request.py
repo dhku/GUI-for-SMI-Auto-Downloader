@@ -57,6 +57,22 @@ class PageInfo:
         self.totalPages = totalPages # 총 페이지 수
         self.totalElements = totalElements # 총 작품 수
 
+class RecentInfo:
+
+    def __init__(self,
+                 animeNo,
+                 subject,
+                 episode,
+                 updDt,
+                 website,
+                 name):
+        self.animeNo = animeNo
+        self.subject = subject
+        self.episode = episode
+        self.updDt = updDt
+        self.website = website
+        self.name = name
+
 # 해당 요일의 분기 애니메이션 정보들를 가져옵니다.
 def requestAnimeWeekInfo(week):
     list = []
@@ -271,6 +287,53 @@ def requestSearchAnimeCorrect(keyword):
         list.append(k);
 
     return list
+
+# 최근 업로드된 자막정보를 가져옵니다. 
+def requestRecentAnimeInfo(page = 0):
+
+    list = []
+
+    datas = None
+    json_data = None
+
+    try:
+        response = requests.get("https://api.anissia.net/anime/caption/recent/"+str(page))
+        datas = json.loads(response.text)
+        json_data = datas["data"]
+    except Exception as e:
+        return None
+    
+    pageNumber = int(json_data["number"]) # 현재 페이지 번호 
+    numberOfElements = int(json_data["numberOfElements"]) # 해당 페이지의 요소 수
+    totalPages = int(json_data["totalPages"]) # 총 페이지 수
+    totalElements = int(json_data["totalElements"]) # 총 작품 수
+
+    pageInfo = PageInfo(
+        "",
+        pageNumber,
+        numberOfElements,
+        totalPages,
+        totalElements
+    );
+
+    for k in json_data["content"]:
+
+        animeNo = k['animeNo']
+        subject = k['subject']
+        episode = k['episode']
+        updDt = k['updDt']
+        website = unquote(k['website'])
+        name = k['name']
+
+        list.append(RecentInfo(animeNo,
+                    subject,
+                    episode,
+                    updDt,
+                    website,
+                    name
+                    ));
+    
+    return list, pageInfo
 
 if __name__ == "__main__":
     # list = requestAnimeWeekInfo(0);

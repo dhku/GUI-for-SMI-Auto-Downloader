@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1449</width>
+    <width>1529</width>
     <height>741</height>
    </rect>
   </property>
@@ -72,6 +72,10 @@ QToolTip {
 }
 
 #anime_search_table {
+ 	font-family: &quot;Malgun Gothic&quot;;
+}
+
+#anime_recent_table {
  	font-family: &quot;Malgun Gothic&quot;;
 }
 
@@ -1025,7 +1029,29 @@ Button */
                    <string notr="true">background-image: url(:/icons/images/icons/cil-find-in-page.png);</string>
                   </property>
                   <property name="text">
-                   <string>검색</string>
+                   <string>작품 검색</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_update">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>45</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-history.png);</string>
+                  </property>
+                  <property name="text">
+                   <string>최신 자막</string>
                   </property>
                  </widget>
                 </item>
@@ -1071,6 +1097,7 @@ Button */
                <zorder>btn_download</zorder>
                <zorder>btn_home</zorder>
                <zorder>btn_search</zorder>
+               <zorder>btn_update</zorder>
               </widget>
              </item>
              <item alignment="Qt::AlignBottom">
@@ -2070,21 +2097,6 @@ font-size:15pt;</string>
                    <enum>QFrame::Raised</enum>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_15">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>10</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>10</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>10</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>10</number>
-                   </property>
                    <item>
                     <widget class="QStackedWidget" name="stackedWidget">
                      <property name="styleSheet">
@@ -2923,7 +2935,7 @@ font-size: 32px; font-weight: bold;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>933</width>
+                                 <width>972</width>
                                  <height>210</height>
                                 </rect>
                                </property>
@@ -3629,6 +3641,155 @@ font-size: 20px;</string>
                        </item>
                       </layout>
                      </widget>
+                     <widget class="QWidget" name="recent_page">
+                      <layout class="QVBoxLayout" name="verticalLayout_27">
+                       <item>
+                        <widget class="QFrame" name="recent_row_1">
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>36</height>
+                          </size>
+                         </property>
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_13">
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <widget class="QLabel" name="labal_recent_title">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Segoe UI</family>
+                              <pointsize>10</pointsize>
+                              <weight>50</weight>
+                              <italic>false</italic>
+                              <bold>false</bold>
+                             </font>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true"/>
+                            </property>
+                            <property name="text">
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;애니메이션 자막 최신 업데이트&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="label_recemt_total_elements">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="text">
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QFrame" name="recent_row_2">
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_14">
+                          <property name="leftMargin">
+                           <number>7</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>7</number>
+                          </property>
+                          <item>
+                           <widget class="QTableWidget" name="anime_recent_table">
+                            <property name="styleSheet">
+                             <string notr="true">font-size: 20px; 
+</string>
+                            </property>
+                            <property name="frameShape">
+                             <enum>QFrame::StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                             <enum>QFrame::Sunken</enum>
+                            </property>
+                            <property name="dragEnabled">
+                             <bool>false</bool>
+                            </property>
+                            <attribute name="horizontalHeaderHighlightSections">
+                             <bool>true</bool>
+                            </attribute>
+                            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                             <bool>false</bool>
+                            </attribute>
+                            <column>
+                             <property name="text">
+                              <string>시간</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>회차</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>제목</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>제작자</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>ID</string>
+                             </property>
+                            </column>
+                            <column>
+                             <property name="text">
+                              <string>링크</string>
+                             </property>
+                            </column>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
                      <widget class="QWidget" name="log_page">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -3989,7 +4150,7 @@ font-size: 20px;</string>
                 <item>
                  <widget class="QLabel" name="version">
                   <property name="text">
-                   <string>v1.5.0</string>
+                   <string>v1.5.2</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
