@@ -32,15 +32,11 @@ class SearchPage(QObject):
         self.widgets.search_button.clicked.connect(self.async_update_search_keyword_task)
         self.widgets.search_input.textChanged.connect(self.update_search_correct_task)
 
-        self.search_thread = SearchCorrectWorkerThread(self)
-        self.search_keyword_thread = AsyncSearchWorkerThread(self)
-        self.search_keyword_thread.setValue(self.on_search_button_clicked)
-        self.scroll_thread = AsyncSearchWorkerThread(self)
-        self.scroll_thread.setValue(self.load_more_data)
-
     def on_scroll_search_table(self):
         scroll_bar = self.widgets.anime_search_table.verticalScrollBar()
         if scroll_bar.value() == scroll_bar.maximum():
+            self.scroll_thread = AsyncSearchWorkerThread(self)
+            self.scroll_thread.setValue(self.load_more_data)
             self.scroll_thread.start()
             
     def load_more_data(self):
@@ -81,10 +77,13 @@ class SearchPage(QObject):
                 item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 
     def async_update_search_keyword_task(self):
+        self.search_keyword_thread = AsyncSearchWorkerThread(self)
+        self.search_keyword_thread.setValue(self.on_search_button_clicked)
         self.search_keyword_thread.start()
 
     def update_search_correct_task(self):
         current_text = self.widgets.search_input.text()
+        self.search_thread = SearchCorrectWorkerThread(self)
         self.search_thread.setValue(current_text)
         self.search_thread.start()
 
@@ -260,7 +259,7 @@ class SearchPage(QObject):
                         total_sec = time_diff.total_seconds();
 
                         if total_sec < 60: # 60초 이내
-                            time_diff_str = time_diff_prefix + str(total_sec) + "초 전)"
+                            time_diff_str = time_diff_prefix + str(round(total_sec)) + "초 전)"
                         elif total_sec < 3600: # 60분 이내
                             time_diff_str = time_diff_prefix + str(round(total_sec/60)) + "분 전)"
                         elif total_sec < 86400: # 24시간 이내

@@ -28,11 +28,6 @@ class RecentPage(QObject):
         self.widgets.anime_recent_table.cellClicked.connect(self.on_recent_cell_clicked)
         self.widgets.anime_recent_table.cellDoubleClicked.connect(self.on_double_click)
 
-        self.recent_thread = AsyncRecentWorkerThread(self)
-        self.recent_thread.setValue(self.update_recent_task)
-        self.scroll_thread = AsyncRecentWorkerThread(self)
-        self.scroll_thread.setValue(self.load_more_data)
-
         self.widgets.anime_recent_table.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.widgets.anime_recent_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.widgets.anime_recent_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -42,11 +37,15 @@ class RecentPage(QObject):
         open_url(item.text())
         
     def async_update_recent_task(self):
+        self.recent_thread = AsyncRecentWorkerThread(self)
+        self.recent_thread.setValue(self.update_recent_task)
         self.recent_thread.start()
 
     def on_scroll_recent_table(self):
         scroll_bar = self.widgets.anime_recent_table.verticalScrollBar()
         if scroll_bar.value() == scroll_bar.maximum():
+            self.scroll_thread = AsyncRecentWorkerThread(self)
+            self.scroll_thread.setValue(self.load_more_data)
             self.scroll_thread.start()
             
     def load_more_data(self):
@@ -144,9 +143,8 @@ class RecentPage(QObject):
         result = ""
         total_sec = time_diff.total_seconds();
 
-
         if total_sec < 60: # 60초 이내
-            result = str(total_sec).rjust(2) + "초 전"
+            result = str(round(total_sec)).rjust(2) + "초 전"
         elif total_sec < 3600: # 60분 이내
             result = str(round(total_sec/60)).rjust(2) + "분 전"
         elif total_sec < 86400: # 24시간 이내
