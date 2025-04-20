@@ -522,7 +522,6 @@ def download_count_naver(url):
         p_attached_file = re.compile(r"\s*.*aPostFiles\[1\]\s*=\s*JSON\.parse\('(\[.*?\])'\s*\.replace", re.IGNORECASE | re.DOTALL)
         result = p_attached_file.match(url_source).group(1)
         if result != '[]':
-            print("결과=>"+result)
             # data = "[" + result.replace('\\\'', '\"') + "]"
             data = result.replace('\\\'', '\"')
             json_data = json.loads(data)
