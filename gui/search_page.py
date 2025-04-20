@@ -99,6 +99,7 @@ class SearchPage(QObject):
 
             if keyword == "/도움말":
                 open_url("https://anissia.net/notice?topicNo=141")
+                isSearchThreadRunning = False
                 return
 
             search_list, page_info = requestSearchAnimeInfo(keyword);
