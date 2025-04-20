@@ -19,7 +19,7 @@ target = Executable(
     script="main.py",
     base="Win32GUI",
     icon="icon.ico",
-    target_name="SMIAutoDownloader.exe"
+    target_name="SMI-Auto-Downloader.exe"
 )
 
 # SETUP CX FREEZE
