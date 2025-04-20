@@ -5,6 +5,8 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
 
+isRecentThreadRunning = False
+
 # 5. RECENT PAGE
 # ///////////////////////////////////////////////////////////////  
 class RecentPage(QObject):
@@ -37,9 +39,12 @@ class RecentPage(QObject):
         open_url(item.text())
         
     def async_update_recent_task(self):
-        self.recent_thread = AsyncRecentWorkerThread(self)
-        self.recent_thread.setValue(self.update_recent_task)
-        self.recent_thread.start()
+        global isRecentThreadRunning
+        if isRecentThreadRunning is False:
+            isRecentThreadRunning = True
+            self.recent_thread = AsyncRecentWorkerThread(self)
+            self.recent_thread.setValue(self.update_recent_task)
+            self.recent_thread.start()
 
     def on_scroll_recent_table(self):
         scroll_bar = self.widgets.anime_recent_table.verticalScrollBar()
@@ -85,14 +90,15 @@ class RecentPage(QObject):
 
 
     def update_recent_task(self):
-
+        global isRecentThreadRunning
         search_list, page_info = requestRecentAnimeInfo()
         self.page_info = page_info
-
+        
         count = 0
         
         if search_list is None:
             reply = QMessageBox.information(self.MainWindow,'SMI-DOWNLOADER','현재 애니시아 서버와 연결할수 없습니다!')
+            isRecentThreadRunning = False
             return
         
         self.widgets.anime_recent_table.clearContents()
@@ -130,6 +136,8 @@ class RecentPage(QObject):
         self.widgets.anime_recent_table.horizontalScrollBar().setValue(
                 self.widgets.anime_recent_table.horizontalScrollBar().minimum()
         )
+
+        isRecentThreadRunning = False
 
     def calculateDateTime(self, value):
         updDtStr = value

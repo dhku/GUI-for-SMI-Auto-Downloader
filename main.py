@@ -2,7 +2,7 @@
 #
 # BY: KUDONG
 # PROJECT: GUI-FOR-SMI-AUTO-DOWNLOADER
-# Version: 1.5.2
+# Version: 1.5.3
 #
 # ///////////////////////////////////////////////////////////////
 
@@ -128,29 +128,34 @@ class MainWindow(QMainWindow):
     # ///////////////////////////////////////////////////////////////
     def buttonClick(self):
         # GET BUTTON CLICKED
+        global currentPage
         btn = self.sender()
         btnName = btn.objectName()
 
         # 편성표 이동 버튼
         if btnName == "btn_home":
+            common.currentPage = "home"
             widgets.stackedWidget.setCurrentWidget(widgets.anime_schedule)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
         # 다운로드 관리 이동 버튼
         if btnName == "btn_download":
+            common.currentPage = "download"
             widgets.stackedWidget.setCurrentWidget(widgets.download_page)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
         # 로그 페이지 이동 버튼
         if btnName == "btn_log":
+            common.currentPage = "log"
             widgets.stackedWidget.setCurrentWidget(widgets.log_page) # SET PAGE
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
         # 검색 페이지 이동 버튼
         if btnName == "btn_search":
+            common.currentPage = "search"
             widgets.stackedWidget.setCurrentWidget(widgets.search_page)
             self.search_page.async_update_search_keyword_task()
             UIFunctions.resetStyle(self, btnName)
@@ -158,6 +163,7 @@ class MainWindow(QMainWindow):
 
         # 최근 자막 페이지 이동 버튼
         if btnName == "btn_update":
+            common.currentPage = "update"
             widgets.stackedWidget.setCurrentWidget(widgets.recent_page)
             self.recent_page.async_update_recent_task()
             UIFunctions.resetStyle(self, btnName)

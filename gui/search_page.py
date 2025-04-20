@@ -6,6 +6,8 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
 
+isSearchThreadRunning = False
+
 # 4. SEARCH
 # ///////////////////////////////////////////////////////////////  
 class SearchPage(QObject):
@@ -31,6 +33,7 @@ class SearchPage(QObject):
         self.widgets.anime_search_table.cellClicked.connect(self.on_search_cell_clicked)
         self.widgets.search_button.clicked.connect(self.async_update_search_keyword_task)
         self.widgets.search_input.textChanged.connect(self.update_search_correct_task)
+        self.widgets.search_input.returnPressed.connect(self.widgets.search_button.click)
         self.search_thread = SearchCorrectWorkerThread(self)
 
     def on_scroll_search_table(self):
@@ -78,9 +81,12 @@ class SearchPage(QObject):
                 item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 
     def async_update_search_keyword_task(self):
-        self.search_keyword_thread = AsyncSearchWorkerThread(self)
-        self.search_keyword_thread.setValue(self.on_search_button_clicked)
-        self.search_keyword_thread.start()
+        global isSearchThreadRunning
+        if isSearchThreadRunning is False:
+            isSearchThreadRunning = True
+            self.search_keyword_thread = AsyncSearchWorkerThread(self)
+            self.search_keyword_thread.setValue(self.on_search_button_clicked)
+            self.search_keyword_thread.start()
 
     def update_search_correct_task(self):
         current_text = self.widgets.search_input.text()
@@ -88,6 +94,7 @@ class SearchPage(QObject):
         self.search_thread.start()
 
     def on_search_button_clicked(self):
+            global isSearchThreadRunning
             keyword = self.widgets.search_input.text()
 
             if keyword == "/도움말":
@@ -101,6 +108,7 @@ class SearchPage(QObject):
             
             if search_list is None:
                 reply = QMessageBox.information(self.MainWindow,'SMI-DOWNLOADER','현재 애니시아 서버와 연결할수 없습니다!')
+                isSearchThreadRunning = False
                 return
             
             self.widgets.anime_search_table.clearContents()
@@ -140,6 +148,8 @@ class SearchPage(QObject):
             self.widgets.anime_search_table.horizontalScrollBar().setValue(
                     self.widgets.anime_search_table.horizontalScrollBar().minimum()
             )
+
+            isSearchThreadRunning = False
 
 
     def on_search_cell_clicked(self, row,column):
@@ -308,6 +318,7 @@ class SearchCorrectWorkerThread(QThread):
 
     def run(self):
         list = requestSearchAnimeCorrect(self.keyword)
-        correct_keyword = "\n".join(list)
-        # print(correct_keyword)
-        QMetaObject.invokeMethod(self.search_page, "update_search_correct", Qt.QueuedConnection,Q_ARG(str,correct_keyword))
+        if list is not None:
+            correct_keyword = "\n".join(list)
+            # print(correct_keyword)
+            QMetaObject.invokeMethod(self.search_page, "update_search_correct", Qt.QueuedConnection,Q_ARG(str,correct_keyword))

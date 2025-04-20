@@ -12,6 +12,7 @@ downloadPage_instance = None; # left_toggle_bar에서 Yml save 참조용
 selectedAnime_LeftBox = None; # 선택한 애니메이션 객체
 download_thread = None;
 smiWorker = None; # 진행도 콜백에서 사용
+currentPage = None;
 
 # URL을 여는 함수
 def open_url(url):
