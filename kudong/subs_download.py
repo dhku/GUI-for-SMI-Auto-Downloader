@@ -378,12 +378,15 @@ def download_naver(url,callback):
 
     try:
         # find 'aPostFiles'
-        #p_attached_file = re.compile(r"\s*.*aPostFiles\[1\] = \[(.*?)\]", re.IGNORECASE | re.DOTALL)
-        p_attached_file = re.compile(r"\s*.*aPostFiles\[1\] = JSON.parse\(\'\[(.*?)\]", re.IGNORECASE | re.DOTALL)
+        # 캡쳐 그룹 \[ \] 사이 - 따로 [ ] 감싸줘야함
+        # p_attached_file = re.compile(r"\s*.*aPostFiles\[1\] = JSON.parse\(\'\[(.*?)\]", re.IGNORECASE | re.DOTALL)
+        # 캡쳐 그룹 ( ) 사이 - 따로 [ ] 안해도됨
+        p_attached_file = re.compile(r"\s*.*aPostFiles\[1\]\s*=\s*JSON\.parse\('(\[.*?\])'\s*\.replace", re.IGNORECASE | re.DOTALL)
         result = p_attached_file.match(url_source).group(1)
         if result:
             # convert to JSON style
-            data = "[" + result.replace('\\\'', '\"') + "]"
+            # data = "[" + result.replace('\\\'', '\"') + "]"
+            data = result.replace('\\\'', '\"')
             json_data = json.loads(data)
 
             for each_file in json_data:       
@@ -516,10 +519,11 @@ def download_count_naver(url):
         return 0;
     download_count = 0
     try:
-        p_attached_file = re.compile(r"\s*.*aPostFiles\[1\] = JSON.parse\(\'\[(.*?)\]", re.IGNORECASE | re.DOTALL)
+        p_attached_file = re.compile(r"\s*.*aPostFiles\[1\]\s*=\s*JSON\.parse\('(\[.*?\])'\s*\.replace", re.IGNORECASE | re.DOTALL)
         result = p_attached_file.match(url_source).group(1)
         if result:
-            data = "[" + result.replace('\\\'', '\"') + "]"
+            # data = "[" + result.replace('\\\'', '\"') + "]"
+            data = result.replace('\\\'', '\"')
             json_data = json.loads(data)
             
             for each_file in json_data:  
