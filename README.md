@@ -77,3 +77,11 @@
 
 * 기본적으로 dpi는 OS 환경에 따라 자동으로 해상도가 적용됩니다. 
 * DPI를 변경하기 위해서는 settings.yml 을 열어 auto-dpi를 **false**로 설정후 dpi 값을 변경합니다. (프로그램 재시작 필요)
+
+### 7. 빌드
+
+> Windows
+
+```shell
+python setup.py build
+```
