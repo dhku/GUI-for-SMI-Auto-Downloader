@@ -2234,6 +2234,6 @@ class Ui_MainWindow(object):
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
         self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"KUDONG", None))
-        self.version.setText(QCoreApplication.translate("MainWindow", u"v1.5.3", None))
+        self.version.setText(QCoreApplication.translate("MainWindow", u"v1.5.4", None))
     # retranslateUi
 
