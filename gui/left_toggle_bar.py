@@ -38,7 +38,7 @@ class LeftToggleBar(QObject):
 
         if(selectedAnime_LeftBox is not None):
             idx = -1;
-
+            isFindBlank = False;
             list = []
 
             for row in range(self.widgets.scheduler_table.rowCount()):
@@ -57,10 +57,17 @@ class LeftToggleBar(QObject):
                 id = self.widgets.scheduler_table.item(row, 0)
                 if(id is None):
                     idx = row
+                    isFindBlank = True
                     break
 
-            self.widgets.scheduler_table.setItem(idx,0,QTableWidgetItem(str(selectedAnime_LeftBox.animeNo)));
-            self.widgets.scheduler_table.setItem(idx,1,QTableWidgetItem(selectedAnime_LeftBox.subject));  
+            if(isFindBlank is True): 
+                self.widgets.scheduler_table.setItem(idx,0,QTableWidgetItem(str(selectedAnime_LeftBox.animeNo)));
+                self.widgets.scheduler_table.setItem(idx,1,QTableWidgetItem(selectedAnime_LeftBox.subject.replace('"', '')));
+            else:
+                rowCount = self.widgets.scheduler_table.rowCount();
+                self.widgets.scheduler_table.setRowCount(rowCount + 1)
+                self.widgets.scheduler_table.setItem(rowCount,0,QTableWidgetItem(str(selectedAnime_LeftBox.animeNo)));
+                self.widgets.scheduler_table.setItem(rowCount,1,QTableWidgetItem(selectedAnime_LeftBox.subject.replace('"', '')));                
 
             common.downloadPage_instance.onYmlsaveButtonClicked()
             QMessageBox.information(self.MainWindow,'SMI-DOWNLOADER','즐겨찾기에 추가되었습니다!')

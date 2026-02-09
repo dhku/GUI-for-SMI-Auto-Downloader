@@ -29,7 +29,6 @@ class DownloadPage:
         self.widgets.yml_reset_button.clicked.connect(self.onYmlresetButtonClicked)
         self.widgets.yml_open_button.clicked.connect(self.onYmlopenButtonClicked)
         self.widgets.yml_reload_button.clicked.connect(self.onYmlreloadButtonClicked)
-        self.widgets.yml_reset_button.clicked.connect(self.onYmlresetButtonClicked)
         self.widgets.yml_remove_row.clicked.connect(self.onYmlremoveRowButtonClicked)
 
         common.downloadPage_instance = self # left_toggle_bar에서 Yml save 참조용
@@ -70,6 +69,7 @@ class DownloadPage:
             self.widgets.scheduler_table.setItem(count,1,QTableWidgetItem(k['Anime']));
             count += 1
 
+        self.widgets.scheduler_table.setRowCount(count + 10)    
         self.widgets.scheduler_table.horizontalHeader().setVisible(True)
         self.widgets.scheduler_table.verticalHeader().setSectionsMovable(False)
 
@@ -263,6 +263,7 @@ class DownloadPage:
         temp = ""
 
         save_dict = {}
+        count = 0
 
         for row in range(self.widgets.scheduler_table.rowCount()):
             id = self.widgets.scheduler_table.item(row, 0)
@@ -270,6 +271,7 @@ class DownloadPage:
             if(id is None or anime is None):
                 continue;
             save_dict[id.text()] = anime.text();
+            count += 1
 
         for key,value in save_dict.items():
             id = key
@@ -280,6 +282,8 @@ class DownloadPage:
 
         temp = temp[:-2] +"\n"
         temp = '[\n' +temp + ']'
+
+        self.widgets.scheduler_table.setRowCount(count + 10)
 
         with open('anime.yml', 'r', encoding='utf-8') as file:
             data = yaml.safe_load(file)
@@ -294,11 +298,6 @@ class DownloadPage:
         );
     
         self.onYmlreloadButtonClicked() # 세이브 후 테이블 리로드
-
-    def onYmlresetButtonClicked(self):
-        for row in range(self.widgets.scheduler_table.rowCount()):
-            for column in range(self.widgets.scheduler_table.columnCount()):
-                item = self.widgets.scheduler_table.item(row, column)
 
     def onYmlopenButtonClicked(self):
         webbrowser.open(os.path.abspath('.') + "/anime.yml")             
