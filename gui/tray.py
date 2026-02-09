@@ -45,7 +45,12 @@ class Tray:
         
     def on_tray_icon_activated(self, reason):
         if reason == QSystemTrayIcon.Trigger:
-            self.MainWindow.showNormal()
+            if self.MainWindow.isMinimized():
+                self.MainWindow.showNormal()
+            else:
+                self.MainWindow.show()
+            self.MainWindow.raise_()
+            self.MainWindow.activateWindow()
 
     def closeApp(self):
         set_global_quitSignal(True)

@@ -101,9 +101,11 @@ class MainWindow(QMainWindow):
         widgets.horizontalSlider_2.setValue(100)
         widgets.horizontalSlider_2.valueChanged.connect(onChangeValueOpacity)
 
-        # 창 열기
+        # 맨 앞으로 창 열기
         # ///////////////////////////////////////////////////////////////
         self.show()
+        self.raise_()
+        self.activateWindow()
 
         # 테마 설정
         # ///////////////////////////////////////////////////////////////
