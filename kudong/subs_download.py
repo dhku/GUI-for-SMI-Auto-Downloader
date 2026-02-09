@@ -33,7 +33,7 @@ from bs4 import BeautifulSoup
 # =================================================
 # Title: SMI AUTO DOWNLOADER
 # Author: KUDONG
-# Version: 1.5
+# Version: 1.5.4
 # Url: https://github.com/dhku/SMI-Auto-Downloader
 # =================================================
 
