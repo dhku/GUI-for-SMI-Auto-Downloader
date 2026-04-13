@@ -39,7 +39,7 @@ from bs4 import BeautifulSoup
 
 AnimeNO = -1
 AnimeName = "None"
-outpath = os.path.abspath('.') + "/"
+outpath = ""
 smiDir = ""
 isDownloadError = 0
 
@@ -47,7 +47,12 @@ download_progress_count = 0;
 download_progress_length = 0;
 
 console_output = ""
-log_path = os.path.abspath('.') + "/log/"
+log_path = ""
+
+def init_paths():
+    global outpath, log_path
+    outpath = os.path.abspath('.') + "/"
+    log_path = os.path.abspath('.') + "/log/"
 
 p_extension = re.compile(r"^.*\.(zip|ass|smi|7z)$", re.IGNORECASE)
 regrex1 = re.compile(r".*(naver).*")

@@ -32,8 +32,8 @@ class Ui_MainWindow(object):
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
         font = QFont()
-        font.setFamilies([u"Segoe UI"])
-        font.setPointSize(10)
+        font.setFamilies([u"Apple SD Gothic Neo"])
+        font.setPointSize(15)
         font.setBold(False)
         font.setItalic(False)
         self.styleSheet.setFont(font)
@@ -46,7 +46,7 @@ class Ui_MainWindow(object):
 "\n"
 "QWidget{\n"
 "	color: rgb(221, 221, 221);\n"
-"	font: 10pt \"Segoe UI\";\n"
+"	font: 10pt \"Apple SD Gothic Neo\";\n"
 "}\n"
 "\n"
 "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
@@ -66,24 +66,23 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "#extraTopMenu #label {\n"
-"    font-family: \"Malgun Gothic\";\n"
+"    font-family: \"Apple SD Gothic Neo\";\n"
 "}\n"
 "\n"
 "#pushButton_week .QPushButton {\n"
-" 	font-family: \"Malgun Gothic"
-                        "\";\n"
+" 	font-family: \"Apple SD Gothic Neo\";\n"
 "}\n"
 "\n"
 "#anime_time_table {\n"
-" 	font-family: \"Malgun Gothic\";\n"
+" 	font-family: \"Apple SD Gothic Neo\";\n"
 "}\n"
 "\n"
 "#anime_search_table {\n"
-" 	font-family: \"Malgun Gothic\";\n"
+" 	font-family: \"Apple SD Gothic Neo\";\n"
 "}\n"
 "\n"
 "#anime_recent_table {\n"
-" 	font-family: \"Malgun Gothic\";\n"
+" 	font-family: \"Apple SD Gothic Neo\";\n"
 "}\n"
 "\n"
 "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
@@ -105,8 +104,8 @@ class Ui_MainWindow(object):
 "	background-position: center center;\n"
 "	background-repeat: no-repeat;\n"
 "}\n"
-"#titleLeftApp { font: 63 12pt \"Segoe UI Semibold\"; }\n"
-"#titleLeftDescription { font: 8pt \"Segoe UI\"; color"
+"#titleLeftApp { font: 63 12pt \"Apple SD Gothic Neo\"; }\n"
+"#titleLeftDescription { font: 8pt \"Apple SD Gothic Neo\"; color"
                         ": rgb(189, 147, 249); }\n"
 "\n"
 "/* MENUS */\n"
@@ -118,6 +117,7 @@ class Ui_MainWindow(object):
 "	background-color: transparent;\n"
 "	text-align: left;\n"
 "	padding-left: 44px;\n"
+"	font-size: 18px;\n"
 "}\n"
 "#topMenu .QPushButton:hover {\n"
 "	background-color: rgb(40, 44, 52);\n"
@@ -134,6 +134,7 @@ class Ui_MainWindow(object):
 "	background-color:transparent;\n"
 "	text-align: left;\n"
 "	padding-left: 44px;\n"
+"	font-size: 18px;\n"
 "}\n"
 "#bottomMenu .QPushButton:hover {\n"
 "	background-color: rgb(40, 44, 52);\n"
@@ -157,6 +158,7 @@ class Ui_MainWindow(object):
 "	text-align: left;\n"
 "	padding-left: 44px;\n"
 "	color: rgb(113, 126, 149);\n"
+"	font-size: 18px;\n"
 "}\n"
 "#toggleButton:hover {\n"
 "	background-color: rgb(40, 44, 52);\n"
@@ -166,7 +168,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "/* Title Menu */\n"
-"#titleRightInfo { padding-left: 10px; }\n"
+"#titleRightInfo { padding-left: 10px; font-size: 15px; }\n"
 "\n"
 "\n"
 "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
@@ -238,7 +240,7 @@ class Ui_MainWindow(object):
 "\n"
 "/* Bottom Bar */\n"
 "#bottomBar { background-color: rgb(44, 49, 58); }\n"
-"#bottomBar QLabel { font-size: 11px; color: rgb(113, 126, 149); padding-left: 10px; padding-right: 10px; padding-bottom: 2px; }\n"
+"#bottomBar QLabel { font-size: 13px; color: rgb(113, 126, 149); padding-left: 10px; padding-right: 10px; padding-bottom: 2px; }\n"
 "\n"
 "/* CONTENT SETTINGS */\n"
 "/* MENUS */\n"
@@ -580,6 +582,7 @@ class Ui_MainWindow(object):
 "\n"
 "")
         self.verticalLayout_25 = QVBoxLayout(self.styleSheet)
+        self.appMargins = self.verticalLayout_25
         self.verticalLayout_25.setObjectName(u"verticalLayout_25")
         self.verticalLayout_25.setContentsMargins(10, 10, 10, 10)
         self.bgApp = QFrame(self.styleSheet)
@@ -630,7 +633,7 @@ class Ui_MainWindow(object):
         self.titleLeftApp.setObjectName(u"titleLeftApp")
         self.titleLeftApp.setGeometry(QRect(70, 8, 160, 20))
         font1 = QFont()
-        font1.setFamilies([u"Segoe UI Semibold"])
+        font1.setFamilies([u"Apple SD Gothic Neo"])
         font1.setBold(False)
         font1.setItalic(False)
         self.titleLeftApp.setFont(font1)
@@ -641,8 +644,8 @@ class Ui_MainWindow(object):
         self.titleLeftDescription.setGeometry(QRect(70, 27, 160, 16))
         self.titleLeftDescription.setMaximumSize(QSize(16777215, 16))
         font2 = QFont()
-        font2.setFamilies([u"Segoe UI"])
-        font2.setPointSize(8)
+        font2.setFamilies([u"Apple SD Gothic Neo"])
+        font2.setPointSize(19)
         font2.setBold(False)
         font2.setItalic(False)
         self.titleLeftDescription.setFont(font2)
@@ -913,7 +916,7 @@ class Ui_MainWindow(object):
         self.left_downloadButton.setSizePolicy(sizePolicy2)
         self.left_downloadButton.setMinimumSize(QSize(0, 45))
         font3 = QFont()
-        font3.setFamilies([u"Segoe UI"])
+        font3.setFamilies([u"Apple SD Gothic Neo"])
         font3.setPointSize(15)
         font3.setBold(False)
         font3.setItalic(False)
@@ -921,7 +924,7 @@ class Ui_MainWindow(object):
         self.left_downloadButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.left_downloadButton.setLayoutDirection(Qt.LeftToRight)
         self.left_downloadButton.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-share-boxed.png);\n"
-"font-size:15pt;")
+"font-size:23pt;")
         self.left_downloadButton.setIconSize(QSize(20, 20))
 
         self.verticalLayout_11.addWidget(self.left_downloadButton)
@@ -935,7 +938,7 @@ class Ui_MainWindow(object):
         self.left_addQueue.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.left_addQueue.setLayoutDirection(Qt.LeftToRight)
         self.left_addQueue.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-star.png); \n"
-"font-size:15pt;")
+"font-size:23pt;")
 
         self.verticalLayout_11.addWidget(self.left_addQueue)
 
@@ -945,7 +948,7 @@ class Ui_MainWindow(object):
         self.left_website.setSizePolicy(sizePolicy2)
         self.left_website.setMinimumSize(QSize(0, 45))
         self.left_website.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-paperclip.png);\n"
-"font-size:15pt;")
+"font-size:23pt;")
 
         self.verticalLayout_11.addWidget(self.left_website)
 
@@ -958,7 +961,7 @@ class Ui_MainWindow(object):
         self.left_more.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.left_more.setLayoutDirection(Qt.LeftToRight)
         self.left_more.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-layers.png);\n"
-"font-size:15pt;")
+"font-size:23pt;")
 
         self.verticalLayout_11.addWidget(self.left_more)
 
@@ -983,19 +986,22 @@ class Ui_MainWindow(object):
 
         self.extraBottom = QFrame(self.extraContent)
         self.extraBottom.setObjectName(u"extraBottom")
-        self.extraBottom.setFrameShape(QFrame.StyledPanel)
+        self.extraBottom.setFrameShape(QFrame.NoFrame)
         self.extraBottom.setFrameShadow(QFrame.Raised)
         self.verticalLayout_26 = QVBoxLayout(self.extraBottom)
         self.verticalLayout_26.setObjectName(u"verticalLayout_26")
         self.left_progressName = QLabel(self.extraBottom)
         self.left_progressName.setObjectName(u"left_progressName")
+        self.left_progressName.setStyleSheet(u"font-size: 18px;")
 
         self.verticalLayout_26.addWidget(self.left_progressName)
 
         self.left_progressBar = QProgressBar(self.extraBottom)
         self.left_progressBar.setObjectName(u"left_progressBar")
+        self.left_progressBar.setMinimumSize(QSize(0, 30))
         self.left_progressBar.setStyleSheet(u"QProgressBar {\n"
 "	color: black;\n"
+"	font-size: 18px;\n"
 "}")
         self.left_progressBar.setValue(24)
         self.left_progressBar.setAlignment(Qt.AlignCenter)
@@ -1108,7 +1114,7 @@ class Ui_MainWindow(object):
         self.maximizeRestoreAppBtn.setMinimumSize(QSize(28, 28))
         self.maximizeRestoreAppBtn.setMaximumSize(QSize(28, 28))
         font4 = QFont()
-        font4.setFamilies([u"Segoe UI"])
+        font4.setFamilies([u"Apple SD Gothic Neo"])
         font4.setPointSize(10)
         font4.setBold(False)
         font4.setItalic(False)
@@ -1189,12 +1195,12 @@ class Ui_MainWindow(object):
         sizePolicy7.setHeightForWidth(self.pushButton_sun.sizePolicy().hasHeightForWidth())
         self.pushButton_sun.setSizePolicy(sizePolicy7)
         font5 = QFont()
-        font5.setFamilies([u"Malgun Gothic"])
+        font5.setFamilies([u"Apple SD Gothic Neo"])
         font5.setBold(True)
         font5.setItalic(False)
         self.pushButton_sun.setFont(font5)
         self.pushButton_sun.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;\n"
+"font-size: 38px; font-weight: bold;\n"
 "")
 
         self.horizontalLayout_6.addWidget(self.pushButton_sun)
@@ -1205,7 +1211,7 @@ class Ui_MainWindow(object):
         self.pushButton_mon.setSizePolicy(sizePolicy7)
         self.pushButton_mon.setFont(font5)
         self.pushButton_mon.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_mon)
 
@@ -1215,7 +1221,7 @@ class Ui_MainWindow(object):
         self.pushButton_tue.setSizePolicy(sizePolicy7)
         self.pushButton_tue.setFont(font5)
         self.pushButton_tue.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_tue)
 
@@ -1225,7 +1231,7 @@ class Ui_MainWindow(object):
         self.pushButton_wed.setSizePolicy(sizePolicy7)
         self.pushButton_wed.setFont(font5)
         self.pushButton_wed.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_wed)
 
@@ -1235,7 +1241,7 @@ class Ui_MainWindow(object):
         self.pushButton_thu.setSizePolicy(sizePolicy7)
         self.pushButton_thu.setFont(font5)
         self.pushButton_thu.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_thu)
 
@@ -1245,7 +1251,7 @@ class Ui_MainWindow(object):
         self.pushButton_fri.setSizePolicy(sizePolicy7)
         self.pushButton_fri.setFont(font5)
         self.pushButton_fri.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_fri)
 
@@ -1255,7 +1261,7 @@ class Ui_MainWindow(object):
         self.pushButton_sat.setSizePolicy(sizePolicy7)
         self.pushButton_sat.setFont(font5)
         self.pushButton_sat.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_sat)
 
@@ -1265,7 +1271,7 @@ class Ui_MainWindow(object):
         self.pushButton_extra.setSizePolicy(sizePolicy7)
         self.pushButton_extra.setFont(font5)
         self.pushButton_extra.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_extra)
 
@@ -1275,7 +1281,7 @@ class Ui_MainWindow(object):
         self.pushButton_new.setSizePolicy(sizePolicy7)
         self.pushButton_new.setFont(font5)
         self.pushButton_new.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
-"font-size: 32px; font-weight: bold;")
+"font-size: 38px; font-weight: bold;")
 
         self.horizontalLayout_6.addWidget(self.pushButton_new)
 
@@ -1395,7 +1401,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setContentsMargins(-1, -1, -1, 0)
         self.labelVersion_3 = QLabel(self.frame_content_wid_1)
         self.labelVersion_3.setObjectName(u"labelVersion_3")
-        self.labelVersion_3.setStyleSheet(u"color: rgb(113, 126, 149);")
+        self.labelVersion_3.setStyleSheet(u"color: rgb(113, 126, 149); font-size: 16px;")
         self.labelVersion_3.setLineWidth(1)
         self.labelVersion_3.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
@@ -1404,14 +1410,14 @@ class Ui_MainWindow(object):
         self.yml_downloadPath = QLineEdit(self.frame_content_wid_1)
         self.yml_downloadPath.setObjectName(u"yml_downloadPath")
         self.yml_downloadPath.setMinimumSize(QSize(0, 30))
-        self.yml_downloadPath.setStyleSheet(u"background-color: rgb(33, 37, 43);")
+        self.yml_downloadPath.setStyleSheet(u"background-color: rgb(33, 37, 43); font-size: 16px;")
 
         self.gridLayout.addWidget(self.yml_downloadPath, 1, 0, 1, 1)
 
         self.scheduler_folder = QPushButton(self.frame_content_wid_1)
         self.scheduler_folder.setObjectName(u"scheduler_folder")
         self.scheduler_folder.setMinimumSize(QSize(150, 30))
-        self.scheduler_folder.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.scheduler_folder.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
         icon4 = QIcon()
         icon4.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.scheduler_folder.setIcon(icon4)
@@ -1423,7 +1429,7 @@ class Ui_MainWindow(object):
         self.ym_openfileButton.setMinimumSize(QSize(150, 30))
         self.ym_openfileButton.setFont(font)
         self.ym_openfileButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.ym_openfileButton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.ym_openfileButton.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
         self.ym_openfileButton.setIcon(icon4)
 
         self.gridLayout.addWidget(self.ym_openfileButton, 1, 1, 1, 1)
@@ -1462,7 +1468,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.scheduler_checkBox = QCheckBox(self.row_2)
         self.scheduler_checkBox.setObjectName(u"scheduler_checkBox")
-        self.scheduler_checkBox.setStyleSheet(u"")
+        self.scheduler_checkBox.setStyleSheet(u"font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.scheduler_checkBox, 1, 0, 3, 1)
 
@@ -1476,6 +1482,7 @@ class Ui_MainWindow(object):
         self.scheduler_comboBox.addItem("")
         self.scheduler_comboBox.addItem("")
         self.scheduler_comboBox.setObjectName(u"scheduler_comboBox")
+        self.scheduler_comboBox.setStyleSheet(u"font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.scheduler_comboBox, 4, 0, 1, 1)
 
@@ -1487,26 +1494,27 @@ class Ui_MainWindow(object):
         sizePolicy10.setHeightForWidth(self.yml_save_button.sizePolicy().hasHeightForWidth())
         self.yml_save_button.setSizePolicy(sizePolicy10)
         self.yml_save_button.setMinimumSize(QSize(90, 0))
-        self.yml_save_button.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.yml_save_button.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.yml_save_button, 1, 9, 1, 1)
 
         self.yml_remove_row = QPushButton(self.row_2)
         self.yml_remove_row.setObjectName(u"yml_remove_row")
         self.yml_remove_row.setMinimumSize(QSize(90, 0))
-        self.yml_remove_row.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.yml_remove_row.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.yml_remove_row, 1, 6, 1, 1)
 
         self.label_2 = QLabel(self.row_2)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setStyleSheet(u"font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.label_2, 1, 2, 1, 1)
 
         self.yml_open_button = QPushButton(self.row_2)
         self.yml_open_button.setObjectName(u"yml_open_button")
         self.yml_open_button.setMinimumSize(QSize(90, 0))
-        self.yml_open_button.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.yml_open_button.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.yml_open_button, 1, 7, 1, 1)
 
@@ -1538,7 +1546,7 @@ class Ui_MainWindow(object):
         self.yml_content = QPlainTextEdit(self.scrollAreaWidgetContents)
         self.yml_content.setObjectName(u"yml_content")
         self.yml_content.setMinimumSize(QSize(200, 200))
-        self.yml_content.setStyleSheet(u"background-color: rgb(33, 37, 43);")
+        self.yml_content.setStyleSheet(u"background-color: rgb(33, 37, 43); font-size: 16px;")
 
         self.horizontalLayout_11.addWidget(self.yml_content)
 
@@ -1549,7 +1557,7 @@ class Ui_MainWindow(object):
         self.yml_reset_button = QPushButton(self.row_2)
         self.yml_reset_button.setObjectName(u"yml_reset_button")
         self.yml_reset_button.setMinimumSize(QSize(90, 0))
-        self.yml_reset_button.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.yml_reset_button.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.yml_reset_button, 1, 5, 1, 1)
 
@@ -1562,14 +1570,14 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.scheduler_button.sizePolicy().hasHeightForWidth())
         self.scheduler_button.setSizePolicy(sizePolicy2)
         self.scheduler_button.setMinimumSize(QSize(0, 40))
-        self.scheduler_button.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.scheduler_button.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.scheduler_button, 5, 0, 3, 1)
 
         self.yml_reload_button = QPushButton(self.row_2)
         self.yml_reload_button.setObjectName(u"yml_reload_button")
         self.yml_reload_button.setMinimumSize(QSize(90, 0))
-        self.yml_reload_button.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.yml_reload_button.setStyleSheet(u"background-color: rgb(52, 59, 72); font-size: 16px;")
 
         self.gridLayout_2.addWidget(self.yml_reload_button, 1, 8, 1, 1)
 
@@ -1600,7 +1608,7 @@ class Ui_MainWindow(object):
         if (self.scheduler_table.rowCount() < 16):
             self.scheduler_table.setRowCount(16)
         font6 = QFont()
-        font6.setFamilies([u"Segoe UI"])
+        font6.setFamilies([u"Apple SD Gothic Neo"])
         __qtablewidgetitem9 = QTableWidgetItem()
         __qtablewidgetitem9.setFont(font6);
         self.scheduler_table.setVerticalHeaderItem(0, __qtablewidgetitem9)
@@ -1667,6 +1675,7 @@ class Ui_MainWindow(object):
         palette.setBrush(QPalette.Disabled, QPalette.Base, brush4)
         palette.setBrush(QPalette.Disabled, QPalette.Window, brush1)
         self.scheduler_table.setPalette(palette)
+        self.scheduler_table.setStyleSheet(u"font-size: 16px;")
         self.scheduler_table.setFrameShape(QFrame.NoFrame)
         self.scheduler_table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.scheduler_table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
@@ -1742,7 +1751,7 @@ class Ui_MainWindow(object):
         self.search_button.setObjectName(u"search_button")
         self.search_button.setMinimumSize(QSize(150, 60))
         font7 = QFont()
-        font7.setFamilies([u"Segoe UI"])
+        font7.setFamilies([u"Apple SD Gothic Neo"])
         font7.setBold(False)
         font7.setItalic(False)
         self.search_button.setFont(font7)
@@ -1896,6 +1905,7 @@ class Ui_MainWindow(object):
         __qtablewidgetitem40 = QTableWidgetItem()
         self.log_timestamp.setHorizontalHeaderItem(2, __qtablewidgetitem40)
         self.log_timestamp.setObjectName(u"log_timestamp")
+        self.log_timestamp.setStyleSheet(u"font-size: 20px;")
 
         self.verticalLayout_23.addWidget(self.log_timestamp)
 
@@ -1912,6 +1922,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.log_console = QPlainTextEdit(self.frame)
         self.log_console.setObjectName(u"log_console")
+        self.log_console.setStyleSheet(u"font-size: 20px;")
 
         self.verticalLayout_22.addWidget(self.log_console)
 
@@ -2074,14 +2085,14 @@ class Ui_MainWindow(object):
         self.btn_log.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8", None))
         self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"\uae43\ud5c8\ube0c", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9 \uc815\ubcf4", None))
-        self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc790\ub9c9 \uc815\ubcf4</span></p></body></html>", None))
+        self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">\uc790\ub9c9 \uc815\ubcf4</span></p></body></html>", None))
 #if QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Close left box", None))
 #endif // QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setText("")
-        self.label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:28pt; font-weight:600;\">\uc790\ub9c9</span></p></body></html>", None))
-        self.label_date.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\" style=\"line-height:0.6;\"><span style=\" font-size:16pt; \">2024. 10. 02. ~ \ubc29\uc601\uc911</span></p>\n"
-"<p align=\"center\"><span style=\" font-size:16pt;\">\ub9e4\uc8fc (\uc218) \uc624\uc804 00:00</span>\n"
+        self.label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:46pt; font-weight:600;\">\uc790\ub9c9</span></p></body></html>", None))
+        self.label_date.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\" style=\"line-height:0.6;\"><span style=\" font-size:24pt; \">2024. 10. 02. ~ \ubc29\uc601\uc911</span></p>\n"
+"<p align=\"center\"><span style=\" font-size:24pt;\">\ub9e4\uc8fc (\uc218) \uc624\uc804 00:00</span>\n"
 "</p></body></html>", None))
         self.left_downloadButton.setText(QCoreApplication.translate("MainWindow", u"\uc989\uc2dc \uc790\ub9c9 \ub2e4\uc6b4\ub85c\ub4dc", None))
         self.left_addQueue.setText(QCoreApplication.translate("MainWindow", u"\uc791\ud488 \uc990\uaca8\ucc3e\uae30\uc5d0 \ucd94\uac00", None))
@@ -2131,13 +2142,13 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9\ub7ec", None));
         ___qtablewidgetitem6 = self.anime_time_table.horizontalHeaderItem(6)
         ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"\uacf5\uc2dd\uc0ac\uc774\ud2b8", None));
-        self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc790\ub9c9 \ub2e4\uc6b4\ub85c\ub4dc \uacbd\ub85c</span></p></body></html>", None))
+        self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">\uc790\ub9c9 \ub2e4\uc6b4\ub85c\ub4dc \uacbd\ub85c</span></p></body></html>", None))
         self.labelVersion_3.setText(QCoreApplication.translate("MainWindow", u"\ud574\ub2f9 \uacbd\ub85c\ub97c \ud1b5\ud574 \uc790\ub9c9\uc774 \ub2e4\uc6b4\ub85c\ub4dc \ub429\ub2c8\ub2e4.", None))
         self.yml_downloadPath.setText("")
         self.yml_downloadPath.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Type here", None))
         self.scheduler_folder.setText(QCoreApplication.translate("MainWindow", u"\ub2e4\uc6b4 \ud3f4\ub354 \uc5f4\uae30", None))
         self.ym_openfileButton.setText(QCoreApplication.translate("MainWindow", u"\uacbd\ub85c \ubcc0\uacbd", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc791\ud488 \uc990\uaca8\ucc3e\uae30 \uad00\ub9ac</span></p></body></html>", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">\uc791\ud488 \uc990\uaca8\ucc3e\uae30 \uad00\ub9ac</span></p></body></html>", None))
         self.scheduler_checkBox.setText(QCoreApplication.translate("MainWindow", u"\uc8fc\uae30\uc801\uc73c\ub85c \ubc18\ubcf5 \uc2e4\ud589", None))
         self.scheduler_comboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"10\ubd84 \ub9c8\ub2e4", None))
         self.scheduler_comboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"30\ubd84 \ub9c8\ub2e4", None))
@@ -2191,7 +2202,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem23.setText(QCoreApplication.translate("MainWindow", u"New Row", None));
         ___qtablewidgetitem24 = self.scheduler_table.verticalHeaderItem(15)
         ___qtablewidgetitem24.setText(QCoreApplication.translate("MainWindow", u"New Row", None));
-        self.labelBoxBlenderInstalation_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc560\ub2c8\uba54\uc774\uc158 \uc791\ud488 \uac80\uc0c9</span></p></body></html>", None))
+        self.labelBoxBlenderInstalation_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">\uc560\ub2c8\uba54\uc774\uc158 \uc791\ud488 \uac80\uc0c9</span></p></body></html>", None))
         self.label_total_elements.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p></p></body></html>", None))
         self.search_input.setText("")
         self.search_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\uc560\ub2c8\uac80\uc0c9 #\uc7a5\ub974 @\uc81c\uc791\uc790 /\uc644\uacb0 /\ub3c4\uc6c0\ub9d0", None))
@@ -2210,7 +2221,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem30.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9\ub7ec", None));
         ___qtablewidgetitem31 = self.anime_search_table.horizontalHeaderItem(6)
         ___qtablewidgetitem31.setText(QCoreApplication.translate("MainWindow", u"\uacf5\uc2dd\uc0ac\uc774\ud2b8", None));
-        self.labal_recent_title.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt;\">\uc560\ub2c8\uba54\uc774\uc158 \ucd5c\uc2e0 \uc790\ub9c9</span></p></body></html>", None))
+        self.labal_recent_title.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">\uc560\ub2c8\uba54\uc774\uc158 \ucd5c\uc2e0 \uc790\ub9c9</span></p></body></html>", None))
         self.label_recemt_total_elements.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><br/></p></body></html>", None))
         ___qtablewidgetitem32 = self.anime_recent_table.horizontalHeaderItem(0)
         ___qtablewidgetitem32.setText(QCoreApplication.translate("MainWindow", u"\uc2dc\uac04", None));
