@@ -2,15 +2,18 @@
 #
 # BY: KUDONG
 # PROJECT: GUI-FOR-SMI-AUTO-DOWNLOADER
-# Version: 1.5.3
+# Version: 1.5.4
 #
 # ///////////////////////////////////////////////////////////////
 
 import sys
 import os
+import platform
 import webbrowser
 import time
-import ctypes
+
+if platform.system() == "Windows":
+    import ctypes
 
 from modules import *
 from widgets import *
@@ -31,9 +34,9 @@ class MainWindow(QMainWindow):
         global widgets
         widgets = self.ui
 
-        # 커스텀 제목 사용 | USE AS "False" FOR MAC OR LINUX
+        # 커스텀 제목 사용 | macOS/Linux에서는 네이티브 타이틀바 사용
         # ///////////////////////////////////////////////////////////////
-        Settings.ENABLE_CUSTOM_TITLE_BAR = True
+        Settings.ENABLE_CUSTOM_TITLE_BAR = (platform.system() == "Windows")
 
         # 타이틀 이름
         # ///////////////////////////////////////////////////////////////
@@ -110,7 +113,7 @@ class MainWindow(QMainWindow):
         # 테마 설정
         # ///////////////////////////////////////////////////////////////
         useCustomTheme = False
-        themeFile = "themes\py_dracula_light.qss"
+        themeFile = os.path.join("themes", "py_dracula_light.qss")
 
         # SET THEME AND HACKS
         if useCustomTheme:
@@ -199,19 +202,43 @@ class MainWindow(QMainWindow):
     def openLeftBox(self):
         UIFunctions.openLeftBox(self, True)
 
-# 윈도우 DPI를 계산합니다.
-def get_windows_dpi():
-    try:
-        user32 = ctypes.windll.user32
-        user32.SetProcessDPIAware()
-        dpi = user32.GetDpiForSystem()
-        return dpi
-    except Exception as e:
-        print("error :", e)
+# 시스템 DPI를 계산합니다.
+def get_system_dpi():
+    if platform.system() == "Windows":
+        try:
+            user32 = ctypes.windll.user32
+            user32.SetProcessDPIAware()
+            dpi = user32.GetDpiForSystem()
+            return dpi
+        except Exception as e:
+            print("error :", e)
+            return None
+    else:
+        # macOS/Linux는 Qt가 HiDPI를 자동 처리
         return None
     
 # 진입점
 if __name__ == "__main__":
+
+    from multiprocessing import freeze_support
+    freeze_support()
+
+    # cx_Freeze 빌드 시 cwd가 실행 파일 위치와 다를 수 있으므로 보정
+    if getattr(sys, 'frozen', False):
+        exe_dir = os.path.dirname(sys.executable)
+        # macOS .app 번들: Contents/MacOS/ → Contents/Resources/ 로 이동
+        if exe_dir.endswith("Contents/MacOS"):
+            os.chdir(os.path.join(exe_dir, "..", "Resources"))
+        else:
+            os.chdir(exe_dir)
+
+        # cx_Freeze 패키징 시 SSL 인증서를 찾지 못하는 문제 해결
+        import certifi
+        os.environ["SSL_CERT_FILE"] = certifi.where()
+        os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
+
+    # cwd 보정 후 모듈 내부 경로 초기화
+    init_paths()
 
     autoDPI = False
 
@@ -228,7 +255,7 @@ if __name__ == "__main__":
     start = time.time()
 
     if(autoDPI is True):
-        dpi = get_windows_dpi()
+        dpi = get_system_dpi()
         if dpi is not None:
             # print("DPI = "+ str(dpi) +" / SCALE_FACTOR = " + str((dpi / 96.0) * 100))
             os.environ["QT_FONT_DPI"] = str(dpi)
@@ -237,10 +264,26 @@ if __name__ == "__main__":
         
     # UI 인스턴스화
     app = QApplication(sys.argv)
-    QApplication.setStyle(QStyleFactory.create("WindowsVista"));
+
+    if platform.system() == "Windows":
+        QApplication.setStyle(QStyleFactory.create("WindowsVista"))
+    elif platform.system() == "Darwin":
+        QApplication.setStyle(QStyleFactory.create("Fusion"))
 
     app.setWindowIcon(QIcon("icon.ico"))
+
+    # macOS에서 한글 폰트 및 QSS 폰트 대체 적용
+    if platform.system() == "Darwin":
+        app.setFont(QFont("Apple SD Gothic Neo", 10))
     window = MainWindow()
+
+    # macOS에서 QSS 내 Windows 전용 폰트를 대체
+    if platform.system() == "Darwin":
+        current_style = window.ui.styleSheet.styleSheet()
+        current_style = current_style.replace('"Segoe UI Semibold"', '"Apple SD Gothic Neo"')
+        current_style = current_style.replace('"Segoe UI"', '"Apple SD Gothic Neo"')
+        current_style = current_style.replace('"Malgun Gothic"', '"Apple SD Gothic Neo"')
+        window.ui.styleSheet.setStyleSheet(current_style)
 
     end = time.time()
     # print(f"{end - start:.5f} sec")
