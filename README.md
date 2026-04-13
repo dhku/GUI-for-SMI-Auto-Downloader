@@ -85,3 +85,10 @@
 ```shell
 python setup.py build
 ```
+
+> MacOS
+
+```shell
+python3 setup.py bdist_mac
+```
+
