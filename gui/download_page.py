@@ -5,6 +5,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
+from modules.font_config import fs, pt
 
 clickedRemoveRow = -1;
 isScheduler_button_clicked = False;
@@ -103,7 +104,7 @@ class DownloadPage:
 
             #print("Item data:", anime.subject)
 
-            self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
+            self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(20, 34)) + "pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
             self.widgets.label.setWordWrap(True)
 
             startDate = None;
@@ -141,41 +142,41 @@ class DownloadPage:
 
                 if anime.status == 'ON':
                     if startDate is not None and currentDate <= startDate :
-                        self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                        self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
                         self.widgets.label_date.setWordWrap(True)
                         self.widgets.label_date.show()
                     else:
                         if endDate is not None:
                             if startDate == endDate:
-                                self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
                                 self.widgets.label_date.setWordWrap(True)
                                 self.widgets.label_date.show()
                             else:
                                 time_obj = datetime.strptime(anime.time, "%H:%M")
                                 formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
-                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
                                 self.widgets.label_date.setWordWrap(True)
                                 self.widgets.label_date.show()
                         else:
                             try:
                                 time_obj = datetime.strptime(anime.time, "%H:%M") # 2025-99-99 가 넘어오면 예외처리
                                 formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
-                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
                                 self.widgets.label_date.setWordWrap(True)
                                 self.widgets.label_date.show()
                             except Exception as e:  
                                 try:
-                                    self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
                                     self.widgets.label_date.setWordWrap(True)
                                     self.widgets.label_date.show()
                                 except Exception as e2: 
                                     self.widgets.label_date.hide()
                 elif anime.status == 'END':
-                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>완결</span></p></body></html>");
+                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>완결</span></p></body></html>");
                     self.widgets.label_date.setWordWrap(True)
                     self.widgets.label_date.show()                              
                 else:
-                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>결방</span></p></body></html>");
+                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>결방</span></p></body></html>");
                     self.widgets.label_date.setWordWrap(True)
                     self.widgets.label_date.show()
             else:
@@ -225,7 +226,7 @@ class DownloadPage:
                     button.clicked.connect(partial(open_url,website))
 
                 button.setMinimumSize(0, 60)
-                button.setStyleSheet("font-size: 20px; color: rgb(0, 0, 0);")
+                button.setStyleSheet("font-size: " + str(fs(20, 20)) + "px; color: rgb(0, 0, 0);")
                 layout.addWidget(button)
 
             layout.addItem(spacer)
@@ -343,7 +344,14 @@ class DownloadPage:
         # );
 
     def onDownloadFolderButtonClicked(self):
-        webbrowser.open(get_global_outpath())
+        import platform, subprocess
+        path = get_global_outpath()
+        if platform.system() == 'Darwin':
+            subprocess.Popen(['open', path])
+        elif platform.system() == 'Windows':
+            os.startfile(path)
+        else:
+            subprocess.Popen(['xdg-open', path])
 
     # 스케줄러 체크박스 클릭시
     def scheduler_checkbox_changed(self,state):
@@ -388,7 +396,7 @@ class DownloadPage:
                 "다른 작업이 먼저 수행중입니다....");
                 return
             
-            afterSheet = "background-color: rgb(156, 179, 199); color: rgb(255, 255, 255);"
+            afterSheet = "background-color: rgb(156, 179, 199); color: rgb(255, 255, 255); font-size: " + str(fs(10, 16)) + "px;"
             self.widgets.scheduler_button.setStyleSheet(afterSheet)
 
             self.widgets.scheduler_checkBox.setEnabled(False)
@@ -425,7 +433,7 @@ class DownloadPage:
                     self.timer.start(day)
                     
         else: # 중지 로직
-            beforeSheet = "background-color: rgb(52, 59, 72);"
+            beforeSheet = "background-color: rgb(52, 59, 72); font-size: " + str(fs(10, 16)) + "px;"
             self.widgets.scheduler_button.setStyleSheet(beforeSheet)
             
             self.widgets.scheduler_checkBox.setEnabled(True)

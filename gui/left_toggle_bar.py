@@ -4,6 +4,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
+from modules.font_config import fs, pt
 
 #leftToggleBar
 class LeftToggleBar(QObject):
@@ -28,7 +29,7 @@ class LeftToggleBar(QObject):
         self.widgets.left_progressName.setWordWrap(True)
 
         idle_text = "편성표에서 원하는 자막을 선택하세요"
-        self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:600;'>"+idle_text+"</span></p></body></html>");
+        self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(20, 34)) + "pt; font-weight:600;'>"+idle_text+"</span></p></body></html>");
         self.widgets.label.setWordWrap(True)
 
         self.widgets.label_date.hide()
@@ -133,7 +134,7 @@ class LeftToggleBar(QObject):
             self.widgets.left_progressName.setWordWrap(True)
 
         if isFinished == True and common.isScheduler_mode == False:
-            beforeSheet = "background-color: rgb(52, 59, 72);"
+            beforeSheet = "background-color: rgb(52, 59, 72); font-size: " + str(fs(10, 16)) + "px;"
             self.widgets.scheduler_button.setStyleSheet(beforeSheet)
             
             self.widgets.scheduler_button.setText("다운로드 시작")

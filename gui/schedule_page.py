@@ -4,6 +4,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
+from modules.font_config import fs, pt
 
 animeWeeklist = []
 animeWeekIdx = 0
@@ -79,9 +80,9 @@ class SchedulePage:
         global animeWeeklist,animeWeekIdx
         #print("idx 클릭 "+ str(idx))
         count = 0
-        beforeSheet = "background-color: rgb(52, 59, 72); font-size: 32px; font-weight: bold;"
+        beforeSheet = "background-color: rgb(52, 59, 72); font-size: " + str(fs(32, 38)) + "px; font-weight: bold;"
         self.setWeekendButtonStyle(animeWeekIdx, beforeSheet)
-        afterSheet = "background-color: rgb(156, 179, 199); font-size: 32px; font-weight: bold; color: rgb(255, 255, 255);"
+        afterSheet = "background-color: rgb(156, 179, 199); font-size: " + str(fs(32, 38)) + "px; font-weight: bold; color: rgb(255, 255, 255);"
         self.setWeekendButtonStyle(idx, afterSheet)
         animeWeekIdx = idx
 
@@ -97,7 +98,7 @@ class SchedulePage:
         self.widgets.anime_time_table.setFocusPolicy(Qt.NoFocus)
 
         font = QFont()
-        font.setPointSize(25)
+        font.setPointSize(pt(25, 40))
         font.setBold(QFont.Bold)
 
         for k in animeWeeklist:
@@ -164,7 +165,7 @@ class SchedulePage:
 
             # print("Item data:", common.selectedAnime_LeftBox.subject)
 
-            self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:20pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
+            self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(20, 34)) + "pt; font-weight:bold;'>"+anime.subject+"</span></p></body></html>");
             self.widgets.label.setWordWrap(True)
 
             startDate = None;
@@ -202,41 +203,41 @@ class SchedulePage:
 
                 if anime.status == 'ON':
                     if startDate is not None and currentDate <= startDate :
-                        self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                        self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
                         self.widgets.label_date.setWordWrap(True)
                         self.widgets.label_date.show()
                     else:
                         if endDate is not None:
                             if startDate == endDate:
-                                self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
                                 self.widgets.label_date.setWordWrap(True)
                                 self.widgets.label_date.show()
                             else:
                                 time_obj = datetime.strptime(anime.time, "%H:%M")
                                 formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
-                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
                                 self.widgets.label_date.setWordWrap(True)
                                 self.widgets.label_date.show()
                         else:
                             try:
                                 time_obj = datetime.strptime(anime.time, "%H:%M") # 2025-99-99 가 넘어오면 예외처리
                                 formatted_time = time_obj.strftime("%p %I:%M").replace("AM", "오전").replace("PM", "오후")
-                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
+                                self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>"+"매주 ("+week_Ko +") "+formatted_time+"</span></p></body></html>");
                                 self.widgets.label_date.setWordWrap(True)
                                 self.widgets.label_date.show()
                             except Exception as e:  
                                 try:
-                                    self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
+                                    self.widgets.label_date.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+"</span></p></body></html>");
                                     self.widgets.label_date.setWordWrap(True)
                                     self.widgets.label_date.show()
                                 except Exception as e2: 
                                     self.widgets.label_date.hide()
                 elif anime.status == 'END':
-                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:16pt;'>완결</span></p></body></html>");
+                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d.")+" ~ "+endDate.strftime("%Y. %m. %d.")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>완결</span></p></body></html>");
                     self.widgets.label_date.setWordWrap(True)
                     self.widgets.label_date.show()           
                 else:
-                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:16pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:16pt;'>결방</span></p></body></html>");
+                    self.widgets.label_date.setText("<html><head/><body><p align='center' style='line-height:0.6;'><span style=' font-size:" + str(fs(16, 24)) + "pt; '>"+startDate.strftime("%Y. %m. %d. ~ 방영중")+"</span></p><p align='center'><span style=' font-size:" + str(fs(16, 24)) + "pt;'>결방</span></p></body></html>");
                     self.widgets.label_date.setWordWrap(True)
                     self.widgets.label_date.show()
             else:
@@ -288,7 +289,7 @@ class SchedulePage:
                     button.clicked.connect(partial(open_url,website))
 
                 button.setMinimumSize(0, 60)
-                button.setStyleSheet("font-size: 20px; color: rgb(0, 0, 0);")
+                button.setStyleSheet("font-size: " + str(fs(20, 20)) + "px; color: rgb(0, 0, 0);")
                 layout.addWidget(button)
 
             layout.addItem(spacer)
