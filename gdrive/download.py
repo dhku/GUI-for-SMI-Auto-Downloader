@@ -193,6 +193,7 @@ def get_file_name(url=None):
             cookie_jar = MozillaCookieJar(cookies_file)
             for cookie in sess.cookies:
                 cookie_jar.set_cookie(cookie)
+            os.makedirs(osp.dirname(cookies_file), exist_ok=True)
             cookie_jar.save()
 
         if "Content-Disposition" in res.headers:
@@ -367,6 +368,7 @@ def download(
             cookie_jar = MozillaCookieJar(cookies_file)
             for cookie in sess.cookies:
                 cookie_jar.set_cookie(cookie)
+            os.makedirs(osp.dirname(cookies_file), exist_ok=True)
             cookie_jar.save()
 
         if "Content-Disposition" in res.headers:
