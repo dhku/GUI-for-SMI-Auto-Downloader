@@ -1018,7 +1018,7 @@ HEADERS = {
     "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
 }
 
-def extract_csrf_token(html: str) -> str | None:
+def extract_csrf_token(html, url_source=None):
     match = re.search(r'<meta\s+name="csrf-token"\s+content="([^"]+)"', html)
     return match.group(1) if match else None
 
