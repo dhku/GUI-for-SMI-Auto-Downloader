@@ -32,7 +32,24 @@ class LeftToggleBar(QObject):
         self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(20, 34)) + "pt; font-weight:600;'>"+idle_text+"</span></p></body></html>");
         self.widgets.label.setWordWrap(True)
 
+        # "label" QLabel 클릭 시 텍스트 복사
+        self.widgets.label.setCursor(Qt.PointingHandCursor)
+        self.widgets.label.installEventFilter(self)
+
         self.widgets.label_date.hide()
+
+    def eventFilter(self, obj, event):
+        try:
+            if obj is self.widgets.label and event.type() == QEvent.Type.MouseButtonPress:
+                if event.button() == Qt.MouseButton.LeftButton:
+                    doc = QTextDocument()
+                    doc.setHtml(self.widgets.label.text())
+                    QGuiApplication.clipboard().setText(doc.toPlainText().strip())
+                    QMessageBox.information(self.MainWindow, 'SMI-DOWNLOADER','클립보드에 복사되었습니다.')
+                    return True
+        except Exception:
+            pass
+        return super().eventFilter(obj, event)
 
     def addQueue(self):
         selectedAnime_LeftBox = common.selectedAnime_LeftBox
