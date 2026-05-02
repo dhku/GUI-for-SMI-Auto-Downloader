@@ -1009,6 +1009,19 @@ def get_url_source_blogspot(url):
         isDownloadError = 1;
         return None;
 
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/125.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+}
+
+def extract_csrf_token(html: str) -> str | None:
+    match = re.search(r'<meta\s+name="csrf-token"\s+content="([^"]+)"', html)
+    return match.group(1) if match else None
+
 def download_website(url,callback):
     global isDownloadError, download_progress_count, download_progress_length
     url_source = get_url_source_website(url)
@@ -1022,22 +1035,71 @@ def download_website(url,callback):
     links = temps.find_all("a")
 
     p_google = re.compile(r"(.*(https://drive.google.com/file/d/).*)")
-    p_google_2 = re.compile(r"(.*(https://docs.google.com/uc).*)")
+    p_google_2_1 = re.compile(r"(.*(https://docs.google.com/uc).*)")
+    p_google_2_2 = re.compile(r"(.*(https://drive.google.com/uc).*)")
     p_google_3 = re.compile(r"(.*(https://drive.usercontent.google.com/download).*)")
+    erulabo = re.compile(r"(.*(https://erulabo.com/file).*)")
 
     isDownloaded = 0;
 
     for a in links:
         each_file = a.attrs['href']
         #print_log("href = "+each_file)
+
         try:
             each_file = each_file.replace('&amp;','&');
 
-            if bool(p_google_2.match(each_file)):
+            if bool(erulabo.match(each_file)):
+
+                # Step 1: 게시글 접근 → 쿠키 + CSRF 토큰
+                session = requests.Session()
+                session.headers.update(HEADERS)
+
+                resp = session.get(url, timeout=15)
+                resp.raise_for_status()
+                csrf_token = extract_csrf_token(resp.text)
+
+                token_url = each_file + "/token";
+                token_resp = session.post(
+                    token_url,
+                    json={},  # Content-Length: 2 (빈 JSON body)
+                    headers={
+                        "Accept": "*/*",
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrf_token,
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Referer": url,
+                        "Origin": "https://erulabo.com",
+                        "Sec-Fetch-Dest": "empty",
+                        "Sec-Fetch-Mode": "cors",
+                        "Sec-Fetch-Site": "same-origin",
+                    },
+                    timeout=15,
+                );
+
+                # Step 2: POST /file/{uuid}/token 으로 다운로드 URL 획득
+                data = token_resp.json();
+                download_url = data.get("download_url", ""); 
+
+                if download_url:
+                    dl_resp = session.get(download_url, allow_redirects=False, timeout=15)
+
+                    if dl_resp.status_code in (301, 302, 303, 307, 308): # Google Drive URL
+                        each_file = dl_resp.headers.get("Location", "")
+                        #print_log("Google Drive URL: " + each_file)
+                    else: # 리다이렉트 없음
+                        each_file = download_url
+
+            if bool(p_google_2_1.match(each_file)):
                 start_index = each_file.find("&id=") + 4;
                 end_index =  each_file.rfind("&confirm");
                 each_file = "https://drive.google.com/file/d/" + each_file[start_index:end_index] + "/view"
-            
+
+            if bool(p_google_2_2.match(each_file)):
+                start_index = each_file.find("&id=") + 4;
+                end_index =  len(each_file);
+                each_file = "https://drive.google.com/file/d/" + each_file[start_index:end_index] + "/view"
+
             if bool(p_google_3.match(each_file)):
                 start_index = each_file.find("?id=") + 4;
                 end_index =  each_file.rfind("&export");
@@ -1110,6 +1172,7 @@ def download_count_website(url):
     links = temps.find_all("a")
 
     p_google = re.compile(r"(.*(https://drive.google.com/file/d/).*)")
+    erulabo = re.compile(r"(.*(https://erulabo.com/file).*)")
 
     download_count = 0;
 
@@ -1119,7 +1182,7 @@ def download_count_website(url):
         try:
             each_file = each_file.replace('&amp;','&');
             # 구글 드라이브 주소가 검출되었을때
-            if bool(p_google.match(each_file)):
+            if bool(p_google.match(each_file)) or bool(erulabo.match(each_file)):
                 print_log("[+] 구글 드라이브 주소가 검출되었습니다.")
                 download_count += 1
         except Exception as e:
