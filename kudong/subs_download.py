@@ -58,7 +58,6 @@ p_google = re.compile(r"(.*(https://drive.google.com/file/d/).*)")
 p_google_2_1 = re.compile(r"(.*(https://docs.google.com/uc).*)")
 p_google_2_2 = re.compile(r"(.*(https://drive.google.com/uc).*)")
 p_google_3 = re.compile(r"(.*(https://drive.usercontent.google.com/download).*)")
-erulabo = re.compile(r"(.*(https://erulabo.com/file).*)")
 
 thread_lock = threading.Lock()
 isRunning = False
@@ -1040,7 +1039,6 @@ def download_website(url,callback):
 
     isDownloaded = 0;
     isDownloaded = find_blog_standard(temps,callback)
-    isDownloaded = find_blog_1(temps,url,callback)
 
     if isDownloaded == 0:
         isDownloadError = 1;
@@ -1123,10 +1121,13 @@ def find_blog_standard(temps,callback):
             print_log(traceback.format_exc())
             download_progress_count += 1
             return 0;
+    return 0;
 
+# Cloudflare Turnstile 인증으로 Deprecated 
 def find_blog_1(temps,url,callback):
     global isDownloadError, download_progress_count, download_progress_length
 
+    blog_1_url = re.compile(r"(.*(https://erulabo.com/file).*)")
     links = temps.find_all("button", attrs={"data-file-url": True})
 
     for a in links:
@@ -1136,7 +1137,7 @@ def find_blog_1(temps,url,callback):
         try:
             each_file = each_file.replace('&amp;','&');
 
-            if bool(erulabo.match(each_file)):
+            if bool(blog_1_url.match(each_file)):
 
                 # Step 1: 게시글 접근 → 쿠키 + CSRF 토큰
                 session = requests.Session()
@@ -1173,7 +1174,7 @@ def find_blog_1(temps,url,callback):
 
                     if dl_resp.status_code in (301, 302, 303, 307, 308): # Google Drive URL
                         each_file = dl_resp.headers.get("Location", "")
-                        #print_log("Google Drive URL: " + each_file)
+                        print_log("Google Drive URL: " + each_file)
                     else: # 리다이렉트 없음
                         each_file = download_url
 
@@ -1266,19 +1267,6 @@ def download_count_website(url):
             each_file = each_file.replace('&amp;','&');
             # 구글 드라이브 주소가 검출되었을때
             if bool(p_google.match(each_file)):
-                print_log("[+] 구글 드라이브 주소가 검출되었습니다.")
-                download_count += 1
-        except Exception as e:
-            download_count = 0
-
-    links = temps.find_all("button", attrs={"data-file-url": True})
-
-    for a in links:
-        each_file = "https://erulabo.com" + a.attrs['data-file-url']
-        try:
-            each_file = each_file.replace('&amp;','&');
-            # 구글 드라이브 주소가 검출되었을때
-            if bool(erulabo.match(each_file)):
                 print_log("[+] 구글 드라이브 주소가 검출되었습니다.")
                 download_count += 1
         except Exception as e:
