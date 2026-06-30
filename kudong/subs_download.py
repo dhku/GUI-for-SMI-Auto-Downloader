@@ -586,11 +586,6 @@ def get_url_source_naver(url):
             url_charset = client.HTTPMessage.get_charsets(url_info)[0]
             url_source = f.read().decode(url_charset)
 
-            # find 'NBlogWlwLayout.nhn'
-            if url_source.find("NBlogWlwLayout.naver") == -1:
-                print_log("\n[-] It is not a NAVER Blog")
-                sys.exit(0)
-
             # get frame src
             p_frame = re.compile(r"\s*.*?<iframe.*?mainFrame.*?(.*)", re.IGNORECASE | re.DOTALL)
             p_src_url = re.compile(r"\s*.*?src=[\'\"](.+?)[\'\"]", re.IGNORECASE | re.DOTALL)
