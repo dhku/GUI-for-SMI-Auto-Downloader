@@ -344,6 +344,10 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
         folder_name = folder_name.replace(":","")
         folder_name = folder_name.replace("/","")
         folder_name = folder_name.replace("?","")
+        folder_name = folder_name.replace("<","")
+        folder_name = folder_name.replace(">","")
+        folder_name = folder_name.replace("*","")
+        folder_name = folder_name.replace("|","")
         
         smiDir = folder_name + "/" + episode + "화/" + name + "/"
 
