@@ -1901,7 +1901,7 @@ font-size:15pt;</string>
                    <enum>Qt::LeftToRight</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(190, 40, 40);
+                   <string notr="true">background-color: rgb(52, 59, 72);
 font-size: 18px; font-weight: bold;</string>
                   </property>
                   <property name="text">
@@ -2992,7 +2992,7 @@ font-size: 32px; font-weight: bold;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>972</width>
+                                 <width>210</width>
                                  <height>210</height>
                                 </rect>
                                </property>

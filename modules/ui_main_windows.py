@@ -1087,7 +1087,7 @@ class Ui_MainWindow(object):
         font4.setItalic(False)
         self.onAirButton.setFont(font4)
         self.onAirButton.setLayoutDirection(Qt.LeftToRight)
-        self.onAirButton.setStyleSheet(u"background-color: rgb(190, 40, 40);\n"
+        self.onAirButton.setStyleSheet(u"background-color: rgb(52, 59, 72);\n"
 "font-size: 18px; font-weight: bold;")
 
         self.horizontalLayout_2.addWidget(self.onAirButton)
