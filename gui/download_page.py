@@ -34,25 +34,10 @@ class DownloadPage:
 
         common.downloadPage_instance = self # left_toggle_bar에서 Yml save 참조용
 
-        #outpath
-
         with open('anime.yml', 'r', encoding='utf-8') as file:
             data = yaml.safe_load(file)
 
-        outpath = os.path.abspath('.') + "/downloads"
-
-        if not os.path.exists(outpath):
-            os.makedirs(outpath)
-
-        if(data['download_path'] != ""):
-            outpath = data['download_path']
-        else:
-            data['download_path'] = outpath
-            with open('anime.yml', 'w', encoding='utf-8') as file:
-                yaml.safe_dump(data, file, allow_unicode=True)
-
-        set_global_outpath(outpath)   
-        self.widgets.yml_downloadPath.setText(outpath)
+        self.widgets.yml_downloadPath.setText(get_global_outpath())
         self.widgets.yml_downloadPath.setReadOnly(True)
         self.widgets.ym_openfileButton.clicked.connect(self.on_openfile_clicked)
 
@@ -111,12 +96,17 @@ class DownloadPage:
             self.widgets.yml_downloadPath.setText(fileDir)
             set_global_outpath(fileDir)
 
+            with open('settings.yml', encoding='UTF8') as f:
+                config = yaml.load(f, Loader=yaml.FullLoader)
+                config['auto-download-path'] = False;
+            
+            with open('settings.yml', 'w', encoding='utf-8') as f:
+                yaml.safe_dump(config, f, allow_unicode=True)
+
             with open('anime.yml', 'r', encoding='utf-8') as file:
                 data = yaml.safe_load(file)
-
                 #print(data)
-
-                data['download_path'] = fileDir
+                data['download_path'] = fileDir + "/"
 
             with open('anime.yml', 'w', encoding='utf-8') as file:
                 yaml.safe_dump(data, file, allow_unicode=True)

@@ -33,7 +33,7 @@ from bs4 import BeautifulSoup
 # =================================================
 # Title: SMI AUTO DOWNLOADER
 # Author: KUDONG
-# Version: 1.5.7
+# Version: 1.5.8
 # Url: https://github.com/dhku/SMI-Auto-Downloader
 # =================================================
 
@@ -63,10 +63,27 @@ thread_lock = threading.Lock()
 isRunning = False
 quitSignal = False
 
-def init_paths():
+def init_paths(autoPath):
     global outpath, log_path
-    outpath = os.path.abspath('.') + "/"
     log_path = os.path.abspath('.') + "/log/"
+
+    with open('anime.yml', 'r', encoding='utf-8') as file:
+        data = yaml.safe_load(file)
+
+    if(data['download_path'] != ""):
+        outpath = data['download_path']
+    else:
+        outpath = os.path.abspath('.') + "/downloads/"
+
+    if(autoPath is True):
+        outpath = os.path.abspath('.') + "/downloads/"        
+
+    if not os.path.exists(outpath):
+        os.makedirs(outpath)
+
+    data['download_path'] = outpath
+    with open('anime.yml', 'w', encoding='utf-8') as file:
+        yaml.safe_dump(data, file, allow_unicode=True)
 
 def download(url, file_name = None):
     with open(file_name, "wb") as file:  
