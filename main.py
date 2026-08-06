@@ -237,22 +237,23 @@ if __name__ == "__main__":
         os.environ["SSL_CERT_FILE"] = certifi.where()
         os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
-    # cwd 보정 후 모듈 내부 경로 초기화
-    init_paths()
-
     autoDPI = False
 
     # 콘솔 로깅
     console_logger_init() # 배포시 활성화
 
-    # HIDPI 값 불러오기
+    # CONFIG 값 불러오기
     with open('settings.yml', encoding='UTF8') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
         autoDPI = config['auto-dpi']
+        autoPath = config['auto-download-path']
         # print("auto-dpi = "+ str(autoDPI))
         os.environ["QT_FONT_DPI"] = str(config['dpi'])
 
     start = time.time()
+
+    # cwd 보정 후 모듈 내부 경로 초기화  
+    init_paths(autoPath)
 
     if(autoDPI is True):
         dpi = get_system_dpi()
@@ -286,6 +287,6 @@ if __name__ == "__main__":
         window.ui.styleSheet.setStyleSheet(current_style)
 
     end = time.time()
-    # print(f"{end - start:.5f} sec")
+    #print(f"{end - start:.5f} sec")
 
     sys.exit(app.exec_())
