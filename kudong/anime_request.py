@@ -13,6 +13,7 @@ class AnimeInfo:
                  status,
                  time,
                  subject,
+                 originalSubject,
                  genres,
                  startDate,
                  endDate,
@@ -24,6 +25,7 @@ class AnimeInfo:
         self.status = status
         self.time = time
         self.subject = subject
+        self.originalSubject = originalSubject
         self.genres = genres
         self.startDate = startDate
         self.endDate = endDate
@@ -93,6 +95,7 @@ def requestAnimeWeekInfo(week):
         status = k['status']
         time = k['time']
         subject = k['subject']
+        originalSubject = k['originalSubject']
         genres = k['genres']
         startDate = k['startDate']
         endDate = k['endDate']
@@ -106,6 +109,7 @@ def requestAnimeWeekInfo(week):
         # print("> status: " + status)
         # print("> time: " + time)
         # print("> subject: " + subject)
+        # print("> originalSubject: " + originalSubject)
         # print("> genres: " + genres)
         # print("> startDate: " + startDate)
         # print("> endDate: " + endDate)
@@ -117,6 +121,7 @@ def requestAnimeWeekInfo(week):
                     status,
                     time,
                     subject,
+                    originalSubject,
                     genres,
                     startDate,
                     endDate,
@@ -177,6 +182,7 @@ def requestAnimeInfo(animeNo):
     status = json_data['status']
     time = json_data['time']
     subject = json_data['subject']
+    originalSubject = json_data['originalSubject']
     genres = json_data['genres']
     startDate = json_data['startDate']
     endDate = json_data['endDate']
@@ -188,6 +194,7 @@ def requestAnimeInfo(animeNo):
                     status,
                     time,
                     subject,
+                    originalSubject,
                     genres,
                     startDate,
                     endDate,
@@ -248,6 +255,7 @@ def requestSearchAnimeInfo(keyword, page = 0):
         status = k['status']
         time = k['time']
         subject = k['subject']
+        originalSubject = k['originalSubject']
         genres = k['genres']
         startDate = k['startDate']
         endDate = k['endDate']
@@ -259,6 +267,7 @@ def requestSearchAnimeInfo(keyword, page = 0):
                     status,
                     time,
                     subject,
+                    originalSubject,
                     genres,
                     startDate,
                     endDate,
@@ -334,6 +343,94 @@ def requestRecentAnimeInfo(page = 0):
                     ));
     
     return list, pageInfo
+
+JIMAKU_API_KEY = "AAAAAAAAQlMuAS4CB1Q4LDel6jey-jOuNfyV2grrSTpczHZL_mPn2iV6Ew"
+
+def _jimaku_headers():
+    return {
+        "Authorization": JIMAKU_API_KEY,
+        "User-Agent": "SMI-Auto-Downloader",
+    }
+
+# 검색 결과에서 원제와 가장 가까운 항목을 고릅니다.
+def _pick_jimaku_entry(entries, keyword):
+    keyword = str(keyword).strip()
+    exact = None
+    partial = None
+
+    for entry in entries:
+        japanese = str(entry.get("japanese_name") or "").strip()
+        english = str(entry.get("english_name") or "").strip()
+        name = str(entry.get("name") or "").strip()
+        if keyword and keyword in (japanese, english, name):
+            exact = entry
+            break
+        if keyword and japanese and (keyword in japanese or japanese in keyword):
+            if partial is None:
+                partial = entry
+
+    if exact is not None:
+        return exact
+    if partial is not None:
+        return partial
+    return entries[0]
+
+def _empty_jimaku_result():
+    return {
+        "japanese_name": "",
+        "english_name": "",
+        "files": [],
+    }
+
+# 일본어 원제로 jimaku.cc 자막 파일 목록을 가져옵니다.
+# 실패 시 None, 성공 시 japanese_name, english_name, files 를 반환합니다.
+def requestJimakuFiles(keyword):
+    keyword = str(keyword or "").strip()
+    if keyword == "":
+        return _empty_jimaku_result()
+
+    headers = _jimaku_headers()
+
+    try:
+        response = requests.get(
+            "https://jimaku.cc/api/entries/search?anime=true&query=" + quote(keyword),
+            headers=headers,
+            timeout=10,
+        )
+        if response.status_code != 200:
+            return None
+        entries = json.loads(response.text)
+    except Exception:
+        return None
+
+    if not isinstance(entries, list) or len(entries) == 0:
+        return _empty_jimaku_result()
+
+    entry = _pick_jimaku_entry(entries, keyword)
+    entry_id = entry.get("id")
+    if entry_id is None:
+        return _empty_jimaku_result()
+
+    try:
+        response = requests.get(
+            "https://jimaku.cc/api/entries/" + str(entry_id) + "/files",
+            headers=headers,
+            timeout=10,
+        )
+        if response.status_code != 200:
+            return None
+        files = json.loads(response.text)
+    except Exception:
+        return None
+
+    if not isinstance(files, list):
+        return None
+
+    return {
+        "japanese_name": str(entry.get("japanese_name") or "").strip(),
+        "english_name": str(entry.get("english_name") or "").strip(),
+        "files": files,
+    }
 
 if __name__ == "__main__":
     # list = requestAnimeWeekInfo(0);
