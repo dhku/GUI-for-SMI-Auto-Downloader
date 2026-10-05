@@ -762,11 +762,24 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.btn_log)
 
-        self.btn_log.raise_()
+        self.btn_ai = QPushButton(self.topMenu)
+        self.btn_ai.setObjectName(u"btn_ai")
+        sizePolicy2.setHeightForWidth(self.btn_ai.sizePolicy().hasHeightForWidth())
+        self.btn_ai.setSizePolicy(sizePolicy2)
+        self.btn_ai.setMinimumSize(QSize(0, 45))
+        self.btn_ai.setFont(font)
+        self.btn_ai.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.btn_ai.setLayoutDirection(Qt.LeftToRight)
+        self.btn_ai.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-cloud-download.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_ai)
+
         self.btn_download.raise_()
         self.btn_home.raise_()
         self.btn_search.raise_()
         self.btn_update.raise_()
+        self.btn_ai.raise_()
+        self.btn_log.raise_()
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
 
@@ -1954,6 +1967,73 @@ class Ui_MainWindow(object):
 
         self.stackedWidget.addWidget(self.log_page)
 
+        self.ai_page = QWidget()
+        self.ai_page.setObjectName(u"ai_page")
+        sizePolicy3.setHeightForWidth(self.ai_page.sizePolicy().hasHeightForWidth())
+        self.ai_page.setSizePolicy(sizePolicy3)
+        self.verticalLayout_29 = QVBoxLayout(self.ai_page)
+        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
+        self.ai_row_1 = QFrame(self.ai_page)
+        self.ai_row_1.setObjectName(u"ai_row_1")
+        self.ai_row_1.setMaximumSize(QSize(16777215, 36))
+        self.ai_row_1.setFrameShape(QFrame.StyledPanel)
+        self.ai_row_1.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_15 = QHBoxLayout(self.ai_row_1)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.horizontalLayout_15.setContentsMargins(-1, 0, -1, 0)
+        self.label_ai_title = QLabel(self.ai_row_1)
+        self.label_ai_title.setObjectName(u"label_ai_title")
+        sizePolicy10.setHeightForWidth(self.label_ai_title.sizePolicy().hasHeightForWidth())
+        self.label_ai_title.setSizePolicy(sizePolicy10)
+        self.label_ai_title.setMinimumSize(QSize(0, 50))
+        self.label_ai_title.setFont(font)
+        self.label_ai_title.setStyleSheet(u"")
+
+        self.horizontalLayout_15.addWidget(self.label_ai_title)
+
+        self.label_ai_count = QLabel(self.ai_row_1)
+        self.label_ai_count.setObjectName(u"label_ai_count")
+        sizePolicy.setHeightForWidth(self.label_ai_count.sizePolicy().hasHeightForWidth())
+        self.label_ai_count.setSizePolicy(sizePolicy)
+        self.label_ai_count.setMinimumSize(QSize(0, 50))
+
+        self.horizontalLayout_15.addWidget(self.label_ai_count)
+
+
+        self.verticalLayout_29.addWidget(self.ai_row_1)
+
+        self.ai_row_2 = QFrame(self.ai_page)
+        self.ai_row_2.setObjectName(u"ai_row_2")
+        self.ai_row_2.setFrameShape(QFrame.StyledPanel)
+        self.ai_row_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_16 = QHBoxLayout(self.ai_row_2)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalLayout_16.setContentsMargins(7, -1, 7, -1)
+        self.ai_subtitle_table = QTableWidget(self.ai_row_2)
+        if (self.ai_subtitle_table.columnCount() < 3):
+            self.ai_subtitle_table.setColumnCount(3)
+        __qtablewidgetitem41 = QTableWidgetItem()
+        self.ai_subtitle_table.setHorizontalHeaderItem(0, __qtablewidgetitem41)
+        __qtablewidgetitem42 = QTableWidgetItem()
+        self.ai_subtitle_table.setHorizontalHeaderItem(1, __qtablewidgetitem42)
+        __qtablewidgetitem43 = QTableWidgetItem()
+        self.ai_subtitle_table.setHorizontalHeaderItem(2, __qtablewidgetitem43)
+        self.ai_subtitle_table.setObjectName(u"ai_subtitle_table")
+        self.ai_subtitle_table.setStyleSheet(u"font-size: 20px; \n"
+"")
+        self.ai_subtitle_table.setFrameShape(QFrame.StyledPanel)
+        self.ai_subtitle_table.setFrameShadow(QFrame.Sunken)
+        self.ai_subtitle_table.setDragEnabled(False)
+        self.ai_subtitle_table.horizontalHeader().setHighlightSections(True)
+        self.ai_subtitle_table.horizontalHeader().setProperty("showSortIndicator", False)
+
+        self.horizontalLayout_16.addWidget(self.ai_subtitle_table)
+
+
+        self.verticalLayout_29.addWidget(self.ai_row_2)
+
+        self.stackedWidget.addWidget(self.ai_page)
+
         self.verticalLayout_15.addWidget(self.stackedWidget)
 
 
@@ -2106,6 +2186,7 @@ class Ui_MainWindow(object):
         self.btn_search.setText(QCoreApplication.translate("MainWindow", u"\uc791\ud488 \uac80\uc0c9", None))
         self.btn_update.setText(QCoreApplication.translate("MainWindow", u"\ucd5c\uc2e0 \uc790\ub9c9", None))
         self.btn_log.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8", None))
+        self.btn_ai.setText(QCoreApplication.translate("MainWindow", u"AI \uc790\ub9c9", None))
         self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"\uae43\ud5c8\ube0c", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"\uc790\ub9c9 \uc815\ubcf4", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">\uc790\ub9c9 \uc815\ubcf4</span></p></body></html>", None))
@@ -2268,6 +2349,14 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem39.setText(QCoreApplication.translate("MainWindow", u"Category", None));
         ___qtablewidgetitem40 = self.log_timestamp.horizontalHeaderItem(2)
         ___qtablewidgetitem40.setText(QCoreApplication.translate("MainWindow", u"Message", None));
+        self.label_ai_title.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt;\">AI \uc790\ub9c9</span></p></body></html>", None))
+        self.label_ai_count.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><br/></p></body></html>", None))
+        ___qtablewidgetitem41 = self.ai_subtitle_table.horizontalHeaderItem(0)
+        ___qtablewidgetitem41.setText(QCoreApplication.translate("MainWindow", u"\uc81c\ubaa9", None));
+        ___qtablewidgetitem42 = self.ai_subtitle_table.horizontalHeaderItem(1)
+        ___qtablewidgetitem42.setText(QCoreApplication.translate("MainWindow", u"\ud06c\uae30", None));
+        ___qtablewidgetitem43 = self.ai_subtitle_table.horizontalHeaderItem(2)
+        ___qtablewidgetitem43.setText(QCoreApplication.translate("MainWindow", u"", None));
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))

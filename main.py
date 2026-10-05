@@ -70,6 +70,8 @@ class MainWindow(QMainWindow):
         self.search_page = SearchPage(self,widgets)
         # 최근 자막 페이지
         self.recent_page = RecentPage(self,widgets)
+        # AI 자막 페이지
+        self.ai_page = AiPage(self,widgets)
 
         # BUTTONS CLICK
         # ///////////////////////////////////////////////////////////////
@@ -81,6 +83,7 @@ class MainWindow(QMainWindow):
         widgets.btn_exit.clicked.connect(self.buttonClick)
         widgets.btn_search.clicked.connect(self.buttonClick)
         widgets.btn_update.clicked.connect(self.buttonClick)
+        widgets.btn_ai.clicked.connect(self.buttonClick)
 
         # 좌측 사이드 바
         def openCloseLeftBox():
@@ -173,6 +176,18 @@ class MainWindow(QMainWindow):
             self.recent_page.async_update_recent_task()
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+
+        # AI 자막 페이지 이동 버튼
+        if btnName == "btn_ai":
+            if common.selectedAnime_LeftBox is None:
+                QMessageBox.information(self, 'SMI-DOWNLOADER', 'AI 자막 생성을 위해 작품을 선택해주세요.')
+                return
+            common.currentPage = "ai"
+            widgets.stackedWidget.setCurrentWidget(widgets.ai_page)
+            self.ai_page.load_selected_anime()
+            UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            self.openLeftBox()
 
         if btnName == "btn_exit":
             webbrowser.open("https://github.com/dhku/GUI-for-SMI-Auto-Downloader")
