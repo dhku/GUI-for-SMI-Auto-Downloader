@@ -88,10 +88,41 @@ def init_paths(autoPath):
     with open('anime.yml', 'w', encoding='utf-8') as file:
         yaml.safe_dump(data, file, allow_unicode=True)
 
+def _remove_partial(file_name):
+    if file_name and os.path.isfile(file_name):
+        try:
+            os.remove(file_name)
+        except OSError:
+            pass
+
 def download(url, file_name = None):
-    with open(file_name, "wb") as file:  
-        response = requests.get(url)              
-        file.write(response.content)      
+    sess = requests.Session()
+    gdrive.track_session(sess)
+    try:
+        if quitSignal == True:
+            raise gdrive.exceptions.DownloadCancelled()
+        res = sess.get(url, stream=True)
+        sess._active_response = res
+        with open(file_name, "wb") as file:
+            for chunk in res.iter_content(chunk_size=512 * 1024):
+                if quitSignal == True:
+                    break
+                if chunk:
+                    file.write(chunk)
+        if quitSignal == True:
+            _remove_partial(file_name)
+            raise gdrive.exceptions.DownloadCancelled()
+    except Exception:
+        if quitSignal == True:
+            _remove_partial(file_name)
+            raise gdrive.exceptions.DownloadCancelled()
+        raise
+    finally:
+        gdrive.untrack_session(sess)
+        try:
+            sess.close()
+        except Exception:
+            pass
 
 def text_to_file(txt, file_name):
     f = open(file_name, 'w',encoding="UTF-8")
@@ -105,6 +136,11 @@ def set_global_outpath(path):
 def set_global_quitSignal(signal):
     global quitSignal
     quitSignal = signal
+    if signal == True:
+        try:
+            gdrive.abort_download()
+        except Exception:
+            pass
 
 def get_global_outpath():
     return outpath
@@ -248,14 +284,22 @@ def requestAnimeSMI(AnimeNo,callback):
     text_to_file(console_output, log_path + new_filename)
     callback(download_progress_count,download_progress_length, "다운로드에 필요한 데이터를 확인 하고 있습니다...")
 
-    _requestAnimeSMI(AnimeNo,callback,new_filename,json_data)
+    try:
+        _requestAnimeSMI(AnimeNo,callback,new_filename,json_data)
+    except gdrive.exceptions.DownloadCancelled:
+        print_log("[=] 사용자 중지로 다운로드가 중단되었습니다.")
 
     print_log("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
-    print_log("작업이 종료되었습니다")
+    if quitSignal == True:
+        print_log("작업이 중지되었습니다")
+        done_message = "다운로드가 중지되었습니다."
+    else:
+        print_log("작업이 종료되었습니다")
+        done_message = "다운로드가 완료되었습니다."
 
     text_to_file(console_output, log_path + new_filename)
 
-    callback(download_progress_count,download_progress_length,"다운로드가 완료되었습니다.",True)
+    callback(download_progress_count,download_progress_length,done_message,True)
 
     unlock_Scheduler()
 
@@ -291,6 +335,9 @@ def requestMultipleAnimeSMI(callback):
         print_log("다운로드 사이즈를 체크 하고 있습니다.....")
         
         for k in animelist:
+            if quitSignal == True:
+                break
+
             AnimeName = k['Anime']
             AnimeNO = k['AnimeNo']
 
@@ -316,23 +363,30 @@ def requestMultipleAnimeSMI(callback):
         callback(download_progress_count,download_progress_length, "다운로드에 필요한 데이터를 확인 하고 있습니다...")
 
         count = 0
-        for json_data in list:
+        try:
+            for json_data in list:
 
-            if quitSignal == True:
-                break
+                if quitSignal == True:
+                    break
 
-            AnimeName = key1[count]
-            AnimeNO = key2[count]
-            _requestAnimeSMI(AnimeNO,callback,new_filename,json_data)
-            count += 1
-
+                AnimeName = key1[count]
+                AnimeNO = key2[count]
+                _requestAnimeSMI(AnimeNO,callback,new_filename,json_data)
+                count += 1
+        except gdrive.exceptions.DownloadCancelled:
+            print_log("[=] 사용자 중지로 다운로드가 중단되었습니다.")
 
         print_log("다운로드 진행상황 => "+str(download_progress_count)+"/"+str(download_progress_length))
-        print_log("작업이 종료되었습니다")
+        if quitSignal == True:
+            print_log("작업이 중지되었습니다")
+            done_message = "다운로드가 중지되었습니다."
+        else:
+            print_log("작업이 종료되었습니다")
+            done_message = "다운로드가 완료되었습니다."
 
         text_to_file(console_output, log_path + new_filename)
 
-        callback(download_progress_count,download_progress_length,"다운로드가 완료되었습니다.",True)
+        callback(download_progress_count,download_progress_length,done_message,True)
 
         unlock_Scheduler()
 
@@ -392,6 +446,10 @@ def _requestAnimeSMI(AnimeNo,callback,new_filename,json_data):
             print_log("[+] 일반 웹사이트 검출.")
             download_website(website,callback)
         
+        if quitSignal == True:
+            print_log("[=] 사용자 중지로 남은 다운로드를 건너뜁니다.")
+            break
+
         if isDownloadError == 0:
             text_to_file( json.dumps(k) , outpath + smiDir + "finish.txt");
             print_log("[+] finish.txt가 생성되었습니다.")

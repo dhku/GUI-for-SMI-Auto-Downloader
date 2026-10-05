@@ -293,6 +293,8 @@ class DownloadPage:
         else: # 중지 로직
             set_global_quitSignal(True)
             self.timer.stop()
+            self.widgets.left_progressName.setText("다운로드를 중지하는 중...")
+            self.widgets.left_progressName.setWordWrap(True)
 
             beforeSheet = "background-color: rgb(52, 59, 72); font-size: " + str(fs(10, 16)) + "px;"
             self.widgets.scheduler_button.setStyleSheet(beforeSheet)

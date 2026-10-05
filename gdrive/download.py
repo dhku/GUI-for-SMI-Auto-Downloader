@@ -5,6 +5,7 @@ import shutil
 import sys
 import tempfile
 import textwrap
+import threading
 import time
 import urllib.parse
 from http.cookiejar import MozillaCookieJar
@@ -14,11 +15,80 @@ import requests
 import tqdm
 
 from ._indent import indent
+from .exceptions import DownloadCancelled
 from .exceptions import FileURLRetrievalError
 from .parse_url import parse_url
 
 CHUNK_SIZE = 512 * 1024  # 512KB
 home = osp.expanduser("~")
+
+_download_lock = threading.Lock()
+_live_sessions = []
+
+
+def track_session(sess):
+    with _download_lock:
+        if sess not in _live_sessions:
+            _live_sessions.append(sess)
+
+
+def untrack_session(sess):
+    with _download_lock:
+        try:
+            _live_sessions.remove(sess)
+        except ValueError:
+            pass
+
+
+def _force_close_response(res):
+    if res is None:
+        return
+    try:
+        raw = getattr(res, "raw", None)
+        connection = getattr(raw, "_connection", None) if raw is not None else None
+        sock = getattr(connection, "sock", None) if connection is not None else None
+        if sock is not None:
+            sock.shutdown(2)  # SHUT_RDWR, 대기 중인 읽기를 끊는다
+    except Exception:
+        pass
+    try:
+        res.close()
+    except Exception:
+        pass
+
+
+def abort_download():
+    """진행 중인 Google Drive 요청의 소켓을 닫아 다운로드 스레드를 풀어 준다."""
+    with _download_lock:
+        sessions = list(_live_sessions)
+    for sess in sessions:
+        _force_close_response(getattr(sess, "_active_response", None))
+        try:
+            sess.close()
+        except Exception:
+            pass
+
+
+def _quit_requested():
+    try:
+        import kudong.subs_download as subs
+        return subs.quitSignal is True
+    except Exception:
+        return False
+
+
+def _discard_partial(tmp_file, file_obj):
+    if file_obj is not None and tmp_file is not None:
+        try:
+            if not file_obj.closed:
+                file_obj.close()
+        except Exception:
+            pass
+    if tmp_file and osp.isfile(tmp_file):
+        try:
+            os.remove(tmp_file)
+        except OSError:
+            pass
 
 def get_url_from_gdrive_confirmation(contents):
     url = ""
@@ -126,47 +196,77 @@ def get_file_name(url=None):
         user_agent=user_agent,
         return_cookies_file=True,
     )
+    track_session(sess)
+    try:
 
-    gdrive_file_id, is_gdrive_download_link = parse_url(url, warning=not fuzzy)
+        gdrive_file_id, is_gdrive_download_link = parse_url(url, warning=not fuzzy)
 
-    if fuzzy and gdrive_file_id:
-        # overwrite the url with fuzzy match of a file id
-        url = "https://drive.google.com/uc?id={id}".format(id=gdrive_file_id)
-        url_origin = url
-        is_gdrive_download_link = True
+        if fuzzy and gdrive_file_id:
+            # overwrite the url with fuzzy match of a file id
+            url = "https://drive.google.com/uc?id={id}".format(id=gdrive_file_id)
+            url_origin = url
+            is_gdrive_download_link = True
 
-    while True:
-        res = sess.get(url, stream=True, verify=verify)
+        while True:
+            if _quit_requested():
+                untrack_session(sess)
+                sess.close()
+                raise DownloadCancelled()
+            try:
+                res = sess.get(url, stream=True, verify=verify)
+            except Exception:
+                untrack_session(sess)
+                try:
+                    sess.close()
+                except Exception:
+                    pass
+                if _quit_requested():
+                    raise DownloadCancelled()
+                raise
+            sess._active_response = res
 
-        if not (gdrive_file_id and is_gdrive_download_link):
-            break
+            if not (gdrive_file_id and is_gdrive_download_link):
+                break
 
-        if url == url_origin and res.status_code == 500:
-            # The file could be Google Docs or Spreadsheets.
-            url = "https://drive.google.com/open?id={id}".format(id=gdrive_file_id)
-            continue
-
-        if res.headers["Content-Type"].startswith("text/html"):
-            m = re.search("<title>(.+)</title>", res.text)
-            if m and m.groups()[0].endswith(" - Google Docs"):
-                url = (
-                    "https://docs.google.com/document/d/{id}/export"
-                    "?format={format}".format(
-                        id=gdrive_file_id,
-                        format="docx" if format is None else format,
-                    )
-                )
+            if url == url_origin and res.status_code == 500:
+                # The file could be Google Docs or Spreadsheets.
+                url = "https://drive.google.com/open?id={id}".format(id=gdrive_file_id)
                 continue
-            elif m and m.groups()[0].endswith(" - Google Sheets"):
-                url = (
-                    "https://docs.google.com/spreadsheets/d/{id}/export"
-                    "?format={format}".format(
-                        id=gdrive_file_id,
-                        format="xlsx" if format is None else format,
+
+            if res.headers["Content-Type"].startswith("text/html"):
+                m = re.search("<title>(.+)</title>", res.text)
+                if m and m.groups()[0].endswith(" - Google Docs"):
+                    url = (
+                        "https://docs.google.com/document/d/{id}/export"
+                        "?format={format}".format(
+                            id=gdrive_file_id,
+                            format="docx" if format is None else format,
+                        )
                     )
-                )
-                continue
-            elif m and m.groups()[0].endswith(" - Google Slides"):
+                    continue
+                elif m and m.groups()[0].endswith(" - Google Sheets"):
+                    url = (
+                        "https://docs.google.com/spreadsheets/d/{id}/export"
+                        "?format={format}".format(
+                            id=gdrive_file_id,
+                            format="xlsx" if format is None else format,
+                        )
+                    )
+                    continue
+                elif m and m.groups()[0].endswith(" - Google Slides"):
+                    url = (
+                        "https://docs.google.com/presentation/d/{id}/export"
+                        "?format={format}".format(
+                            id=gdrive_file_id,
+                            format="pptx" if format is None else format,
+                        )
+                    )
+                    continue
+            elif (
+                "Content-Disposition" in res.headers
+                and res.headers["Content-Disposition"].endswith("pptx")
+                and format not in {None, "pptx"}
+            ):
                 url = (
                     "https://docs.google.com/presentation/d/{id}/export"
                     "?format={format}".format(
@@ -175,54 +275,48 @@ def get_file_name(url=None):
                     )
                 )
                 continue
-        elif (
-            "Content-Disposition" in res.headers
-            and res.headers["Content-Disposition"].endswith("pptx")
-            and format not in {None, "pptx"}
-        ):
-            url = (
-                "https://docs.google.com/presentation/d/{id}/export"
-                "?format={format}".format(
-                    id=gdrive_file_id,
-                    format="pptx" if format is None else format,
+
+            if use_cookies:
+                cookie_jar = MozillaCookieJar(cookies_file)
+                for cookie in sess.cookies:
+                    cookie_jar.set_cookie(cookie)
+                os.makedirs(osp.dirname(cookies_file), exist_ok=True)
+                cookie_jar.save()
+
+            if "Content-Disposition" in res.headers:
+                # This is the file
+                break
+
+            # Need to redirect with confirmation
+            try:
+                url = get_url_from_gdrive_confirmation(res.text)
+            except FileURLRetrievalError as e:
+                message = (
+                    "Failed to retrieve file url:\n\n{}\n\n"
+                    "You may still be able to access the file from the browser:"
+                    "\n\n\t{}\n\n"
+                    "but Gdown can't. Please check connections and permissions."
+                ).format(
+                    indent("\n".join(textwrap.wrap(str(e))), prefix="\t"),
+                    url_origin,
                 )
-            )
-            continue
+                raise FileURLRetrievalError(message)
 
-        if use_cookies:
-            cookie_jar = MozillaCookieJar(cookies_file)
-            for cookie in sess.cookies:
-                cookie_jar.set_cookie(cookie)
-            os.makedirs(osp.dirname(cookies_file), exist_ok=True)
-            cookie_jar.save()
+        filename_from_url = None
+        if gdrive_file_id and is_gdrive_download_link:
+            filename_from_url = _get_filename_from_response(response=res)
+        if filename_from_url is None:
+            filename_from_url = osp.basename(url)
 
-        if "Content-Disposition" in res.headers:
-            # This is the file
-            break
-
-        # Need to redirect with confirmation
+        untrack_session(sess)
+        sess.close()
+        return filename_from_url
+    finally:
+        untrack_session(sess)
         try:
-            url = get_url_from_gdrive_confirmation(res.text)
-        except FileURLRetrievalError as e:
-            message = (
-                "Failed to retrieve file url:\n\n{}\n\n"
-                "You may still be able to access the file from the browser:"
-                "\n\n\t{}\n\n"
-                "but Gdown can't. Please check connections and permissions."
-            ).format(
-                indent("\n".join(textwrap.wrap(str(e))), prefix="\t"),
-                url_origin,
-            )
-            raise FileURLRetrievalError(message)
-
-    filename_from_url = None
-    if gdrive_file_id and is_gdrive_download_link:
-        filename_from_url = _get_filename_from_response(response=res)
-    if filename_from_url is None:
-        filename_from_url = osp.basename(url)
-
-    sess.close()
-    return filename_from_url
+            sess.close()
+        except Exception:
+            pass
 
 def download(
     url=None,
@@ -301,47 +395,77 @@ def download(
         user_agent=user_agent,
         return_cookies_file=True,
     )
+    track_session(sess)
+    try:
 
-    gdrive_file_id, is_gdrive_download_link = parse_url(url, warning=not fuzzy)
+        gdrive_file_id, is_gdrive_download_link = parse_url(url, warning=not fuzzy)
 
-    if fuzzy and gdrive_file_id:
-        # overwrite the url with fuzzy match of a file id
-        url = "https://drive.google.com/uc?id={id}".format(id=gdrive_file_id)
-        url_origin = url
-        is_gdrive_download_link = True
+        if fuzzy and gdrive_file_id:
+            # overwrite the url with fuzzy match of a file id
+            url = "https://drive.google.com/uc?id={id}".format(id=gdrive_file_id)
+            url_origin = url
+            is_gdrive_download_link = True
 
-    while True:
-        res = sess.get(url, stream=True, verify=verify)
+        while True:
+            if _quit_requested():
+                untrack_session(sess)
+                sess.close()
+                raise DownloadCancelled()
+            try:
+                res = sess.get(url, stream=True, verify=verify)
+            except Exception:
+                untrack_session(sess)
+                try:
+                    sess.close()
+                except Exception:
+                    pass
+                if _quit_requested():
+                    raise DownloadCancelled()
+                raise
+            sess._active_response = res
 
-        if not (gdrive_file_id and is_gdrive_download_link):
-            break
+            if not (gdrive_file_id and is_gdrive_download_link):
+                break
 
-        if url == url_origin and res.status_code == 500:
-            # The file could be Google Docs or Spreadsheets.
-            url = "https://drive.google.com/open?id={id}".format(id=gdrive_file_id)
-            continue
-
-        if res.headers["Content-Type"].startswith("text/html"):
-            m = re.search("<title>(.+)</title>", res.text)
-            if m and m.groups()[0].endswith(" - Google Docs"):
-                url = (
-                    "https://docs.google.com/document/d/{id}/export"
-                    "?format={format}".format(
-                        id=gdrive_file_id,
-                        format="docx" if format is None else format,
-                    )
-                )
+            if url == url_origin and res.status_code == 500:
+                # The file could be Google Docs or Spreadsheets.
+                url = "https://drive.google.com/open?id={id}".format(id=gdrive_file_id)
                 continue
-            elif m and m.groups()[0].endswith(" - Google Sheets"):
-                url = (
-                    "https://docs.google.com/spreadsheets/d/{id}/export"
-                    "?format={format}".format(
-                        id=gdrive_file_id,
-                        format="xlsx" if format is None else format,
+
+            if res.headers["Content-Type"].startswith("text/html"):
+                m = re.search("<title>(.+)</title>", res.text)
+                if m and m.groups()[0].endswith(" - Google Docs"):
+                    url = (
+                        "https://docs.google.com/document/d/{id}/export"
+                        "?format={format}".format(
+                            id=gdrive_file_id,
+                            format="docx" if format is None else format,
+                        )
                     )
-                )
-                continue
-            elif m and m.groups()[0].endswith(" - Google Slides"):
+                    continue
+                elif m and m.groups()[0].endswith(" - Google Sheets"):
+                    url = (
+                        "https://docs.google.com/spreadsheets/d/{id}/export"
+                        "?format={format}".format(
+                            id=gdrive_file_id,
+                            format="xlsx" if format is None else format,
+                        )
+                    )
+                    continue
+                elif m and m.groups()[0].endswith(" - Google Slides"):
+                    url = (
+                        "https://docs.google.com/presentation/d/{id}/export"
+                        "?format={format}".format(
+                            id=gdrive_file_id,
+                            format="pptx" if format is None else format,
+                        )
+                    )
+                    continue
+            elif (
+                "Content-Disposition" in res.headers
+                and res.headers["Content-Disposition"].endswith("pptx")
+                and format not in {None, "pptx"}
+            ):
                 url = (
                     "https://docs.google.com/presentation/d/{id}/export"
                     "?format={format}".format(
@@ -350,139 +474,171 @@ def download(
                     )
                 )
                 continue
-        elif (
-            "Content-Disposition" in res.headers
-            and res.headers["Content-Disposition"].endswith("pptx")
-            and format not in {None, "pptx"}
-        ):
-            url = (
-                "https://docs.google.com/presentation/d/{id}/export"
-                "?format={format}".format(
-                    id=gdrive_file_id,
-                    format="pptx" if format is None else format,
+
+            if use_cookies:
+                cookie_jar = MozillaCookieJar(cookies_file)
+                for cookie in sess.cookies:
+                    cookie_jar.set_cookie(cookie)
+                os.makedirs(osp.dirname(cookies_file), exist_ok=True)
+                cookie_jar.save()
+
+            if "Content-Disposition" in res.headers:
+                # This is the file
+                break
+
+            # Need to redirect with confirmation
+            try:
+                url = get_url_from_gdrive_confirmation(res.text)
+            except FileURLRetrievalError as e:
+                message = (
+                    "Failed to retrieve file url:\n\n{}\n\n"
+                    "You may still be able to access the file from the browser:"
+                    "\n\n\t{}\n\n"
+                    "but Gdown can't. Please check connections and permissions."
+                ).format(
+                    indent("\n".join(textwrap.wrap(str(e))), prefix="\t"),
+                    url_origin,
                 )
+                raise FileURLRetrievalError(message)
+
+        filename_from_url = None
+        if gdrive_file_id and is_gdrive_download_link:
+            filename_from_url = _get_filename_from_response(response=res)
+        if filename_from_url is None:
+            filename_from_url = osp.basename(url)
+
+        if output is None:
+            output = filename_from_url
+
+        output_is_path = isinstance(output, str)
+        if output_is_path and output.endswith(osp.sep):
+            if not osp.exists(output):
+                os.makedirs(output)
+            output = osp.join(output, filename_from_url)
+
+        if output_is_path:
+            existing_tmp_files = []
+            for file in os.listdir(osp.dirname(output) or "."):
+                if file.startswith(osp.basename(output)):
+                    existing_tmp_files.append(osp.join(osp.dirname(output), file))
+            if resume and existing_tmp_files:
+                if len(existing_tmp_files) != 1:
+                    print(
+                        "There are multiple temporary files to resume:",
+                        file=sys.stderr,
+                    )
+                    print("\n")
+                    for file in existing_tmp_files:
+                        print("\t", file, file=sys.stderr)
+                    print("\n")
+                    print(
+                        "Please remove them except one to resume downloading.",
+                        file=sys.stderr,
+                    )
+                    return
+                tmp_file = existing_tmp_files[0]
+            else:
+                resume = False
+                # mkstemp is preferred, but does not work on Windows
+                # https://github.com/wkentaro/gdown/issues/153
+                tmp_file = tempfile.mktemp(
+                    suffix=tempfile.template,
+                    prefix=osp.basename(output),
+                    dir=osp.dirname(output),
+                )
+            f = open(tmp_file, "ab")
+        else:
+            tmp_file = None
+            f = output
+
+        if tmp_file is not None and f.tell() != 0:
+            headers = {"Range": "bytes={}-".format(f.tell())}
+            try:
+                res = sess.get(url, headers=headers, stream=True, verify=verify)
+            except Exception:
+                _discard_partial(tmp_file, f if tmp_file is not None else None)
+                untrack_session(sess)
+                try:
+                    sess.close()
+                except Exception:
+                    pass
+                if _quit_requested():
+                    raise DownloadCancelled()
+                raise
+            sess._active_response = res
+
+        if _quit_requested():
+            _discard_partial(tmp_file, f if tmp_file is not None else None)
+            untrack_session(sess)
+            sess.close()
+            raise DownloadCancelled()
+
+        if not quiet:
+            print(log_messages.get("start", "Downloading...\n"), file=sys.stderr, end="")
+            if resume:
+                print("Resume:", tmp_file, file=sys.stderr)
+            if url_origin != url:
+                print("From (original):", url_origin, file=sys.stderr)
+                print("From (redirected):", url, file=sys.stderr)
+            else:
+                print("From:", url, file=sys.stderr)
+            print(
+                log_messages.get(
+                    "output", f"To: {osp.abspath(output) if output_is_path else output}\n"
+                ),
+                file=sys.stderr,
+                end="",
             )
-            continue
 
-        if use_cookies:
-            cookie_jar = MozillaCookieJar(cookies_file)
-            for cookie in sess.cookies:
-                cookie_jar.set_cookie(cookie)
-            os.makedirs(osp.dirname(cookies_file), exist_ok=True)
-            cookie_jar.save()
-
-        if "Content-Disposition" in res.headers:
-            # This is the file
-            break
-
-        # Need to redirect with confirmation
+        cancelled = False
         try:
-            url = get_url_from_gdrive_confirmation(res.text)
-        except FileURLRetrievalError as e:
-            message = (
-                "Failed to retrieve file url:\n\n{}\n\n"
-                "You may still be able to access the file from the browser:"
-                "\n\n\t{}\n\n"
-                "but Gdown can't. Please check connections and permissions."
-            ).format(
-                indent("\n".join(textwrap.wrap(str(e))), prefix="\t"),
-                url_origin,
-            )
-            raise FileURLRetrievalError(message)
-
-    filename_from_url = None
-    if gdrive_file_id and is_gdrive_download_link:
-        filename_from_url = _get_filename_from_response(response=res)
-    if filename_from_url is None:
-        filename_from_url = osp.basename(url)
-
-    if output is None:
-        output = filename_from_url
-
-    output_is_path = isinstance(output, str)
-    if output_is_path and output.endswith(osp.sep):
-        if not osp.exists(output):
-            os.makedirs(output)
-        output = osp.join(output, filename_from_url)
-
-    if output_is_path:
-        existing_tmp_files = []
-        for file in os.listdir(osp.dirname(output) or "."):
-            if file.startswith(osp.basename(output)):
-                existing_tmp_files.append(osp.join(osp.dirname(output), file))
-        if resume and existing_tmp_files:
-            if len(existing_tmp_files) != 1:
-                print(
-                    "There are multiple temporary files to resume:",
-                    file=sys.stderr,
-                )
-                print("\n")
-                for file in existing_tmp_files:
-                    print("\t", file, file=sys.stderr)
-                print("\n")
-                print(
-                    "Please remove them except one to resume downloading.",
-                    file=sys.stderr,
-                )
-                return
-            tmp_file = existing_tmp_files[0]
-        else:
-            resume = False
-            # mkstemp is preferred, but does not work on Windows
-            # https://github.com/wkentaro/gdown/issues/153
-            tmp_file = tempfile.mktemp(
-                suffix=tempfile.template,
-                prefix=osp.basename(output),
-                dir=osp.dirname(output),
-            )
-        f = open(tmp_file, "ab")
-    else:
-        tmp_file = None
-        f = output
-
-    if tmp_file is not None and f.tell() != 0:
-        headers = {"Range": "bytes={}-".format(f.tell())}
-        res = sess.get(url, headers=headers, stream=True, verify=verify)
-
-    if not quiet:
-        print(log_messages.get("start", "Downloading...\n"), file=sys.stderr, end="")
-        if resume:
-            print("Resume:", tmp_file, file=sys.stderr)
-        if url_origin != url:
-            print("From (original):", url_origin, file=sys.stderr)
-            print("From (redirected):", url, file=sys.stderr)
-        else:
-            print("From:", url, file=sys.stderr)
-        print(
-            log_messages.get(
-                "output", f"To: {osp.abspath(output) if output_is_path else output}\n"
-            ),
-            file=sys.stderr,
-            end="",
-        )
-
-    try:
-        total = res.headers.get("Content-Length")
-        if total is not None:
-            total = int(total)
-        if not quiet:
-            pbar = tqdm.tqdm(total=total, unit="B", unit_scale=True)
-        t_start = time.time()
-        for chunk in res.iter_content(chunk_size=CHUNK_SIZE):
-            f.write(chunk)
+            total = res.headers.get("Content-Length")
+            if total is not None:
+                total = int(total)
             if not quiet:
-                pbar.update(len(chunk))
-            if speed is not None:
-                elapsed_time_expected = 1.0 * pbar.n / speed
-                elapsed_time = time.time() - t_start
-                if elapsed_time < elapsed_time_expected:
-                    time.sleep(elapsed_time_expected - elapsed_time)
-        if not quiet:
-            pbar.close()
-        if tmp_file:
-            f.close()
-            shutil.move(tmp_file, output)
-    finally:
-        sess.close()
+                pbar = tqdm.tqdm(total=total, unit="B", unit_scale=True)
+            t_start = time.time()
+            for chunk in res.iter_content(chunk_size=CHUNK_SIZE):
+                if _quit_requested():
+                    cancelled = True
+                    break
+                f.write(chunk)
+                if not quiet:
+                    pbar.update(len(chunk))
+                if speed is not None:
+                    elapsed_time_expected = 1.0 * pbar.n / speed
+                    elapsed_time = time.time() - t_start
+                    if elapsed_time < elapsed_time_expected:
+                        time.sleep(elapsed_time_expected - elapsed_time)
+                if _quit_requested():
+                    cancelled = True
+                    break
+            if not quiet:
+                pbar.close()
+            if cancelled:
+                _discard_partial(tmp_file, f if tmp_file is not None else None)
+            elif tmp_file:
+                f.close()
+                shutil.move(tmp_file, output)
+        except Exception:
+            if _quit_requested():
+                cancelled = True
+                _discard_partial(tmp_file, f if tmp_file is not None else None)
+            else:
+                raise
+        finally:
+            untrack_session(sess)
+            try:
+                sess.close()
+            except Exception:
+                pass
 
-    return output
+        if cancelled:
+            raise DownloadCancelled()
+        return output
+    finally:
+        untrack_session(sess)
+        try:
+            sess.close()
+        except Exception:
+            pass
