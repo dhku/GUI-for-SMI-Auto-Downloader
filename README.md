@@ -18,7 +18,7 @@
 ## Features
 
 * 애니메이션 방송 편성표 및 작품 검색 지원 (애니시아 API)
-* 자막 다운로드 지원 (Naver, Tistory, BlogSpot, GoogleDrive)
+* 자막 다운로드 지원 (Naver, Tistory, BlogSpot, GoogleDrive, WinPNG)
 * 자막 다운로드 스케줄링 지원 (주기적으로 다운로드 반복 수행)
 * 백그라운드 실행 지원
 * 다운로드 로깅 지원
