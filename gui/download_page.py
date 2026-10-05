@@ -244,8 +244,9 @@ class DownloadPage:
                 self.widgets.left_progressName.setWordWrap(True)
 
             if lock_Scheduler() == True:
-                thread = threading.Thread(target= lambda: requestMultipleAnimeSMI(progress_callback))
-                thread.start()
+                set_global_quitSignal(False)
+                common.download_thread = threading.Thread(target=lambda: requestMultipleAnimeSMI(progress_callback))
+                common.download_thread.start()
             else:
                 QMessageBox.information( 
                 self.MainWindow, 
@@ -290,6 +291,9 @@ class DownloadPage:
                     self.timer.start(day)
                     
         else: # 중지 로직
+            set_global_quitSignal(True)
+            self.timer.stop()
+
             beforeSheet = "background-color: rgb(52, 59, 72); font-size: " + str(fs(10, 16)) + "px;"
             self.widgets.scheduler_button.setStyleSheet(beforeSheet)
             
@@ -298,7 +302,6 @@ class DownloadPage:
             if common.isScheduler_mode == True:
                 self.widgets.scheduler_button.setText("스케줄러 시작") 
                 self.widgets.scheduler_comboBox.setEnabled(True)
-                self.timer.stop()
             else:
                 self.widgets.scheduler_button.setText("다운로드 시작")
                 self.widgets.scheduler_comboBox.setEnabled(False)
@@ -310,7 +313,8 @@ class DownloadPage:
         self.widgets.left_progressName.setText("곧 스케쥴러가 시작됩니다...")
         self.widgets.left_progressName.setWordWrap(True)
         if lock_Scheduler() == True:
-            thread = threading.Thread(target= lambda: requestMultipleAnimeSMI(progress_callback))
-            thread.start()
+            set_global_quitSignal(False)
+            common.download_thread = threading.Thread(target=lambda: requestMultipleAnimeSMI(progress_callback))
+            common.download_thread.start()
 
 

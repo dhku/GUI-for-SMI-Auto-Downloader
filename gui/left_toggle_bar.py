@@ -100,6 +100,7 @@ class LeftToggleBar(QObject):
 
             if lock_Scheduler() == True:
                 self.widgets.left_progressBar.setValue(0)
+                set_global_quitSignal(False)
                 common.download_thread = threading.Thread(target= lambda: requestAnimeSMI_3(selectedAnime_LeftBox,progress_callback))
                 common.download_thread.start()
             else:
