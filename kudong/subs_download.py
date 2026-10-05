@@ -17,6 +17,7 @@ from urllib.parse import quote
 from urllib.parse import urlparse
 from datetime import datetime
 from bs4 import BeautifulSoup
+from .winpng import *
 
 #pip install gdown
 #pip install requests
@@ -58,6 +59,8 @@ p_google = re.compile(r"(.*(https://drive.google.com/file/d/).*)")
 p_google_2_1 = re.compile(r"(.*(https://docs.google.com/uc).*)")
 p_google_2_2 = re.compile(r"(.*(https://drive.google.com/uc).*)")
 p_google_3 = re.compile(r"(.*(https://drive.usercontent.google.com/download).*)")
+
+p_harne = re.compile(r"(.*(https://harne1.tistory.com).*)")
 
 thread_lock = threading.Lock()
 isRunning = False
@@ -648,6 +651,13 @@ def download_tistory(url,callback):
         isDownloadError = 1;
         return;
 
+    if bool(p_harne.match(url)):
+        path = outpath + smiDir
+        winpng(url, path, True, True);
+        download_progress_count += 1
+        callback(download_progress_count,download_progress_length)
+        return;
+
     try:
         # find all 'attach file link'
         p_attach = re.compile(r"href=[\'\"](\S+?/attachment/.*?)[\'\"]\s*.*?/> (.*?)</", re.IGNORECASE | re.DOTALL)
@@ -788,6 +798,9 @@ def download_count_tistory(url):
         return 0;
 
     download_count = 0
+
+    if bool(p_harne.match(url)):
+        return 1;
 
     try:
         p_attach = re.compile(r"href=[\'\"](\S+?/attachment/.*?)[\'\"]\s*.*?/> (.*?)</", re.IGNORECASE | re.DOTALL)
