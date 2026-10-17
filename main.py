@@ -2,7 +2,7 @@
 #
 # BY: KUDONG
 # PROJECT: GUI-FOR-SMI-AUTO-DOWNLOADER
-# Version: 1.5.9
+# Version: 1.6.0
 #
 # ///////////////////////////////////////////////////////////////
 

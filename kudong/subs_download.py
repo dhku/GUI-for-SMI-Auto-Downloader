@@ -34,7 +34,7 @@ from .winpng import *
 # =================================================
 # Title: SMI AUTO DOWNLOADER
 # Author: KUDONG
-# Version: 1.5.9
+# Version: 1.6.0
 # Url: https://github.com/dhku/SMI-Auto-Downloader
 # =================================================
 
