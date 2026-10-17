@@ -8,39 +8,57 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
 
+
+def _log_labels(path):
+    kind = "download_subtitle"
+    detail = "다운로드 로그 데이터"
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            if file.readline().strip() == "AI 자막 번역":
+                kind = "ai_translate"
+                detail = "AI 번역 로그"
+    except OSError:
+        pass
+    return kind, detail
+
+
+def refresh_log_table(table):
+    folder = os.path.abspath(".") + "/log"
+    try:
+        names = [name for name in os.listdir(folder) if name != "error.log"]
+    except OSError:
+        names = []
+    names = natsort.natsorted(names)
+
+    overflow = len(names) - 30
+    if overflow > 0:
+        for name in names[:overflow]:
+            path = os.path.join(folder, name)
+            if os.path.isfile(path):
+                try:
+                    os.remove(path)
+                except OSError:
+                    pass
+        names = names[overflow:]
+
+    table.clearContents()
+    table.setColumnCount(3)
+    table.setRowCount(len(names))
+    for row, name in enumerate(names):
+        kind, detail = _log_labels(os.path.join(folder, name))
+        for column, text in enumerate((name, kind, detail)):
+            item = QTableWidgetItem(text)
+            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+            table.setItem(row, column, item)
+    table.verticalScrollBar().setValue(table.verticalScrollBar().maximum())
+
+
 # 3. Console
 # ///////////////////////////////////////////////////////////////
 class ConsolePage:
     def __init__(self, MainWindow, widgets):
         self.MainWindow = MainWindow
-        self.widgets = widgets  
-
-        log_file_list = natsort.natsorted(os.listdir(os.path.abspath('.') + "/log"))
-        log_file_list.remove("error.log")
-
-        #로그 30개 이상시 이전 로그 제거
-        log_size = len(log_file_list)
-        if(log_size > 30):
-            for i in range(0,log_size - 30):
-                file_p = os.path.abspath('.') + "/log/"+log_file_list[i]
-                if os.path.isfile(file_p):
-                    os.remove(file_p)
-
-        self.widgets.log_timestamp.clearContents()
-        self.widgets.log_timestamp.setRowCount(len(log_file_list))
-        self.widgets.log_timestamp.setColumnCount(3)
-
-        count = 0
-        for f in log_file_list:
-            self.widgets.log_timestamp.setItem(count,0,QTableWidgetItem(f));
-            self.widgets.log_timestamp.setItem(count,1,QTableWidgetItem("download_subtitle"));
-            self.widgets.log_timestamp.setItem(count,2,QTableWidgetItem("다운로드 로그 데이터"));
-            count += 1                 
-
-        for row in range(self.widgets.log_timestamp.rowCount()):
-            for column in range(self.widgets.log_timestamp.columnCount()):
-                item = self.widgets.log_timestamp.item(row, column)
-                item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
+        self.widgets = widgets
 
         self.widgets.log_timestamp.setSelectionBehavior(QTableWidget.SelectRows)
         self.widgets.log_timestamp.verticalHeader().setDefaultSectionSize(40)
@@ -51,10 +69,7 @@ class ConsolePage:
         self.widgets.log_timestamp.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
         self.widgets.log_timestamp.cellClicked.connect(self.on_cell_clicked_console)
         self.widgets.log_timestamp.setFocusPolicy(Qt.NoFocus)
-        
-        self.widgets.log_timestamp.verticalScrollBar().setValue(
-            self.widgets.log_timestamp.verticalScrollBar().maximum()
-        )
+        refresh_log_table(self.widgets.log_timestamp)
 
         self.widgets.log_console.setReadOnly(True)
 

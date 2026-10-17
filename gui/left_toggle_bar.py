@@ -5,6 +5,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from kudong import *
 from modules.font_config import fs, pt
+from .console_page import refresh_log_table
 
 #leftToggleBar
 class LeftToggleBar(QObject):
@@ -28,7 +29,7 @@ class LeftToggleBar(QObject):
         self.widgets.left_progressName.setText("현재 대기열에 작업이 없습니다.")
         self.widgets.left_progressName.setWordWrap(True)
 
-        idle_text = "편성표에서 원하는 자막을 선택하세요"
+        idle_text = "편성표에서 작품을 선택하세요"
         self.widgets.label.setText("<html><head/><body><p align='center'><span style=' font-size:" + str(fs(20, 34)) + "pt; font-weight:600;'>"+idle_text+"</span></p></body></html>");
         self.widgets.label.setWordWrap(True)
 
@@ -163,35 +164,7 @@ class LeftToggleBar(QObject):
             isScheduler_button_clicked = False
 
         if isFinished == True:
-            log_file_list = natsort.natsorted(os.listdir(os.path.abspath('.') + "/log"))
-            log_file_list.remove("error.log")
-
-            log_size = len(log_file_list)
-            if(log_size > 30):
-                for i in range(0,log_size - 30):
-                    file_p = os.path.abspath('.') + "/log/"+log_file_list[i]
-                    if os.path.isfile(file_p):
-                        os.remove(file_p)
-
-            self.widgets.log_timestamp.clearContents()
-            self.widgets.log_timestamp.setRowCount(len(log_file_list))
-            self.widgets.log_timestamp.setColumnCount(3)
-
-            count = 0
-            for f in log_file_list:
-                self.widgets.log_timestamp.setItem(count,0,QTableWidgetItem(f));
-                self.widgets.log_timestamp.setItem(count,1,QTableWidgetItem("download_subtitle"));
-                self.widgets.log_timestamp.setItem(count,2,QTableWidgetItem("다운로드 로그 데이터"));
-                count += 1                 
-
-            for row in range(self.widgets.log_timestamp.rowCount()):
-                for column in range(self.widgets.log_timestamp.columnCount()):
-                    item = self.widgets.log_timestamp.item(row, column)
-                    item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
-            
-            self.widgets.log_timestamp.verticalScrollBar().setValue(
-            self.widgets.log_timestamp.verticalScrollBar().maximum()
-            )
+            refresh_log_table(self.widgets.log_timestamp)
 
         # print("===============================================")
         # print(">콜백함수 진행수 " + str(progress) + "/" + str(count))

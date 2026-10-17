@@ -179,9 +179,6 @@ class MainWindow(QMainWindow):
 
         # AI 자막 페이지 이동 버튼
         if btnName == "btn_ai":
-            if common.selectedAnime_LeftBox is None:
-                QMessageBox.information(self, 'SMI-DOWNLOADER', 'AI 자막 생성을 위해 작품을 선택해주세요.')
-                return
             common.currentPage = "ai"
             widgets.stackedWidget.setCurrentWidget(widgets.ai_page)
             self.ai_page.load_selected_anime()
