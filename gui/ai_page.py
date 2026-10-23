@@ -3,6 +3,8 @@ import os
 import platform
 import re
 import subprocess
+import threading
+from datetime import datetime
 from functools import partial
 from urllib.parse import unquote, urlparse
 
@@ -14,6 +16,7 @@ from kudong import *
 from .console_page import refresh_log_table
 from kudong.ai_client import (
     AiClientError,
+    TranslateCancelled,
     ensure_translate_ready,
     korean_output_path,
     translate_subtitle_file,
@@ -34,9 +37,14 @@ BUTTON_TRANSLATING_STYLE = (
     'QPushButton { background-color: rgb(214, 132, 36); color: rgb(255, 246, 230);'
     ' font-size: 20px; font-family: "Malgun Gothic"; outline: none;'
     " border: 2px solid rgb(214, 132, 36); border-radius: 5px; }"
+    "QPushButton:hover { background-color: rgb(196, 78, 52); border: 2px solid rgb(214, 92, 64); }"
+    "QPushButton:pressed { background-color: rgb(160, 60, 40); border: 2px solid rgb(160, 60, 40); }"
     "QPushButton:disabled { background-color: rgb(214, 132, 36); color: rgb(255, 246, 230);"
     " border: 2px solid rgb(214, 132, 36); }"
 )
+CANCELLED = "__cancelled__"
+CANCEL_TIP = "번역 중입니다. 클릭하면 번역을 취소합니다."
+AI_OUTPUT_FOLDER = "AI 자막"
 COMPACT_CONTROL_STYLE = (
     'QPushButton, QComboBox { background-color: rgb(52, 59, 72); color: rgb(221, 221, 221);'
     ' font-size: 16px; font-family: "Malgun Gothic"; outline: none;'
@@ -60,6 +68,97 @@ class _NoFocusDelegate(QStyledItemDelegate):
         super().paint(painter, option, index)
 
 
+class _InstantTooltipFilter(QObject):
+    def __init__(self, page, table, parent=None):
+        super().__init__(parent)
+        self._page = page
+        self._table = table
+        self._watched = set()
+        self._item_tip = None
+
+    def watch(self, widget):
+        if widget is None:
+            return
+        key = id(widget)
+        if key in self._watched:
+            return
+        self._watched.add(key)
+        widget.destroyed.connect(lambda *_args, k=key: self._watched.discard(k))
+        widget.installEventFilter(self)
+        widget.setAttribute(Qt.WA_Hover, True)
+        widget.setMouseTracking(True)
+        for child in widget.findChildren(QWidget):
+            self.watch(child)
+
+    def eventFilter(self, obj, event):
+        kind = event.type()
+        if kind == QEvent.ChildAdded:
+            child = event.child()
+            if isinstance(child, QWidget):
+                self.watch(child)
+            return False
+        if not isinstance(obj, QWidget):
+            return False
+        if kind == QEvent.Enter:
+            if obj is self._table.viewport() or obj is self._table.horizontalHeader():
+                return False
+            tip = obj.toolTip()
+            if tip:
+                QToolTip.showText(QCursor.pos(), tip, obj)
+            return False
+        if kind == QEvent.Leave:
+            if obj is self._table.viewport() or obj is self._table.horizontalHeader():
+                self._item_tip = None
+            QToolTip.hideText()
+            return False
+        if kind == QEvent.ToolTip:
+            return True
+        if kind in (QEvent.HoverMove, QEvent.MouseMove):
+            if obj is self._table.viewport():
+                self._show_cell_tip(event, self._table.itemAt)
+            elif obj is self._table.horizontalHeader():
+                self._show_header_tip(event)
+        return False
+
+    def _event_pos(self, event):
+        if hasattr(event, "position"):
+            return event.position().toPoint()
+        return event.pos()
+
+    def _show_cell_tip(self, event, item_at):
+        item = item_at(self._event_pos(event))
+        tip = item.toolTip() if item is not None else ""
+        if tip == self._item_tip:
+            return
+        self._item_tip = tip
+        if tip:
+            QToolTip.showText(QCursor.pos(), tip, self._table.viewport())
+        else:
+            QToolTip.hideText()
+
+    def _show_header_tip(self, event):
+        header = self._table.horizontalHeader()
+        logical = header.logicalIndexAt(self._event_pos(event))
+        item = self._table.horizontalHeaderItem(logical)
+        tip = item.toolTip() if item is not None else ""
+        if tip == self._item_tip:
+            return
+        self._item_tip = tip
+        if tip:
+            QToolTip.showText(QCursor.pos(), tip, header)
+        else:
+            QToolTip.hideText()
+
+
+def _set_tooltip(widget, tip):
+    widget.setToolTip(tip)
+    if widget.underMouse():
+        if tip:
+            QToolTip.showText(QCursor.pos(), tip, widget)
+        else:
+            QToolTip.hideText()
+
+
 def format_size(size):
     try:
         value = int(size)
@@ -70,6 +169,19 @@ def format_size(size):
     if value < 1024 * 1024:
         return f"{value / 1024:.1f} KB"
     return f"{value / (1024 * 1024):.1f} MB"
+
+
+def format_modified(value):
+    text = str(value or "").strip()
+    if text == "":
+        return ""
+    try:
+        stamp = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return text
+    if stamp.tzinfo is not None:
+        stamp = stamp.astimezone()
+    return stamp.strftime("%Y-%m-%d %H:%M")
 
 
 def safe_filename(name, url):
@@ -102,26 +214,34 @@ class AiDownloadWorker(QThread):
         self.url = url
         self.dest = dest
         self.mode = mode
+        self.cancel_event = threading.Event()
+        self.translating = False
+
+    def cancel(self):
+        self.cancel_event.set()
 
     def run(self):
         partial_path = self.dest + ".part"
         try:
             already = _output_ready(self.dest)
-            if self.mode == "korean" and already:
-                self.status.emit(self.row, self.url, self.mode, "번역 중")
-            else:
+            if not (self.mode == "korean" and already):
                 self._download(partial_path)
-                if self.mode == "korean":
-                    self.status.emit(self.row, self.url, self.mode, "번역 중")
 
             if self.mode == "korean":
+                if self.cancel_event.is_set():
+                    raise TranslateCancelled()
+                self.translating = True
+                self.status.emit(self.row, self.url, self.mode, "번역 중")
                 saved = translate_subtitle_file(
                     self.dest,
                     on_progress=lambda text: self.status.emit(self.row, self.url, self.mode, text),
+                    cancel_event=self.cancel_event,
                 )
                 self.result_ready.emit(self.row, self.url, self.mode, True, saved)
             else:
                 self.result_ready.emit(self.row, self.url, self.mode, True, self.dest)
+        except TranslateCancelled:
+            self.result_ready.emit(self.row, self.url, self.mode, False, CANCELLED)
         except Exception as error:
             if os.path.isfile(partial_path):
                 try:
@@ -166,6 +286,7 @@ class AiPage(QObject):
         self.MainWindow = MainWindow
         self.widgets = widgets
         self.workers = []
+        self.active_workers = {}
         self.search_workers = []
         self._load_token = 0
         self.japanese_name = ""
@@ -193,6 +314,9 @@ class AiPage(QObject):
         table.horizontalHeader().sectionClicked.connect(self._on_header_clicked)
         table.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
         table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        self._tooltip_filter = _InstantTooltipFilter(self.widgets.ai_page, table, self)
+        self._tooltip_filter.watch(self.widgets.ai_page)
 
         self.set_files([])
 
@@ -258,8 +382,9 @@ class AiPage(QObject):
         self.ai_download_mode.setStyleSheet(COMPACT_CONTROL_STYLE)
         self.ai_download_mode.addItem("한국어", "korean")
         self.ai_download_mode.addItem("일본어", "original")        
-        self.ai_download_mode.setToolTip(
-            "받을 자막 종류입니다. 원본은 파일만 받고, 한국어는 일본어를 번역해 저장합니다."
+        _set_tooltip(
+            self.ai_download_mode,
+            "받을 자막 종류입니다. 일본어는 원본 파일만 받고, 한국어는 일본어를 번역해 저장합니다.",
         )
         self.ai_download_mode.currentIndexChanged.connect(self._on_download_mode_changed)
 
@@ -379,7 +504,7 @@ class AiPage(QObject):
             name_item = QTableWidgetItem(name)
             name_item.setData(URL_ROLE, url)
             name_item.setData(NAME_ROLE, name)
-            name_item.setToolTip(modified)
+            name_item.setToolTip(format_modified(modified))
             name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
 
             size_item = QTableWidgetItem(format_size(entry.get("size")))
@@ -465,7 +590,7 @@ class AiPage(QObject):
 
     def _dest_for(self, name, url):
         base = get_global_outpath() or os.path.join(os.path.abspath("."), "downloads")
-        return os.path.join(base, "ai", safe_filename(name, url))
+        return os.path.join(base, AI_OUTPUT_FOLDER, safe_filename(name, url))
 
     def _download_mode(self):
         mode = self.ai_download_mode.currentData()
@@ -479,7 +604,7 @@ class AiPage(QObject):
         return "원본 자막 파일을 다운로드합니다."
 
     def _update_bulk_tooltip(self):
-        self.ai_download_all_button.setToolTip(self._mode_text(self._download_mode()))
+        _set_tooltip(self.ai_download_all_button, self._mode_text(self._download_mode()))
 
     def _on_download_mode_changed(self, index=0):
         self._update_bulk_tooltip()
@@ -488,14 +613,38 @@ class AiPage(QObject):
             button = self._row_button(row)
             if isinstance(button, QPushButton) and not button.isEnabled():
                 continue
+            if self._row_worker(row) is not None:
+                continue
             self._refresh_action_button(row)
 
     def _make_action_button(self, row, name, url):
         button = QPushButton("다운로드")
         button.setObjectName("ai_download_button")
-        button.clicked.connect(partial(self.on_download_clicked, row))
+        button.clicked.connect(partial(self.on_row_button_clicked, row))
         self._apply_action_button(button, name, url)
+        if url in self.active_workers:
+            self._set_row_busy(row, "번역 중" if self.active_workers[url].translating else "받는 중")
         return button
+
+    def _row_worker(self, row):
+        item = self.widgets.ai_subtitle_table.item(row, 1)
+        if item is None:
+            return None
+        return self.active_workers.get(item.data(URL_ROLE))
+
+    def on_row_button_clicked(self, row, checked=False):
+        worker = self._row_worker(row)
+        if worker is None:
+            self.on_download_clicked(row)
+            return
+        if worker.mode != "korean" or not worker.translating or worker.cancel_event.is_set():
+            return
+        worker.cancel()
+        button = self._row_button(row)
+        if isinstance(button, QPushButton):
+            button.setEnabled(False)
+            button.setText("취소 중")
+            _set_tooltip(button, "번역을 취소하고 있습니다.")
 
     def _row_button(self, row):
         widget = self.widgets.ai_subtitle_table.cellWidget(row, 3)
@@ -522,18 +671,20 @@ class AiPage(QObject):
         button.setText("완료" if ready else "다운로드")
         tip = self._mode_text(mode)
         if ready:
-            tip += "\n" + (saved_path or path)
-            tip += "\n클릭하면 저장 폴더를 엽니다."
-        button.setToolTip(tip)
+            tip = "클릭하면 저장 폴더를 엽니다."
+        _set_tooltip(button, tip)
         self._style_action_button(button, done=ready)
 
     def _set_row_busy(self, row, text):
         button = self._row_button(row)
         if not isinstance(button, QPushButton):
             return
-        button.setEnabled(False)
+        translating = str(text).startswith("번역")
+        button.setEnabled(translating)
         button.setText(text)
-        self._style_action_button(button, translating=str(text).startswith("번역"))
+        if translating:
+            _set_tooltip(button, CANCEL_TIP)
+        self._style_action_button(button, translating=translating)
 
     def _refresh_action_button(self, row, saved_path=""):
         item = self.widgets.ai_subtitle_table.item(row, 1)
@@ -583,6 +734,8 @@ class AiPage(QObject):
         if not url:
             QMessageBox.warning(self.MainWindow, "SMI-DOWNLOADER", "다운로드 주소가 없습니다.")
             return
+        if url in self.active_workers:
+            return
         mode = self._download_mode()
         saved = self._saved_path(name, url, mode)
         if _output_ready(saved):
@@ -596,11 +749,21 @@ class AiPage(QObject):
         self._set_row_busy(row, "번역 중" if skip_download else "받는 중")
 
         worker = AiDownloadWorker(row, url, dest, mode, self)
+        worker.translating = skip_download
         worker.result_ready.connect(self.on_download_finished)
         worker.status.connect(self.on_download_status)
         worker.finished.connect(self._drop_worker)
         self.workers.append(worker)
+        self.active_workers[url] = worker
         worker.start()
+
+    def _row_for_url(self, url):
+        table = self.widgets.ai_subtitle_table
+        for row in range(table.rowCount()):
+            item = table.item(row, 1)
+            if item is not None and item.data(URL_ROLE) == url:
+                return row
+        return -1
 
     def _show_translate_log(self):
         self.widgets.log_console.setPlainText(get_global_console_output())
@@ -610,30 +773,27 @@ class AiPage(QObject):
     def on_download_status(self, row, url, mode, text):
         if mode == "korean":
             self._show_translate_log()
-        item = self.widgets.ai_subtitle_table.item(row, 1)
-        if item is None or item.data(URL_ROLE) != url:
+        worker = self.active_workers.get(url)
+        if worker is not None:
+            if worker.cancel_event.is_set():
+                return
+            if str(text).startswith("번역"):
+                worker.translating = True
+        found = self._row_for_url(url)
+        if found < 0:
             return
-        button = self._row_button(row)
-        if not isinstance(button, QPushButton):
-            return
-        translating = str(text).startswith("번역")
-        button.setText("번역 중" if translating else text)
-        if translating:
-            button.setToolTip(text)
-            self._style_action_button(button, translating=True)
+        self._set_row_busy(found, text)
 
     def on_download_finished(self, row, url, mode, ok, message):
         if mode == "korean":
             self._show_translate_log()
             refresh_log_table(self.widgets.log_timestamp)
-        table = self.widgets.ai_subtitle_table
-        item = table.item(row, 1)
-        same_row = item is not None and item.data(URL_ROLE) == url
-        if same_row:
+        found = self._row_for_url(url)
+        if found >= 0:
             saved = message if ok and mode == "korean" and self._download_mode() == "korean" else ""
-            self._refresh_action_button(row, saved)
+            self._refresh_action_button(found, saved)
 
-        if ok:
+        if ok or message == CANCELLED:
             return
 
         detail = message if len(message) <= 800 else message[:800] + "..."
@@ -673,3 +833,6 @@ class AiPage(QObject):
         worker = self.sender()
         if worker in self.workers:
             self.workers.remove(worker)
+        url = getattr(worker, "url", None)
+        if url is not None and self.active_workers.get(url) is worker:
+            self.active_workers.pop(url, None)
