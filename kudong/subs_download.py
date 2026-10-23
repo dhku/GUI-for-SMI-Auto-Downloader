@@ -55,6 +55,9 @@ p_google = re.compile(r"(.*(https://drive.google.com/file/d/).*)")
 p_google_2_1 = re.compile(r"(.*(https://docs.google.com/uc).*)")
 p_google_2_2 = re.compile(r"(.*(https://drive.google.com/uc).*)")
 p_google_3 = re.compile(r"(.*(https://drive.usercontent.google.com/download).*)")
+p_google_drive = re.compile(r"^https?://(drive|docs)\.google\.com/", re.IGNORECASE)
+p_google_folder = re.compile(r"^https?://drive\.google\.com/drive/(?:u/\d+/)?folders/([\w-]+)", re.IGNORECASE)
+p_google_file_id = re.compile(r"^https?://(?:drive|docs)\.google\.com/.*?(?:/d/|[?&]id=)([\w-]+)", re.IGNORECASE)
 
 p_harne = re.compile(r"(.*(https://harne1.tistory.com).*)")
 
@@ -229,7 +232,9 @@ def get_download_progress_length(json_data):
 
         if os.path.isfile(outpath + smiDir + "finish.txt"):
             continue;
-        if regrex1.match(website):
+        if p_google_drive.match(website):
+            total += download_count_google_drive(website)
+        elif regrex1.match(website):
             total += download_count_naver(website)
         elif regrex2.match(website):
             total += download_count_blogspot(website)
@@ -435,7 +440,10 @@ def _requestAnimeSMI(AnimeNo, progress, new_filename, json_data):
             print_log("================================================================")
             continue;
 
-        if regrex1.match(website):
+        if p_google_drive.match(website):
+            print_log("[+] 구글 드라이브 검출.")
+            succeeded = download_google_drive(website, progress)
+        elif regrex1.match(website):
             print_log("[+] naver 검출.")
             succeeded = download_naver(website, progress)
         elif regrex2.match(website):
@@ -520,6 +528,85 @@ def _download_drive_view(view_url, progress):
     print_log("[+] 파일 다운로드가 완료 되었습니다. ")
     progress.step()
     return True
+
+def _list_drive_files(folder_id, depth=0):
+    """공유 폴더(하위 폴더 포함)의 모든 파일을 (파일 ID, 파일명) 목록으로 돌려준다."""
+    res = requests.get("https://drive.google.com/embeddedfolderview?id=" + folder_id, headers=HEADERS, timeout=15)
+    res.raise_for_status()
+    soup = BeautifulSoup(res.content, 'html.parser')
+
+    files = []
+    for entry in soup.select("div.flip-entry"):
+        link = entry.find("a")
+        title = entry.select_one(".flip-entry-title")
+        if link is None or title is None:
+            continue
+        href = link.get("href", "")
+        file_name = re.sub(r'[\\/:*?"<>|]', "", title.get_text().strip())
+
+        sub_folder = p_google_folder.match(href)
+        if sub_folder:
+            if depth < 3:
+                files += _list_drive_files(sub_folder.group(1), depth + 1)
+            continue
+
+        file_id = p_google_file_id.match(href)
+        if file_id and file_name:
+            files.append((file_id.group(1), file_name))
+    return files
+
+def download_google_drive(url, progress):
+    folder = p_google_folder.match(url)
+
+    if folder is None:
+        file_id = p_google_file_id.match(url)
+        if file_id is None:
+            print_log("[-] 구글 드라이브 파일 ID를 찾을 수 없습니다.")
+            return False
+        try:
+            return _download_drive_view("https://drive.google.com/file/d/" + file_id.group(1) + "/view", progress)
+        except Exception as e:
+            print_log("[-] Error : %s" % e)
+            print_log(traceback.format_exc())
+            progress.step()
+            return False
+
+    try:
+        files = _list_drive_files(folder.group(1))
+    except Exception as e:
+        print_log("[-] 구글 드라이브 폴더를 읽을 수 없습니다. : %s" % e)
+        return False
+
+    if not files:
+        print_log("[-] 구글 드라이브 폴더에서 파일을 찾지 못했습니다.")
+        return False
+
+    path = outpath + smiDir
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    saved_any = False
+    for file_id, file_name in files:
+        if quitSignal == True:
+            break
+        try:
+            print_log("[=] 다운로드 시작 => " + file_name)
+            gdrive.download("https://drive.google.com/uc?id=" + file_id, path + file_name, quiet=False)
+            print_log("[+] 파일 다운로드가 완료 되었습니다. ")
+            saved_any = True
+        except Exception as e:
+            print_log("[-] Error : %s" % e)
+        progress.step()
+    return saved_any
+
+def download_count_google_drive(url):
+    folder = p_google_folder.match(url)
+    if folder is None:
+        return 1
+    try:
+        return len(_list_drive_files(folder.group(1)))
+    except Exception as e:
+        return 0
 
 def _header_filename(url, response):
     file_name = response.headers.get_filename()
