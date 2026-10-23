@@ -14,9 +14,13 @@ def _log_labels(path):
     detail = "다운로드 로그 데이터"
     try:
         with open(path, "r", encoding="utf-8") as file:
-            if file.readline().strip() == "AI 자막 번역":
+            first = file.readline().strip()
+            if first == "AI 자막 번역":
                 kind = "ai_translate"
                 detail = "AI 번역 로그"
+            elif first == "SMI AUTO DOWNLOADER":
+                kind = "welcome"
+                detail = "처음 실행 안내"
     except OSError:
         pass
     return kind, detail
@@ -72,9 +76,21 @@ class ConsolePage:
         refresh_log_table(self.widgets.log_timestamp)
 
         self.widgets.log_console.setReadOnly(True)
+        self._select_latest_log()
+
+    def _select_latest_log(self):
+        table = self.widgets.log_timestamp
+        row = table.rowCount() - 1
+        if row < 0:
+            return
+        table.selectRow(row)
+        self._show_log_row(row)
 
     #로그 클릭시
     def on_cell_clicked_console(self, row,column):
+        self._show_log_row(row)
+
+    def _show_log_row(self, row):
         item = self.widgets.log_timestamp.item(row, 0)
         if item is not None:
             file_name = item.text()
