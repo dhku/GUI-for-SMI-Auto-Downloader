@@ -4,7 +4,7 @@ import platform
 from cx_Freeze import setup, Executable
 
 # ADD FILES
-files = ['icon.ico', 'themes/', 'anime.yml', 'settings.yml', 'downloads/', 'log']
+files = ['icon.ico', 'themes/', 'anime.yml', 'settings.yml', 'prompt.yml', 'downloads/', 'log']
 
 # ADD PACKAGE
 build_exe_options = {
