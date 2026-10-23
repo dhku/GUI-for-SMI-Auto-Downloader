@@ -5,11 +5,15 @@ dpi: 120 # auto-dpi = false 일때 작동, 기본값: 120 DPI (125% 배율)  / �
 # AI 자막 번역. active 만 바꾸면 제공자가 바뀝니다. 기본값 none 은 번역을 사용하지 않습니다.
 # API 키는 사용할 제공자의 api_key 에 적습니다.
 ai-translate:
-  active: none # openai 또는 gemini
+  active: openai # openai 또는 gemini 또는 타 제공자 (Claude, DeepSeek, etc.)
+  concurrency: 3 # 동시에 보낼 번역 요청 수 (기본값: 3, 1이면 순서대로). 429 오류가 나면 줄이세요
+  glossary: true # true면 작품별 용어집을 쓰고 매 화 새 항목을 덧붙임 (없으면 새로 만듦), false면 용어집을 사용하지 않음
   providers:
     openai:
       api_key: ""
-      model: gpt-4.1-mini
+      model: gpt-5.5
+      base_url: "https://api.openai.com/v1"
     gemini:
       api_key: ""
-      model: gemini-3.8-flash
+      model: gemini-3.1-pro-preview
+      base_url: "https://generativelanguage.googleapis.com/v1beta/openai/"
