@@ -6,7 +6,7 @@
 
 ![python]( https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white)![pyside6]( https://img.shields.io/badge/PySide6-%230092D2.svg?style=for-the-badge&logo=Qt&logocolor=white)![Anissia](https://img.shields.io/badge/Anissia-%230064BF.svg?style=for-the-badge&logoColor=white)![YAML](https://img.shields.io/badge/YAML-%23000000.svg?style=for-the-badge&logo=yaml&logoColor=white)[![downloads](https://img.shields.io/github/downloads/dhku/GUI-for-SMI-Auto-Downloader/total?style=for-the-badge&label=Downloads)](https://github.com/dhku/GUI-for-SMI-Auto-Downloader/releases)
 
-![메인 화면](./images/readme/main2.png)
+<img width="1911" height="926" alt="image" src="https://github.com/user-attachments/assets/ba1fe92e-403a-4315-8357-04cad6a03bc8" />
 
 자막을 원클릭으로 쉽게 다운로드 받을 수 있는 프로그램입니다.
 
@@ -35,13 +35,15 @@
 
 ### 1. 편성표
 
-![편성표](./images/readme/anime2.png)
+<img width="1911" height="926" alt="image" src="https://github.com/user-attachments/assets/bce3ecfc-3e46-41e4-a684-c102dbd92315" />
 
 * 요일 버튼으로 이번 분기 편성표를 봅니다. **外**는 기타, **新**은 신작 목록입니다.
 * 작품을 클릭하면 왼쪽 **자막 정보**가 열립니다.
 * 제목의 **On-AIR**를 누르면 오늘 요일로 이동한 뒤, 시작한 지 30분 이내인 작품을 붉게 표시합니다. 그 시각에 방영 중인 작품이 없으면 다음 방송 예정인 작품을 표시합니다. 화면을 클릭하면 표시가 사라집니다.
 
 ### 2. 자막 정보
+
+<img width="1911" height="926" alt="image" src="https://github.com/user-attachments/assets/4c67b659-b581-4f4a-889b-4c5f36763357" />
 
 * **즉시 자막 다운로드**는 선택한 작품의 자막만 받습니다.
 * **작품 즐겨찾기에 추가**는 다운로드 관리 목록과 `anime.yml`에 작품을 넣고 바로 저장합니다.
@@ -51,7 +53,7 @@
 
 ### 3. 다운로드 관리
 
-![다운로드 관리](./images/readme/download2.png)
+<img width="1747" height="883" alt="download2" src="https://github.com/user-attachments/assets/11c8ab64-7046-4f39-9803-11684cdccbb7" />
 
 * 처음 실행하면 자막은 프로그램 폴더의 `downloads`에 저장됩니다.
 * **경로 변경**으로 저장 폴더를 바꿀 수 있고, **다운 폴더 열기**로 그 폴더를 엽니다. 경로를 바꾸면 `settings.yml`의 `auto-download-path`가 `false`가 되어 다음 실행에도 그 폴더를 유지합니다. `true`로 되돌리면 다시 `downloads`를 사용합니다.
@@ -60,9 +62,9 @@
 
 ### 4. 작품 검색
 
-![작품 검색](./images/readme/search.png)
+<img width="1748" height="883" alt="search" src="https://github.com/user-attachments/assets/f13519a8-f367-45e2-ac09-f75a1887906c" />
 
-![검색 결과](./images/readme/search2.png)
+<img width="1749" height="881" alt="search2" src="https://github.com/user-attachments/assets/1c2ae7f1-6c1b-4ea9-aabb-48622c688c93" />
 
 * 제목으로 작품을 검색합니다. 목록 끝까지 내리면 다음 결과가 이어집니다.
 * 검색어를 입력하면 애니시아 자동완성 후보가 입력창 툴팁에 표시됩니다.
@@ -70,14 +72,16 @@
 
 ### 5. 최신 자막
 
-![최신 자막](./images/readme/recent.png)
+<img width="1888" height="900" alt="recent" src="https://github.com/user-attachments/assets/4b548acd-aaf6-43ea-aa80-ac0f501529d2" />
 
 * 최근 올라온 자막 목록입니다. 아래로 내리면 다음 목록이 이어집니다.
 * 한 번 클릭하면 **자막 정보**가 열리고, 두 번 클릭하면 자막 제작자의 글로 이동합니다.
 
 ### 6. AI 자막
 
-왼쪽 메뉴의 **AI 자막**에서 [jimaku.cc](https://jimaku.cc) 자막을 받아 저장합니다. 편성표, 검색, 최신 자막, 다운로드 관리에서 작품을 고른 뒤 이 화면을 열면 그 작품의 일본어 원제가 자동으로 검색창에 들어갑니다. 직접 찾을 때는 일본어 원제나 영어 제목을 입력합니다.
+<img width="1911" height="926" alt="image" src="https://github.com/user-attachments/assets/ece527ec-3d7f-485e-b0a2-385af31a6028" />
+
+편성표, 검색, 최신 자막, 다운로드 관리에서 작품을 고른 뒤 이 화면을 열면 그 작품의 일본어 원제가 자동으로 검색창에 들어갑니다. 직접 찾을 때는 일본어 원제나 영어 제목을 입력합니다.
 
 * **일본어**는 원본 파일만 받고, **한국어**는 원본을 받은 뒤 번역해 저장합니다. 원본이 이미 있으면 번역만 진행합니다.
 * 파일은 `downloads/AI 자막`에 저장됩니다. 번역본은 이름 뒤에 `.ko`가 붙습니다. `ep01.ass`는 `ep01.ko.ass`가 됩니다.
@@ -107,14 +111,14 @@ ai-translate:
 
 ### 7. 로그
 
-![로그](./images/readme/log2.png)
+<img width="1749" height="885" alt="log2" src="https://github.com/user-attachments/assets/33e73063-9afe-4379-a963-8c91c60a7e4d" />
 
 * 다운로드 로그와 AI 번역 로그를 최대 30개까지 보관합니다. 더 늘어나면 오래된 파일부터 지웁니다.
 * 작업을 고르면 오른쪽에서 내용을 볼 수 있고, 받는 동안 콘솔에 진행 상황이 갱신됩니다.
 
 ### 8. 화면 배율
 
-![DPI 설정](./images/readme/resolution.png)
+<img width="1843" height="206" alt="resolution" src="https://github.com/user-attachments/assets/8a5ed063-536f-454d-8706-f4bf20adab28" />
 
 * `auto-dpi`가 `true`이면 Windows는 시스템 DPI를 따르고, macOS는 Qt가 화면 배율을 처리합니다.
 * 직접 지정하려면 `auto-dpi`를 `false`로 하고 `dpi`를 바꿉니다. 자주 쓰는 값은 96(100%), 120(125%), 144(150%), 192(200%)입니다. 바꾼 뒤에는 프로그램을 다시 실행합니다.
