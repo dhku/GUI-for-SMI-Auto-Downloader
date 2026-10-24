@@ -78,7 +78,6 @@ _SONG_STYLE = re.compile(r"^(?:op|ed)(?:$|[\s_\-\d])|song|kara|lyric|歌", re.I)
 _ASS_DRAWING = re.compile(r"\\p[1-9]")
 _ASS_TOKEN = re.compile(r"(\{[^{}]*\}|\\N|\\n|\\h)")
 _SRT_TOKEN = re.compile(r"(<[^<>]*>|\{[^{}]*\})")
-_STATEMENT_END = "다요죠네군"
 
 
 class Part:
@@ -460,7 +459,7 @@ def build_events(raws, keep_lyrics=False):
     return events, builder.removed
 
 
-def polish(text, cont=False):
+def polish(text):
     value = "" if text is None else str(text)
     value = re.sub(r"\{[^{}]*\}", "", value)
     value = re.sub(r"</?[A-Za-z][^<>]*>", "", value)
@@ -483,11 +482,10 @@ def polish(text, cont=False):
     value = re.sub(r"\s+([,!?]|\.(?!\.))", r"\1", value)
     if not value:
         return ""
-    if cont:
-        if value.endswith(".") and not value.endswith(".."):
-            value = value[:-1].rstrip()
-    elif value[-1] in _STATEMENT_END:
-        value += "."
+    # 말줄임(...)은 두고, 대사 끝의 마침표 하나만 뺍니다. 따옴표 앞에 붙은 경우도 같습니다.
+    value = re.sub(r"(?<!\.)\.(?!\.)([\"')\]]*)$", r"\1", value)
+    if value.endswith(".") and not value.endswith(".."):
+        value = value[:-1].rstrip()
     return value
 
 
