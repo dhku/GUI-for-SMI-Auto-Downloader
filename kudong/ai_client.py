@@ -21,11 +21,12 @@ TEXT_EXTENSIONS = (".srt", ".vtt", ".ass", ".ssa", ".smi", ".sami", ".txt")
 # ASS/SRT 는 규칙에 맞게 다시 만들고 UTF-8(BOM 없음), LF 로 저장합니다.
 REWRITE_EXTENSIONS = (".srt", ".ass", ".ssa")
 GLOSSARY_FOLDER = "용어집"
-# 한 파일의 대사를 요청 한 번에 넣습니다. 이 한도를 넘을 때만 나눠 보냅니다.
+# VTT, SMI, TXT 문자열 줄은 요청 한 번에 넣습니다. 이 한도를 넘을 때만 나눠 보냅니다.
 BATCH_LINES = 4000
 BATCH_CHARS = 500000
-# 저가 모델은 긴 응답에서 줄을 빠뜨리기 쉬워 ASS/SRT 대사는 작게 나눠 보냅니다.
-ITEM_BATCH = 80
+# SRT, ASS, SSA 한 요청의 기본 대사 수입니다. settings.yml 의 ai-translate.item_batch 로 바꿉니다.
+ITEM_BATCH = 200
+MAX_ITEM_BATCH = 4000
 CONTEXT_ITEMS = 6
 DEFAULT_CONCURRENCY = 3
 MAX_CONCURRENCY = 8
@@ -88,12 +89,12 @@ JSON 객체 하나만 출력합니다: {"1":"번역","2":"번역"}
 6. 고유명사는 용어집 표기를 반드시 따릅니다. 용어집에 없으면 나무위키 등 한국 정식 표기, 그다음 국립국어원 일본어 표기법을 따릅니다. 서양식 이름은 원어 철자에 맞춥니다.
 7. 경칭은 용어집이 우선이고, 기본값은 ～さん→~씨, ～様→~님, ～先輩→선배, ～くん·～ちゃん→관계에 맞게(생략 가능), お嬢様→아가씨, 殿下→전하, 陛下→폐하 입니다.
 8. えっ·はぁ·うわっ 같은 감탄사와 의성어·의태어는 한국어에서 자연스러운 표현으로 바꿉니다. (예: えっ→어?, はぁ→하아, うわっ→으악, あっ→앗)
-9. 문장부호: 평서문 끝에는 마침표(.)를 찍고, ?와 !는 그대로 씁니다. 말끝을 흐리면 ...을 씁니다. 「」→" ", 『』→' ' 로 바꾸고, ～는 쓰지 않습니다.
+9. 문장부호: 평서문 끝에는 마침표를 찍지 않습니다. ?와 !는 그대로 씁니다. 말끝을 흐리면 ...을 씁니다. 「」→" ", 『』→' ' 로 바꾸고, ～는 쓰지 않습니다.
 10. 히라가나·가타카나를 번역문에 남기지 않습니다.
 
 [예시]
 입력: {"lines":[{"id":1,"who":"ユウト","type":"대사","ja":"しまった 遅刻する!"},{"id":2,"type":"속마음","ja":"どうやら 俺は","cont":true},{"id":3,"type":"속마음","ja":"ベリーハードな人生のようだ。"},{"id":4,"who":"ユウト","type":"대사","ja":"ま… 待って下さい 田中さん!"},{"id":5,"type":"대사","ja":"えっ? 『マジエク』?"}]}
-출력: {"1":"이런, 지각하겠어!","2":"아무래도 나는","3":"베리 하드한 인생인 모양이다.","4":"자, 잠깐만요, 다나카 씨!","5":"어? '마지에크'?"}"""
+출력: {"1":"이런, 지각하겠어!","2":"아무래도 나는","3":"베리 하드한 인생인 모양이다","4":"자, 잠깐만요, 다나카 씨!","5":"어? '마지에크'?"}"""
 
 GLOSSARY_PROMPT = """당신은 일본 애니메이션 한국어 자막 번역을 준비하는 감수자입니다. 일본어 자막 대본을 읽고 번역 용어집을 만듭니다.
 
@@ -183,12 +184,17 @@ def load_translate_options(path=None):
         concurrency = int(section.get("concurrency", DEFAULT_CONCURRENCY))
     except (TypeError, ValueError):
         concurrency = DEFAULT_CONCURRENCY
+    try:
+        item_batch = int(section.get("item_batch", ITEM_BATCH))
+    except (TypeError, ValueError):
+        item_batch = ITEM_BATCH
     glossary = section.get("glossary", True)
     if isinstance(glossary, str):
         glossary = glossary.strip().lower() not in ("false", "off", "no", "none", "0", "")
     return {
         "concurrency": min(MAX_CONCURRENCY, max(1, concurrency)),
         "glossary": bool(glossary),
+        "item_batch": min(MAX_ITEM_BATCH, max(1, item_batch)),
     }
 
 
@@ -331,7 +337,7 @@ def _translate_locked(src_path, on_progress):
     try:
         options = load_translate_options()
     except AiClientError:
-        options = {"concurrency": DEFAULT_CONCURRENCY, "glossary": True}
+        options = {"concurrency": DEFAULT_CONCURRENCY, "glossary": True, "item_batch": ITEM_BATCH}
     levels = _reasoning_levels(provider, model)
     _translate_log("> 제공자: " + provider)
     _translate_log("> 모델: " + model)
@@ -339,6 +345,7 @@ def _translate_locked(src_path, on_progress):
     if levels:
         _translate_log("> 생각 단계: " + levels[0])
     _translate_log("> 동시 요청: %d개" % options["concurrency"])
+    _translate_log("> 대사 묶음: %d줄" % options["item_batch"])
     _translate_log("> 용어집: " + ("사용" if options["glossary"] else "사용 안 함"))
     _translate_log("================================================================")
     _notify_progress(on_progress, "번역 중")
@@ -822,6 +829,7 @@ class _Translator:
         self.model = model
         self.on_progress = on_progress
         self.concurrency = options["concurrency"]
+        self.item_batch = options["item_batch"]
         self.use_glossary = options["glossary"]
         self.prompts = prompts
 
@@ -875,7 +883,7 @@ class _Translator:
                 item["cont"] = True
             items.append(item)
 
-        chunks = [items[start:start + ITEM_BATCH] for start in range(0, len(items), ITEM_BATCH)]
+        chunks = [items[start:start + self.item_batch] for start in range(0, len(items), self.item_batch)]
 
         def run(number, chunk):
             _check_cancel()
