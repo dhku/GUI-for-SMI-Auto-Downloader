@@ -89,7 +89,7 @@ JSON 객체 하나만 출력합니다: {"1":"번역","2":"번역"}
 6. 고유명사는 용어집 표기를 반드시 따릅니다. 용어집에 없으면 나무위키 등 한국 정식 표기, 그다음 국립국어원 일본어 표기법을 따릅니다. 서양식 이름은 원어 철자에 맞춥니다.
 7. 경칭은 용어집이 우선이고, 기본값은 ～さん→~씨, ～様→~님, ～先輩→선배, ～くん·～ちゃん→관계에 맞게(생략 가능), お嬢様→아가씨, 殿下→전하, 陛下→폐하 입니다.
 8. えっ·はぁ·うわっ 같은 감탄사와 의성어·의태어는 한국어에서 자연스러운 표현으로 바꿉니다. (예: えっ→어?, はぁ→하아, うわっ→으악, あっ→앗)
-9. 문장부호: 평서문 끝에는 마침표를 찍지 않습니다. ?와 !는 그대로 씁니다. 말끝을 흐리면 ...을 씁니다. 「」→" ", 『』→' ' 로 바꾸고, ～는 쓰지 않습니다.
+9. 문장부호: 평서문 끝에는 마침표(.)를 찍지 않습니다. ?와 !는 그대로 씁니다. 말끝을 흐리면 ...을 씁니다. 「」→" ", 『』→' ' 로 바꾸고, ～는 쓰지 않습니다.
 10. 히라가나·가타카나를 번역문에 남기지 않습니다.
 
 [예시]
@@ -690,11 +690,11 @@ def _chat(client, provider, model, system, user, label="AI 요청"):
             )
             if "response_format" in payload and format_rejected:
                 payload.pop("response_format", None)
-                _translate_log("[=] %s: JSON 형식 지정을 지원하지 않아 제외하고 다시 요청합니다." % label)
+                _translate_log("[=] %s: 이 모델은 JSON 형식 지정 없이 번역합니다." % label)
                 changed = True
             if "temperature" in payload and "temperature" in message:
                 payload.pop("temperature", None)
-                _translate_log("[=] %s: temperature 설정을 지원하지 않아 제외하고 다시 요청합니다." % label)
+                _translate_log("[=] %s: 이 모델은 기본 temperature로 번역합니다." % label)
                 changed = True
             if "reasoning_effort" in payload and ("reasoning" in message or "thinking" in message):
                 rejected = payload.pop("reasoning_effort")
