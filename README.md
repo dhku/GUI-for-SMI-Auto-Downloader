@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./images/readme/logo.png" width="40%" alt="GUI for SMI Auto Downloader"/>
+  <img src="./images/logo.png" width="40%" alt="GUI for SMI Auto Downloader"/>
 </p>
 
 # GUI For SMI Auto Downloader
