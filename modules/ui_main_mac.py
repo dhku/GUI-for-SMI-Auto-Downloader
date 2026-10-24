@@ -1941,7 +1941,7 @@ class Ui_MainWindow(object):
         __qtablewidgetitem40 = QTableWidgetItem()
         self.log_timestamp.setHorizontalHeaderItem(2, __qtablewidgetitem40)
         self.log_timestamp.setObjectName(u"log_timestamp")
-        self.log_timestamp.setStyleSheet(u"font-size: 20px;")
+        self.log_timestamp.setStyleSheet(u"font-size: 16px;")
 
         self.verticalLayout_23.addWidget(self.log_timestamp)
 
@@ -1958,7 +1958,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.log_console = QPlainTextEdit(self.frame)
         self.log_console.setObjectName(u"log_console")
-        self.log_console.setStyleSheet(u"font-size: 20px;")
+        self.log_console.setStyleSheet(u"font-size: 16px;")
 
         self.verticalLayout_22.addWidget(self.log_console)
 
